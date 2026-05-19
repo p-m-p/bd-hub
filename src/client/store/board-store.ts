@@ -1,6 +1,6 @@
 import { ContextProvider } from '@lit/context'
 import { html, LitElement } from 'lit'
-import { customElement, property } from 'lit/decorators.js'
+import { customElement, state } from 'lit/decorators.js'
 import { type BoardState, boardContext, emptyBoardState } from './context.js'
 
 @customElement('bd-board-store')
@@ -12,7 +12,7 @@ export class BoardStore extends LitElement {
 
   private eventSource: EventSource | null = null
 
-  @property({ type: Object })
+  @state()
   get boardState(): BoardState {
     return this.provider.value
   }
@@ -34,14 +34,22 @@ export class BoardStore extends LitElement {
   }
 
   private async loadInitialState() {
-    const response = await fetch('/api/board')
-    this.boardState = (await response.json()) as BoardState
+    try {
+      const response = await fetch('/api/board')
+      if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      this.boardState = (await response.json()) as BoardState
+    } catch (err) {
+      console.error('[bd-board-store] Failed to load board state:', err)
+    }
   }
 
   private connectSSE() {
     this.eventSource = new EventSource('/events')
     this.eventSource.addEventListener('board-update', (e: MessageEvent) => {
       this.boardState = JSON.parse(e.data as string) as BoardState
+    })
+    this.eventSource.addEventListener('error', (e) => {
+      console.error('[bd-board-store] SSE connection error:', e)
     })
   }
 

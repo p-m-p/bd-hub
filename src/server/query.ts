@@ -6,13 +6,16 @@ async function runBd(args: string[]): Promise<BdIssue[]> {
     const result = await execa('bd', args)
     return JSON.parse(result.stdout) as BdIssue[]
   } catch (err) {
-    const error = err as NodeJS.ErrnoException
-    if (error.code === 'ENOENT') {
+    if (
+      err instanceof Error &&
+      (err as NodeJS.ErrnoException).code === 'ENOENT'
+    ) {
       throw new Error(
         'bd not found in PATH — install beads (https://github.com/gastownhall/beads)',
       )
     }
-    throw new Error(`Failed to query bd: ${error.message}`)
+    const message = err instanceof Error ? err.message : String(err)
+    throw new Error(`Failed to query bd: ${message}`)
   }
 }
 
