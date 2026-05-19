@@ -1,0 +1,46 @@
+{
+  "name": "beads-dashboard",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Kanban dashboard for the bd (beads) issue tracker",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "beads-dashboard": "dist/server/index.js"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "dev": "concurrently \"vite\" \"tsx watch src/server/index.ts\"",
+    "build": "vite build && tsup src/server/index.ts --format esm --outDir dist/server",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write .",
+    "test": "vitest run --coverage",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@hono/node-server": "latest",
+    "@material/web": "latest",
+    "chokidar": "latest",
+    "concurrently": "latest",
+    "execa": "latest",
+    "hono": "latest",
+    "lit": "latest",
+    "tsup": "latest",
+    "tsx": "latest",
+    "vite": "latest"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "latest",
+    "@playwright/test": "latest",
+    "@types/node": "latest",
+    "@vitest/coverage-v8": "latest",
+    "typescript": "latest",
+    "vitest": "latest"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild", "@biomejs/biome"]
+  }
+}
