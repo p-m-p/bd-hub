@@ -8,7 +8,9 @@
     "skipLibCheck": true,
     "noEmit": true,
     "isolatedModules": true,
-    "lib": ["ES2022"]
+    "lib": ["ES2022"],
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false
   },
   "include": ["src/**/*", "tests/**/*"]
 }
