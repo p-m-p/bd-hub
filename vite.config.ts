@@ -6,6 +6,9 @@ export default defineConfig({
     sourcemap: true,
     target: 'es2022',
   },
+  resolve: {
+    conditions: ['browser', 'module', 'import'],
+  },
   server: {
     port: 5173,
     proxy: {
@@ -16,6 +19,8 @@ export default defineConfig({
       '/events': {
         target: 'http://localhost:3003',
         changeOrigin: true,
+        timeout: 0,
+        proxyTimeout: 0,
       },
     },
   },

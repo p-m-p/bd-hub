@@ -15,7 +15,7 @@
   "scripts": {
     "dev": "concurrently \"vite\" \"tsx watch src/server/index.ts\"",
     "build": "vite build && tsup src/server/index.ts --format esm --outDir dist/server",
-    "postbuild": "chmod +x dist/server/index.js",
+    "postbuild": "node -e \"require('fs').chmodSync('dist/server/index.js', 0o755)\"",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "test": "vitest run --coverage",
