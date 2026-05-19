@@ -3,7 +3,8 @@
   "compilerOptions": {
     "lib": ["ES2022"],
     "types": ["node"],
-    "outDir": "dist/server"
+    "outDir": "dist/server",
+    "noEmit": false
   },
   "include": ["src/server/**/*"]
 }
