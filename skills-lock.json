@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "beads": {
+      "source": "steveyegge/beads",
+      "sourceType": "github",
+      "skillPath": "plugins/beads/skills/beads/SKILL.md",
+      "computedHash": "3f78545040dba0b6e78c3b097cbcb36ed674420f1894718e75161d302b2ee8de"
+    }
+  }
+}
