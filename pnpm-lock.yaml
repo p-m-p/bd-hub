@@ -9,53 +9,53 @@ importers:
   .:
     dependencies:
       '@hono/node-server':
-        specifier: latest
+        specifier: ^2.0.3
         version: 2.0.3(hono@4.12.21)
       '@material/web':
-        specifier: latest
+        specifier: ^2.4.1
         version: 2.4.1
       chokidar:
-        specifier: latest
+        specifier: ^5.0.0
         version: 5.0.0
-      concurrently:
-        specifier: latest
-        version: 9.2.1
       execa:
-        specifier: latest
+        specifier: ^9.6.1
         version: 9.6.1
       hono:
-        specifier: latest
+        specifier: ^4.12.21
         version: 4.12.21
       lit:
-        specifier: latest
+        specifier: ^3.3.3
         version: 3.3.3
-      tsup:
-        specifier: latest
-        version: 8.5.1(postcss@8.5.15)(tsx@4.22.3)(typescript@6.0.3)
-      tsx:
-        specifier: latest
-        version: 4.22.3
-      vite:
-        specifier: latest
-        version: 8.0.13(@types/node@25.9.1)(esbuild@0.27.7)(tsx@4.22.3)
     devDependencies:
       '@biomejs/biome':
-        specifier: latest
+        specifier: ^2.4.15
         version: 2.4.15
       '@playwright/test':
-        specifier: latest
+        specifier: ^1.60.0
         version: 1.60.0
       '@types/node':
-        specifier: latest
+        specifier: ^25.9.1
         version: 25.9.1
       '@vitest/coverage-v8':
-        specifier: latest
+        specifier: ^4.1.6
         version: 4.1.6(vitest@4.1.6)
+      concurrently:
+        specifier: ^9.2.1
+        version: 9.2.1
+      tsup:
+        specifier: ^8.5.1
+        version: 8.5.1(postcss@8.5.15)(tsx@4.22.3)(typescript@6.0.3)
+      tsx:
+        specifier: ^4.22.3
+        version: 4.22.3
       typescript:
-        specifier: latest
+        specifier: ^6.0.3
         version: 6.0.3
+      vite:
+        specifier: ^8.0.13
+        version: 8.0.13(@types/node@25.9.1)(esbuild@0.27.7)(tsx@4.22.3)
       vitest:
-        specifier: latest
+        specifier: ^4.1.6
         version: 4.1.6(@types/node@25.9.1)(@vitest/coverage-v8@4.1.6)(vite@8.0.13(@types/node@25.9.1)(esbuild@0.27.7)(tsx@4.22.3))
 
 packages:

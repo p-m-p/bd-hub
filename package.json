@@ -21,24 +21,24 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@hono/node-server": "latest",
-    "@material/web": "latest",
-    "chokidar": "latest",
-    "concurrently": "latest",
-    "execa": "latest",
-    "hono": "latest",
-    "lit": "latest",
-    "tsup": "latest",
-    "tsx": "latest",
-    "vite": "latest"
+    "@hono/node-server": "^2.0.3",
+    "@material/web": "^2.4.1",
+    "chokidar": "^5.0.0",
+    "execa": "^9.6.1",
+    "hono": "^4.12.21",
+    "lit": "^3.3.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "latest",
-    "@playwright/test": "latest",
-    "@types/node": "latest",
-    "@vitest/coverage-v8": "latest",
-    "typescript": "latest",
-    "vitest": "latest"
+    "@biomejs/biome": "^2.4.15",
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1",
+    "@vitest/coverage-v8": "^4.1.6",
+    "concurrently": "^9.2.1",
+    "tsup": "^8.5.1",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.13",
+    "vitest": "^4.1.6"
   },
   "pnpm": {
     "onlyBuiltDependencies": ["esbuild", "@biomejs/biome"]
