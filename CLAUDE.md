@@ -91,3 +91,12 @@ pnpm dev               # Dev server (Vite :5173 + Hono :3003 with proxy)
 - TDD: write tests before implementation for all server modules and frontend components
 - E2E tests bootstrap a real temporary bd project (bd init + seed) — no fixtures
 - Biome: 2-space indent, single quotes, no semicolons
+
+### Shell Commands
+Always use non-interactive flags to avoid hanging on prompts:
+```bash
+cp -f src dest      # not: cp src dest
+mv -f src dest      # not: mv src dest
+rm -f file          # not: rm file
+rm -rf dir          # not: rm -r dir
+```
