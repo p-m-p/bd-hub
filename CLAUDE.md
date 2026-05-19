@@ -57,69 +57,37 @@ This project uses modern JavaScript tooling with strict quality standards.
 
 ### Installation & Setup
 ```bash
-npm install                    # Install dependencies
-npx beads-dashboard           # Main entry point
+pnpm install
+npx beads-dashboard
 ```
 
 ### Testing
 ```bash
-npm test                      # Run all tests (Vitest + Playwright)
-npm run test:unit            # Unit tests with Vitest + Testing Library
-npm run test:e2e             # End-to-end tests with Playwright
-npm run test:coverage        # Generate coverage report (85% minimum required)
+pnpm test              # Unit + component tests (Vitest, 85% coverage required)
+pnpm test:e2e          # E2E tests (Playwright, bootstraps real bd project)
 ```
 
 ### Code Quality
 ```bash
-npm run format               # Format code with Biome
-npm run lint                 # Lint code with Biome
-npm run build                # Production build
+pnpm lint              # Lint and format check (Biome)
+pnpm lint:fix          # Auto-fix formatting
+pnpm build             # Production build (Vite + tsup)
+pnpm dev               # Dev server (Vite :5173 + Hono :3003 with proxy)
 ```
-
-### Test Environment
-- **Test database**: test/beads-test setup on port 3308
-- **Coverage enforcement**: 85% minimum required
-- **CI/CD**: GitHub Actions enforces all quality gates
 
 ## Architecture Overview
 
-**beads-dashboard** is a real-time dashboard built with modern web technologies:
+**beads-dashboard** is a real-time kanban dashboard for bd (beads) issue tracking, distributed as an npm package (`npx beads-dashboard`).
 
-- **Backend**: Hono (lightweight web framework)
-- **Frontend**: Lit (web components)
-- **Real-time**: Server-Sent Events (SSE)
-- **Development**: File watching for hot reload
-- **Package**: NPM with `npx beads-dashboard` entry point
+- **Server**: Hono on port 3003 — serves static files, `/api/board`, `/events` (SSE)
+- **Frontend**: Lit web components with Material Web UI, Catppuccin Mocha theme
+- **Realtime**: chokidar watches `.beads/`, debounced 300ms, broadcasts via SSE
+- **Data**: bd CLI (execa) — no direct DB access; beads manages Dolt transparently
+- **Build**: Vite for client → `dist/public/`, tsup for server → `dist/server/`
 
-### Key Components
-- **Server**: Hono-based API server with SSE support
-- **Client**: Lit web components for reactive UI
-- **Database**: Beads issue tracker with test/beads-test environment
-- **Build**: Modern ES modules with optimized bundling
-
-## Conventions & Patterns
-
-### Testing Standards
-- **Unit Testing**: Vitest + Testing Library for component testing
-- **E2E Testing**: Playwright for full user workflows
-- **Coverage**: 85% minimum coverage enforced in CI
-- **Test Environment**: Isolated test/beads-test database on port 3308
-
-### Code Quality
-- **Formatting**: Biome for consistent code style
-- **Linting**: Biome for code quality enforcement
-- **CI/CD**: GitHub Actions runs all quality gates
-- **Pre-commit**: Quality checks before commits
-
-### Architecture Patterns
-- **Component-based**: Lit web components for modularity
-- **Real-time Updates**: SSE for live dashboard updates
-- **File Watching**: Development server with hot reload
-- **Clean API**: Hono for lightweight, fast server responses
-
-### Development Workflow
-1. **Start Development**: `npx beads-dashboard` (starts server + file watching)
-2. **Run Tests**: All tests must pass with 85% coverage
-3. **Quality Gates**: Biome formatting and linting must pass
-4. **Integration**: GitHub Actions enforces all standards
-5. **Deployment**: NPM package with global entry point
+### Key Conventions
+- State lives in `board-store.ts` (Lit ContextProvider), never in components
+- Components are display-only; they receive bead IDs as attributes and look up data from context
+- TDD: write tests before implementation for all server modules and frontend components
+- E2E tests bootstrap a real temporary bd project (bd init + seed) — no fixtures
+- Biome: 2-space indent, single quotes, no semicolons
