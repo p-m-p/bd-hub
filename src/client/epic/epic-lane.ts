@@ -7,6 +7,7 @@ import {
   type Epic,
   emptyBoardState,
 } from '../store/context.js'
+import '../board/column.js'
 
 @customElement('bd-epic-lane')
 export class BdEpicLane extends LitElement {
@@ -23,19 +24,20 @@ export class BdEpicLane extends LitElement {
       grid-column: 1 / -1;
     }
     .epic-lane {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 0;
       background: var(--bd-mocha-surface, #313244);
       border-radius: 0.5rem;
       margin-bottom: 0.5rem;
     }
     .epic-header {
-      grid-column: 1 / -1;
       padding: 0.75rem 1rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
+    }
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
     }
     .epic-title {
       font-size: 1rem;
@@ -74,7 +76,12 @@ export class BdEpicLane extends LitElement {
           <span class="epic-title">${epic.title}</span>
           <span class="epic-status">${this.statusSummary}</span>
         </div>
-        <slot></slot>
+        <div class="columns">
+          <bd-column column="open" epic-id=${this.epicId}></bd-column>
+          <bd-column column="ready" epic-id=${this.epicId}></bd-column>
+          <bd-column column="inProgress" epic-id=${this.epicId}></bd-column>
+          <bd-column column="done" epic-id=${this.epicId}></bd-column>
+        </div>
       </div>
     `
   }
