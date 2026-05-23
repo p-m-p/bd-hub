@@ -18,5 +18,6 @@ coverage/
 # Spec docs (local only)
 docs/
 
-# E2E test runtime state
+# E2E test runtime state and results
 tests/e2e/.test-state.json
+test-results/
