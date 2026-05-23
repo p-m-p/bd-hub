@@ -47,20 +47,28 @@ function toTask(
 
 export async function getBoardState(): Promise<BoardState> {
   const [allIssues, readyIssues] = await Promise.all([
-    runBd(['list', '--json']),
+    runBd(['list', '--all', '--json']),
     runBd(['ready', '--json']),
   ])
 
   const readyIds = new Set(readyIssues.map((i) => i.id))
 
-  // Count subtasks per parent task
+  // Build epic ID set to distinguish task→epic parenting from task→task parenting
+  const epicIds = new Set(
+    allIssues.filter((i) => i.issue_type === 'epic').map((i) => i.id),
+  )
+
+  // Count subtasks per parent task.
+  // A subtask is a task whose parent is another task (not an epic).
   const subtotalMap = new Map<string, { total: number; done: number }>()
   for (const issue of allIssues) {
-    if (issue.issue_type === 'subtask' && issue.parent) {
-      const counts = subtotalMap.get(issue.parent) ?? { total: 0, done: 0 }
+    const isSubtask =
+      issue.parent != null && !epicIds.has(issue.parent)
+    if (isSubtask) {
+      const counts = subtotalMap.get(issue.parent!) ?? { total: 0, done: 0 }
       counts.total += 1
       if (issue.status === 'closed') counts.done += 1
-      subtotalMap.set(issue.parent, counts)
+      subtotalMap.set(issue.parent!, counts)
     }
   }
 
@@ -76,8 +84,8 @@ export async function getBoardState(): Promise<BoardState> {
       continue
     }
 
-    if (issue.issue_type === 'subtask') {
-      // Subtasks are counted but not placed in board columns
+    // Skip tasks that are subtasks of other tasks — shown as tallies only
+    if (issue.parent != null && !epicIds.has(issue.parent)) {
       continue
     }
 

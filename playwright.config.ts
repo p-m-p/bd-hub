@@ -9,4 +9,5 @@ export default defineConfig({
   },
   webServer: undefined, // Server started in globalSetup
   timeout: 30000,
+  expect: { timeout: 10000 }, // allow time for debounce + bd query after file change
 })

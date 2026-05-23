@@ -88,7 +88,7 @@ function mockResult(data: unknown) {
 }
 
 // Helper: set up execa to return different data per call
-// Call order: 1=bd list --json, 2=bd ready --json
+// Call order: 1=bd list --all --json, 2=bd ready --json
 function setupMocks(allIssues: unknown[], readyTasks: unknown[]) {
   mockExeca
     .mockImplementationOnce(
@@ -193,7 +193,7 @@ describe('getBoardState()', () => {
   })
 
   it('correctly maps a task with an assignee', async () => {
-    setupMocks([sampleOpenTask], [sampleOpenTask])
+    setupMocks([sampleEpic, sampleOpenTask], [sampleOpenTask])
 
     const state = await getBoardState()
 
@@ -202,7 +202,7 @@ describe('getBoardState()', () => {
 
   it('counts subtasks per parent task', async () => {
     setupMocks(
-      [sampleOpenTask, sampleSubtaskDone, sampleSubtaskOpen],
+      [sampleEpic, sampleOpenTask, sampleSubtaskDone, sampleSubtaskOpen],
       [sampleOpenTask],
     )
 
@@ -214,7 +214,7 @@ describe('getBoardState()', () => {
   })
 
   it('defaults subtaskTotal and subtaskDone to 0 when no subtasks', async () => {
-    setupMocks([sampleInProgressTask], [])
+    setupMocks([sampleEpic, sampleInProgressTask], [])
 
     const state = await getBoardState()
 
@@ -243,7 +243,7 @@ describe('getBoardState()', () => {
 
     await getBoardState()
 
-    expect(mockExeca).toHaveBeenCalledWith('bd', ['list', '--json'])
+    expect(mockExeca).toHaveBeenCalledWith('bd', ['list', '--all', '--json'])
     expect(mockExeca).toHaveBeenCalledWith('bd', ['ready', '--json'])
   })
 })
