@@ -1,5 +1,6 @@
 import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
+import { streamSSE } from 'hono/streaming'
 import { getBoardState } from './query.js'
 import { addClient } from './sse.js'
 
@@ -10,26 +11,17 @@ app.get('/api/board', async (c) => {
   return c.json(state)
 })
 
-app.get('/events', (c) => {
-  const { req } = c
-  return new Response(
-    new ReadableStream({
-      start(controller) {
-        const write = (event: string, data: string) => {
-          controller.enqueue(`event: ${event}\ndata: ${data}\n\n`)
-        }
-        addClient(write, req.raw.signal)
-      },
-    }),
-    {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-      },
-    },
-  )
-})
+app.get('/events', (c) =>
+  streamSSE(c, async (stream) => {
+    const write = (event: string, data: string) =>
+      stream.writeSSE({ event, data })
+    addClient(write, c.req.raw.signal)
+    // Keep the stream open until the client disconnects
+    await new Promise<void>((resolve) => {
+      c.req.raw.signal.addEventListener('abort', () => resolve(), { once: true })
+    })
+  }),
+)
 
 // Static files — only active in production (dist/public/ must exist)
 app.use('/*', serveStatic({ root: './dist/public' }))

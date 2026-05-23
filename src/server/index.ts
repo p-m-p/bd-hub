@@ -9,7 +9,7 @@ import { createWatcher } from './watcher.js'
 async function findBeadsDir(): Promise<string> {
   try {
     const result = await execa('bd', ['where'])
-    return result.stdout.trim()
+    return result.stdout.split('\n')[0].trim()
   } catch {
     return process.cwd()
   }
