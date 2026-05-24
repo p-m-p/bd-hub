@@ -104,16 +104,16 @@ test.describe('Board rendering', () => {
   test('subtask tally shows correct count for board layout task', async ({
     page,
   }) => {
-    // "Implement board layout" has 3 subtasks: 2 closed + 1 open = "2 of 3 complete"
+    // "Implement board layout" has 3 subtasks: 2 closed + 1 open = "2 / 3 subtasks"
     const tallyTexts = await page
-      .locator('bd-subtask-tally')
+      .locator('bd-task-card')
       .evaluateAll((elements: Element[]) =>
         elements.map((el) =>
-          el.shadowRoot?.querySelector('.tally')?.textContent?.trim(),
+          el.shadowRoot?.querySelector('.subtask-count')?.textContent?.trim(),
         ),
       )
     const nonEmpty = tallyTexts.filter(Boolean)
-    expect(nonEmpty).toContain('2 of 3 complete')
+    expect(nonEmpty).toContain('2 / 3 subtasks')
   })
 })
 
