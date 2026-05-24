@@ -1,8 +1,14 @@
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
 import { getBoardState } from './query.js'
 import { addClient } from './sse.js'
+
+// Resolve the public dir relative to this file so npx (any cwd) works correctly
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const publicRoot = resolve(__dirname, '../public')
 
 export const app = new Hono()
 
@@ -23,5 +29,5 @@ app.get('/events', (c) =>
   }),
 )
 
-// Static files — only active in production (dist/public/ must exist)
-app.use('/*', serveStatic({ root: './dist/public' }))
+// Static files served from the package's own dist/public/ (absolute path)
+app.use('/*', serveStatic({ root: publicRoot }))
