@@ -49,14 +49,13 @@ export class BdColumn extends LitElement {
       border-right: none;
     }
     .column {
-      flex: 1;
+      flex: 1 0 auto;
       display: flex;
       flex-direction: column;
       min-height: 3rem;
       padding: 0.5rem 0.625rem;
     }
     ul {
-      flex: 1;
       list-style: none;
       margin: 0;
       padding: 0;
@@ -69,7 +68,7 @@ export class BdColumn extends LitElement {
       color: var(--bd-mocha-subtext, #a6adc8);
       text-align: center;
       padding-top: 0.4rem;
-      margin-top: 0.5rem;
+      margin-top: auto;
       border-top: 1px solid var(--bd-mocha-surface, #313244);
     }
   `

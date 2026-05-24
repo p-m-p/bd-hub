@@ -20,6 +20,7 @@ export class BdBoard extends LitElement {
       height: 100dvh;
       --col-header-h: 2rem;
       --bd-mocha-base: #1e1e2e;
+      --bd-mocha-mantle: #181825;
       --bd-mocha-surface: #313244;
       --bd-mocha-text: #cdd6f4;
       --bd-mocha-subtext: #a6adc8;
@@ -35,7 +36,7 @@ export class BdBoard extends LitElement {
       position: sticky;
       top: 0;
       z-index: 20;
-      background: var(--bd-mocha-base);
+      background: var(--bd-mocha-mantle);
       border-bottom: 1px solid var(--bd-mocha-surface);
       height: var(--col-header-h);
     }

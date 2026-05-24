@@ -29,7 +29,7 @@ export class BdEpicLane extends LitElement {
       position: sticky;
       top: 0;
       z-index: 10;
-      background: var(--bd-mocha-base, #1e1e2e);
+      background: var(--bd-mocha-mantle, #181825);
       border-top: 2px solid var(--bd-mocha-surface, #313244);
       border-bottom: 1px solid var(--bd-mocha-surface, #313244);
     }
