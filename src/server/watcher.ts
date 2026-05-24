@@ -18,7 +18,9 @@ export function createWatcher(
 
   watcher.on('all', () => {
     if (timer !== undefined) clearTimeout(timer)
-    timer = setTimeout(() => { onChange() }, DEBOUNCE_MS)
+    timer = setTimeout(() => {
+      onChange()
+    }, DEBOUNCE_MS)
   })
 
   return () => {

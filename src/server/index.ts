@@ -30,7 +30,8 @@ export function parseArgs(argv = process.argv.slice(2)): {
 }
 
 function printHelp(): void {
-  console.log(`
+  console.log(
+    `
 bd-hub — kanban dashboard for bd (beads) issue tracker
 
 USAGE
@@ -46,7 +47,8 @@ PREREQUISITES
   Run from a directory that contains a .beads/ database (i.e. bd init has been run).
 
   Install beads: https://github.com/gastownhall/beads
-`.trim())
+`.trim(),
+  )
 }
 
 function openBrowserUrl(url: string): void {
@@ -58,7 +60,10 @@ function openBrowserUrl(url: string): void {
 
 async function main() {
   const { openBrowser, port, help } = parseArgs()
-  if (help) { printHelp(); process.exit(0) }
+  if (help) {
+    printHelp()
+    process.exit(0)
+  }
   const beadsDir = await findBeadsDir()
 
   const server = serve({ fetch: app.fetch, port }, () => {

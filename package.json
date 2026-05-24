@@ -34,7 +34,6 @@
   "dependencies": {
     "@hono/node-server": "^2.0.3",
     "@lit/context": "^1.1.6",
-    "@material/web": "^2.4.1",
     "chokidar": "^5.0.0",
     "execa": "^9.6.1",
     "hono": "^4.12.21",

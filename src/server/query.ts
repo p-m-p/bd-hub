@@ -62,8 +62,7 @@ export async function getBoardState(): Promise<BoardState> {
   // A subtask is a task whose parent is another task (not an epic).
   const subtotalMap = new Map<string, { total: number; done: number }>()
   for (const issue of allIssues) {
-    const isSubtask =
-      issue.parent != null && !epicIds.has(issue.parent)
+    const isSubtask = issue.parent != null && !epicIds.has(issue.parent)
     if (isSubtask) {
       const counts = subtotalMap.get(issue.parent!) ?? { total: 0, done: 0 }
       counts.total += 1

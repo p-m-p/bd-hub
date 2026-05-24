@@ -60,16 +60,18 @@ export class BdBoard extends LitElement {
 
   override render() {
     return html`
-      <div class="column-header-row">
-        <div class="column-label">Open</div>
-        <div class="column-label">Ready</div>
-        <div class="column-label column-label--inprogress">In Progress</div>
-        <div class="column-label column-label--done">Done</div>
-      </div>
-      <div class="board-scroll">
-        ${this.boardState.epics.map(
-          (epic) => html`<bd-epic-lane epic-id=${epic.id}></bd-epic-lane>`,
-        )}
+      <div role="region" aria-label="Kanban board">
+        <header class="column-header-row" role="row" aria-label="Board columns">
+          <div class="column-label" role="columnheader">Open</div>
+          <div class="column-label" role="columnheader">Ready</div>
+          <div class="column-label column-label--inprogress" role="columnheader">In Progress</div>
+          <div class="column-label column-label--done" role="columnheader">Done</div>
+        </header>
+        <div class="board-scroll">
+          ${this.boardState.epics.map(
+            (epic) => html`<bd-epic-lane epic-id=${epic.id}></bd-epic-lane>`,
+          )}
+        </div>
       </div>
     `
   }

@@ -27,7 +27,9 @@ app.get('/events', (c) =>
     addClient(write, c.req.raw.signal)
     // Keep the stream open until the client disconnects
     await new Promise<void>((resolve) => {
-      c.req.raw.signal.addEventListener('abort', () => resolve(), { once: true })
+      c.req.raw.signal.addEventListener('abort', () => resolve(), {
+        once: true,
+      })
     })
   }),
 )

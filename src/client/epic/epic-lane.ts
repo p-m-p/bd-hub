@@ -37,6 +37,7 @@ export class BdEpicLane extends LitElement {
       font-size: 0.875rem;
       font-weight: 600;
       color: var(--bd-mocha-text, #cdd6f4);
+      margin: 0;
     }
     .columns {
       display: grid;
@@ -52,15 +53,17 @@ export class BdEpicLane extends LitElement {
     const epic = this.epic
     if (!epic) return html``
     return html`
-      <div class="epic-header">
-        <span class="epic-title">${epic.title}</span>
-      </div>
-      <div class="columns">
-        <bd-column column="open" epic-id=${this.epicId}></bd-column>
-        <bd-column column="ready" epic-id=${this.epicId}></bd-column>
-        <bd-column column="inProgress" epic-id=${this.epicId}></bd-column>
-        <bd-column column="done" epic-id=${this.epicId}></bd-column>
-      </div>
+      <section>
+        <header class="epic-header">
+          <h2 class="epic-title">${epic.title}</h2>
+        </header>
+        <div class="columns">
+          <bd-column column="open" epic-id=${this.epicId}></bd-column>
+          <bd-column column="ready" epic-id=${this.epicId}></bd-column>
+          <bd-column column="inProgress" epic-id=${this.epicId}></bd-column>
+          <bd-column column="done" epic-id=${this.epicId}></bd-column>
+        </div>
+      </section>
     `
   }
 }

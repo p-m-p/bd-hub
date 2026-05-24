@@ -103,26 +103,28 @@ export class BdTaskCard extends LitElement {
     const chipColour = PRIORITY_COLOURS[task.priority] ?? PRIORITY_COLOURS[4]
 
     return html`
-      <div
+      <article
         class="card ${done ? 'card--done' : ''}"
         style="view-transition-name: ${vtName}"
+        aria-label="${task.title}${done ? ' (complete)' : ''}"
       >
-        <div class="card-header">
+        <header class="card-header">
           <span class="title">${task.title}</span>
           <span
             class="priority-chip ${useMutedChip ? 'priority-chip--muted' : ''}"
             style="${useMutedChip ? '' : `background: ${chipColour}`}"
+            aria-label="Priority ${task.priority}"
           >P${task.priority}</span>
-        </div>
-        <div class="card-meta">
-          <span class="bead-id">${task.id}</span>
+        </header>
+        <footer class="card-meta">
+          <span class="bead-id" aria-label="ID: ${task.id}">${task.id}</span>
           ${
             task.subtaskTotal > 0
-              ? html`<span class="subtask-count">${task.subtaskDone} / ${task.subtaskTotal} subtasks</span>`
+              ? html`<span class="subtask-count" aria-label="${task.subtaskDone} of ${task.subtaskTotal} subtasks complete">${task.subtaskDone} / ${task.subtaskTotal} subtasks</span>`
               : ''
           }
-        </div>
-      </div>
+        </footer>
+      </article>
     `
   }
 }

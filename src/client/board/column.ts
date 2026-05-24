@@ -55,8 +55,14 @@ export class BdColumn extends LitElement {
       min-height: 3rem;
       padding: 0.5rem 0.625rem;
     }
-    .cards {
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
       flex: 1;
+    }
+    li {
+      display: block;
     }
     .tally {
       font-size: 0.65rem;
@@ -75,14 +81,15 @@ export class BdColumn extends LitElement {
 
   override render() {
     return html`
-      <div class="column">
-        <div class="cards">
+      <section class="column" aria-label=${COLUMN_LABELS[this.column]}>
+        <ul>
           ${this.tasks.map(
-            (task) => html`<bd-task-card bead-id=${task.id}></bd-task-card>`,
+            (task) =>
+              html`<li><bd-task-card bead-id=${task.id}></bd-task-card></li>`,
           )}
-        </div>
-        <div class="tally">${tallyText(this.tasks.length)}</div>
-      </div>
+        </ul>
+        <footer class="tally">${tallyText(this.tasks.length)}</footer>
+      </section>
     `
   }
 }

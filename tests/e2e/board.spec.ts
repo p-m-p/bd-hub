@@ -137,7 +137,9 @@ test.describe('SSE realtime updates', () => {
       ['list', '--status', 'blocked', '--json'],
       { cwd: state.tmpDir },
     )
-    const blockedTasks = JSON.parse(blockedResult.stdout) as Array<{ id: string }>
+    const blockedTasks = JSON.parse(blockedResult.stdout) as Array<{
+      id: string
+    }>
 
     if (blockedTasks.length === 0) {
       test.skip()

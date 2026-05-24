@@ -10,7 +10,10 @@ import chokidar from 'chokidar'
 import { createWatcher } from '../../src/server/watcher.js'
 
 describe('createWatcher', () => {
-  let mockWatcher: { on: ReturnType<typeof vi.fn>; close: ReturnType<typeof vi.fn> }
+  let mockWatcher: {
+    on: ReturnType<typeof vi.fn>
+    close: ReturnType<typeof vi.fn>
+  }
 
   beforeEach(() => {
     vi.useFakeTimers()
@@ -35,7 +38,9 @@ describe('createWatcher', () => {
       }),
     )
     // The ignored function should exclude embeddeddolt paths
-    const { ignored } = vi.mocked(chokidar.watch).mock.calls[0][1] as { ignored: (p: string) => boolean }
+    const { ignored } = vi.mocked(chokidar.watch).mock.calls[0][1] as {
+      ignored: (p: string) => boolean
+    }
     expect(ignored('/path/to/.beads/embeddeddolt/foo')).toBe(true)
     expect(ignored('/path/to/.beads/issues.jsonl')).toBe(false)
     expect(ignored('/path/to/.beads/last-touched')).toBe(false)
