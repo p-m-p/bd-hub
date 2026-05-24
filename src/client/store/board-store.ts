@@ -59,7 +59,9 @@ export class BoardStore extends LitElement {
     this.eventSource = new EventSource('/events')
     this.eventSource.addEventListener('board-update', (e: MessageEvent) => {
       const newState = JSON.parse(e.data as string) as BoardState
-      applyStateUpdate(newState, (s) => { this.boardState = s })
+      applyStateUpdate(newState, (s) => {
+        this.boardState = s
+      })
     })
     this.eventSource.addEventListener('error', (e) => {
       console.error('[bd-board-store] SSE connection error:', e)

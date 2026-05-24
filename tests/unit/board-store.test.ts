@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { describe, expect, it, vi } from 'vitest'
+import { applyStateUpdate } from '../../src/client/store/board-store.js'
 import {
   type BoardState,
   boardContext,
@@ -7,7 +8,6 @@ import {
   emptyBoardState,
   type Task,
 } from '../../src/client/store/context.js'
-import { applyStateUpdate } from '../../src/client/store/board-store.js'
 
 describe('boardContext', () => {
   it('defines a context key', () => {
@@ -110,13 +110,16 @@ describe('applyStateUpdate()', () => {
     expect(setter).toHaveBeenCalledWith(newState)
 
     if (originalVT !== undefined) {
-      (document as Record<string, unknown>).startViewTransition = originalVT
+      ;(document as Record<string, unknown>).startViewTransition = originalVT
     }
   })
 
   it('calls startViewTransition when available', () => {
     const setter = vi.fn()
-    const mockTransition = vi.fn((cb: () => void) => { cb(); return {} })
+    const mockTransition = vi.fn((cb: () => void) => {
+      cb()
+      return {}
+    })
     ;(document as Record<string, unknown>).startViewTransition = mockTransition
 
     applyStateUpdate(newState, setter)
