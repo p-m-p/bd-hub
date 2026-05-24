@@ -11,6 +11,9 @@ export default defineConfig({
   },
   server: {
     port: 5173,
+    watch: {
+      ignored: ['**/coverage/**', '**/dist/**', '**/.beads/**'],
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:3003',
