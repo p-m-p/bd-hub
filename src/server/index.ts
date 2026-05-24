@@ -18,11 +18,35 @@ async function findBeadsDir(): Promise<string> {
 export function parseArgs(argv = process.argv.slice(2)): {
   openBrowser: boolean
   port: number
+  help: boolean
 } {
+  if (argv.includes('--help') || argv.includes('-h')) {
+    return { openBrowser: false, port: 3003, help: true }
+  }
   const openBrowser = argv.includes('--open')
   const portIdx = argv.indexOf('--port')
   const port = portIdx !== -1 ? parseInt(argv[portIdx + 1], 10) : 3003
-  return { openBrowser, port: Number.isNaN(port) ? 3003 : port }
+  return { openBrowser, port: Number.isNaN(port) ? 3003 : port, help: false }
+}
+
+function printHelp(): void {
+  console.log(`
+beads-dashboard — kanban dashboard for bd (beads) issue tracker
+
+USAGE
+  npx beads-dashboard [options]
+
+OPTIONS
+  --port <n>   Port to listen on (default: 3003)
+  --open       Open the dashboard in your default browser on startup
+  --help, -h   Show this help message
+
+PREREQUISITES
+  bd (beads) must be installed and available in PATH.
+  Run from a directory that contains a .beads/ database (i.e. bd init has been run).
+
+  Install beads: https://github.com/gastownhall/beads
+`.trim())
 }
 
 function openBrowserUrl(url: string): void {
@@ -33,7 +57,8 @@ function openBrowserUrl(url: string): void {
 }
 
 async function main() {
-  const { openBrowser, port } = parseArgs()
+  const { openBrowser, port, help } = parseArgs()
+  if (help) { printHelp(); process.exit(0) }
   const beadsDir = await findBeadsDir()
 
   const server = serve({ fetch: app.fetch, port }, () => {
