@@ -27,7 +27,7 @@ export class BdEpicLane extends LitElement {
       display: flex;
       align-items: center;
       position: sticky;
-      top: var(--col-header-h, 2rem);
+      top: 0;
       z-index: 10;
       background: var(--bd-mocha-base, #1e1e2e);
       border-top: 2px solid var(--bd-mocha-surface, #313244);
@@ -36,7 +36,7 @@ export class BdEpicLane extends LitElement {
     .epic-title {
       font-size: 0.875rem;
       font-weight: 600;
-      color: var(--bd-mocha-blue, #89b4fa);
+      color: var(--bd-mocha-text, #cdd6f4);
     }
     .columns {
       display: grid;
