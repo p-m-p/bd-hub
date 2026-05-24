@@ -1,4 +1,5 @@
-import { describe, expect, it } from 'vitest'
+// @vitest-environment jsdom
+import { describe, expect, it, vi } from 'vitest'
 import {
   type BoardState,
   boardContext,
@@ -6,6 +7,7 @@ import {
   emptyBoardState,
   type Task,
 } from '../../src/client/store/context.js'
+import { applyStateUpdate } from '../../src/client/store/board-store.js'
 
 describe('boardContext', () => {
   it('defines a context key', () => {
@@ -88,5 +90,49 @@ describe('BoardState type', () => {
 
     expect(task.assignee).toBeUndefined()
     expect(task.epicId).toBeUndefined()
+  })
+})
+
+describe('applyStateUpdate()', () => {
+  const newState: BoardState = {
+    epics: [{ id: 'e1', title: 'Epic', status: 'open', priority: 1 }],
+    tasks: { open: [], ready: [], inProgress: [], done: [] },
+  }
+
+  it('calls setter directly when startViewTransition is unavailable', () => {
+    const setter = vi.fn()
+    const originalVT = (document as Record<string, unknown>).startViewTransition
+    delete (document as Record<string, unknown>).startViewTransition
+
+    applyStateUpdate(newState, setter)
+
+    expect(setter).toHaveBeenCalledOnce()
+    expect(setter).toHaveBeenCalledWith(newState)
+
+    if (originalVT !== undefined) {
+      (document as Record<string, unknown>).startViewTransition = originalVT
+    }
+  })
+
+  it('calls startViewTransition when available', () => {
+    const setter = vi.fn()
+    const mockTransition = vi.fn((cb: () => void) => { cb(); return {} })
+    ;(document as Record<string, unknown>).startViewTransition = mockTransition
+
+    applyStateUpdate(newState, setter)
+
+    expect(mockTransition).toHaveBeenCalledOnce()
+    expect(setter).toHaveBeenCalledWith(newState)
+
+    delete (document as Record<string, unknown>).startViewTransition
+  })
+
+  it('setter receives the exact state object passed in', () => {
+    const setter = vi.fn()
+    delete (document as Record<string, unknown>).startViewTransition
+
+    applyStateUpdate(newState, setter)
+
+    expect(setter.mock.calls[0][0]).toBe(newState)
   })
 })

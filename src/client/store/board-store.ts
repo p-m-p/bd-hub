@@ -3,6 +3,17 @@ import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
 import { type BoardState, boardContext, emptyBoardState } from './context.js'
 
+export function applyStateUpdate(
+  newState: BoardState,
+  setter: (state: BoardState) => void,
+): void {
+  if ('startViewTransition' in document) {
+    document.startViewTransition(() => setter(newState))
+  } else {
+    setter(newState)
+  }
+}
+
 @customElement('bd-board-store')
 export class BoardStore extends LitElement {
   private provider = new ContextProvider(this, {
@@ -37,6 +48,7 @@ export class BoardStore extends LitElement {
     try {
       const response = await fetch('/api/board')
       if (!response.ok) throw new Error(`HTTP ${response.status}`)
+      // Direct assignment — no "before" snapshot exists on first load
       this.boardState = (await response.json()) as BoardState
     } catch (err) {
       console.error('[bd-board-store] Failed to load board state:', err)
@@ -46,7 +58,8 @@ export class BoardStore extends LitElement {
   private connectSSE() {
     this.eventSource = new EventSource('/events')
     this.eventSource.addEventListener('board-update', (e: MessageEvent) => {
-      this.boardState = JSON.parse(e.data as string) as BoardState
+      const newState = JSON.parse(e.data as string) as BoardState
+      applyStateUpdate(newState, (s) => { this.boardState = s })
     })
     this.eventSource.addEventListener('error', (e) => {
       console.error('[bd-board-store] SSE connection error:', e)

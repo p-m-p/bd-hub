@@ -3,7 +3,16 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Real-time kanban dashboard for the bd (beads) issue tracker",
-  "keywords": ["beads", "bd", "kanban", "dashboard", "issue-tracker", "real-time", "lit", "hono"],
+  "keywords": [
+    "beads",
+    "bd",
+    "kanban",
+    "dashboard",
+    "issue-tracker",
+    "real-time",
+    "lit",
+    "hono"
+  ],
   "engines": {
     "node": ">=20"
   },
@@ -37,6 +46,7 @@
     "@types/node": "^25.9.1",
     "@vitest/coverage-v8": "^4.1.6",
     "concurrently": "^9.2.1",
+    "jsdom": "^29.1.1",
     "tsx": "^4.22.3",
     "typescript": "^6.0.3",
     "vite": "^8.0.13",
