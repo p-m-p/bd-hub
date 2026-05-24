@@ -7,7 +7,6 @@ import {
   emptyBoardState,
   type Task,
 } from '../store/context.js'
-import './subtask-tally.js'
 
 const PRIORITY_COLOURS: Record<number, string> = {
   0: '#f38ba8',
@@ -15,6 +14,14 @@ const PRIORITY_COLOURS: Record<number, string> = {
   2: '#f9e2af',
   3: '#a6e3a1',
   4: '#313244',
+}
+
+export function cardViewTransitionName(beadId: string): string {
+  return `card-${beadId.replace(/[^a-z0-9]/gi, '-')}`
+}
+
+export function isDoneTask(status: string): boolean {
+  return status === 'closed'
 }
 
 @customElement('bd-task-card')
@@ -30,12 +37,16 @@ export class BdTaskCard extends LitElement {
     :host { display: block; }
     .card {
       background: var(--bd-mocha-surface, #313244);
-      border-radius: 0.375rem;
-      padding: 0.625rem;
-      margin-bottom: 0.375rem;
+      border-radius: 6px;
+      padding: 0.65rem 0.75rem;
+      margin-bottom: 0.5rem;
       display: flex;
       flex-direction: column;
-      gap: 0.375rem;
+      gap: 0.35rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+    }
+    .card--done {
+      opacity: 0.5;
     }
     .card-header {
       display: flex;
@@ -44,17 +55,23 @@ export class BdTaskCard extends LitElement {
       gap: 0.5rem;
     }
     .title {
-      font-size: 0.875rem;
+      font-size: 0.825rem;
+      line-height: 1.35;
       color: var(--bd-mocha-text, #cdd6f4);
       flex: 1;
     }
     .priority-chip {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       font-weight: 700;
       padding: 0.1rem 0.35rem;
-      border-radius: 0.2rem;
+      border-radius: 3px;
       color: #1e1e2e;
       flex-shrink: 0;
+    }
+    .priority-chip--muted {
+      background: transparent;
+      color: var(--bd-mocha-subtext, #a6adc8);
+      border: 1px solid #45475a;
     }
     .card-meta {
       display: flex;
@@ -62,12 +79,12 @@ export class BdTaskCard extends LitElement {
       justify-content: space-between;
     }
     .bead-id {
-      font-size: 0.65rem;
+      font-size: 0.625rem;
       color: var(--bd-mocha-subtext, #a6adc8);
       font-family: monospace;
     }
-    .assignee {
-      font-size: 0.7rem;
+    .subtask-count {
+      font-size: 0.625rem;
       color: var(--bd-mocha-subtext, #a6adc8);
     }
   `
@@ -80,25 +97,29 @@ export class BdTaskCard extends LitElement {
   override render() {
     const task = this.task
     if (!task) return html``
-    const priorityColour =
-      PRIORITY_COLOURS[task.priority] ?? PRIORITY_COLOURS[4]
+    const done = isDoneTask(task.status)
+    const vtName = cardViewTransitionName(this.beadId)
+    const useMutedChip = task.priority === 4 || done
+    const chipColour = PRIORITY_COLOURS[task.priority] ?? PRIORITY_COLOURS[4]
+
     return html`
-      <div class="card">
+      <div
+        class="card ${done ? 'card--done' : ''}"
+        style="view-transition-name: ${vtName}"
+      >
         <div class="card-header">
           <span class="title">${task.title}</span>
-          <span class="priority-chip" style="background:${priorityColour}">P${task.priority}</span>
+          <span
+            class="priority-chip ${useMutedChip ? 'priority-chip--muted' : ''}"
+            style="${useMutedChip ? '' : `background: ${chipColour}`}"
+          >P${task.priority}</span>
         </div>
         <div class="card-meta">
           <span class="bead-id">${task.id}</span>
-          ${task.assignee ? html`<span class="assignee">${task.assignee}</span>` : ''}
+          ${task.subtaskTotal > 0
+            ? html`<span class="subtask-count">${task.subtaskDone} / ${task.subtaskTotal} subtasks</span>`
+            : ''}
         </div>
-        ${
-          task.subtaskTotal > 0
-            ? html`
-          <bd-subtask-tally .total=${task.subtaskTotal} .done=${task.subtaskDone}></bd-subtask-tally>
-        `
-            : ''
-        }
       </div>
     `
   }

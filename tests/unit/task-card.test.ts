@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { BoardState, Task } from '../../src/client/store/context.js'
 import { emptyBoardState } from '../../src/client/store/context.js'
+import { cardViewTransitionName, isDoneTask } from '../../src/client/task/task-card.js'
 
 // ---------------------------------------------------------------------------
 // PRIORITY_COLOURS logic (mirrors task-card.ts constant)
@@ -182,6 +183,45 @@ describe('subtask tally text', () => {
 
   it('formats "5 of 5 complete" when all done', () => {
     expect(tallyText(5, 5)).toBe('5 of 5 complete')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// cardViewTransitionName and isDoneTask exported pure functions
+// ---------------------------------------------------------------------------
+describe('cardViewTransitionName()', () => {
+  it('prefixes with "card-"', () => {
+    expect(cardViewTransitionName('abc')).toBe('card-abc')
+  })
+
+  it('replaces non-alphanumeric characters with hyphens', () => {
+    expect(cardViewTransitionName('bd-hub_3xk')).toBe('card-bd-hub-3xk')
+  })
+
+  it('handles typical bead ID format', () => {
+    expect(cardViewTransitionName('beads-dashboard-1oq')).toBe('card-beads-dashboard-1oq')
+  })
+
+  it('replaces dots and special chars', () => {
+    expect(cardViewTransitionName('abc.def')).toBe('card-abc-def')
+  })
+})
+
+describe('isDoneTask()', () => {
+  it('returns true for status "closed"', () => {
+    expect(isDoneTask('closed')).toBe(true)
+  })
+
+  it('returns false for status "open"', () => {
+    expect(isDoneTask('open')).toBe(false)
+  })
+
+  it('returns false for status "in_progress"', () => {
+    expect(isDoneTask('in_progress')).toBe(false)
+  })
+
+  it('returns false for empty string', () => {
+    expect(isDoneTask('')).toBe(false)
   })
 })
 
