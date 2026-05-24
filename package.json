@@ -2,7 +2,8 @@
   "name": "bd-hub",
   "version": "0.1.0",
   "type": "module",
-  "description": "Kanban dashboard for the bd (beads) issue tracker",
+  "description": "Real-time kanban dashboard for the bd (beads) issue tracker",
+  "keywords": ["beads", "bd", "kanban", "dashboard", "issue-tracker", "real-time", "lit", "hono"],
   "engines": {
     "node": ">=20"
   },
