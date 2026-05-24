@@ -52,8 +52,15 @@ export class BdBoard extends LitElement {
     }
     .column-label--inprogress { color: var(--bd-mocha-blue); }
     .column-label--done { color: var(--bd-mocha-green); }
+    .board-region {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
     .board-scroll {
       flex: 1;
+      min-height: 0;
       overflow-y: auto;
       overflow-x: hidden;
     }
@@ -61,7 +68,7 @@ export class BdBoard extends LitElement {
 
   override render() {
     return html`
-      <div role="region" aria-label="Kanban board">
+      <div class="board-region" role="region" aria-label="Kanban board">
         <header class="column-header-row" role="row" aria-label="Board columns">
           <div class="column-label" role="columnheader">Open</div>
           <div class="column-label" role="columnheader">Ready</div>
