@@ -23,6 +23,7 @@ vi.mock('@lit/context', () => ({
 import {
   COLUMN_LABELS,
   filterTasksByEpic,
+  tallyText,
 } from '../../src/client/board/column.js'
 
 describe('COLUMN_LABELS', () => {
@@ -112,6 +113,24 @@ describe('COLUMN_LABELS exact values', () => {
     expect(COLUMN_LABELS.ready).toBe('Ready')
     expect(COLUMN_LABELS.inProgress).toBe('In Progress')
     expect(COLUMN_LABELS.done).toBe('Done')
+  })
+})
+
+describe('tallyText()', () => {
+  it('returns "—" for zero tasks', () => {
+    expect(tallyText(0)).toBe('—')
+  })
+
+  it('returns "1 task" for a single task', () => {
+    expect(tallyText(1)).toBe('1 task')
+  })
+
+  it('returns "2 tasks" for two tasks', () => {
+    expect(tallyText(2)).toBe('2 tasks')
+  })
+
+  it('returns "10 tasks" for ten tasks', () => {
+    expect(tallyText(10)).toBe('10 tasks')
   })
 })
 

@@ -22,6 +22,11 @@ export function filterTasksByEpic(tasks: Task[], epicId: string): Task[] {
   return tasks.filter((t) => t.epicId === epicId)
 }
 
+export function tallyText(count: number): string {
+  if (count === 0) return '—'
+  return count === 1 ? '1 task' : `${count} tasks`
+}
+
 @customElement('bd-column')
 export class BdColumn extends LitElement {
   @property({ type: String, attribute: 'column' })
@@ -35,13 +40,30 @@ export class BdColumn extends LitElement {
   boardState: BoardState = emptyBoardState
 
   static override styles = css`
-    :host { display: block; }
+    :host {
+      display: block;
+      border-right: 1px solid var(--bd-mocha-surface, #313244);
+    }
+    :host(:last-child) {
+      border-right: none;
+    }
     .column {
       display: flex;
       flex-direction: column;
+      min-height: 3rem;
       padding: 0.5rem 0.625rem;
     }
-    .cards { flex: 1; }
+    .cards {
+      flex: 1;
+    }
+    .tally {
+      font-size: 0.65rem;
+      color: var(--bd-mocha-subtext, #a6adc8);
+      text-align: center;
+      padding-top: 0.4rem;
+      margin-top: 0.5rem;
+      border-top: 1px solid var(--bd-mocha-surface, #313244);
+    }
   `
 
   get tasks(): Task[] {
@@ -57,6 +79,7 @@ export class BdColumn extends LitElement {
             (task) => html`<bd-task-card bead-id=${task.id}></bd-task-card>`,
           )}
         </div>
+        <div class="tally">${tallyText(this.tasks.length)}</div>
       </div>
     `
   }
