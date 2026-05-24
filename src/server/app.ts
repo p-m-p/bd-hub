@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { serveStatic } from '@hono/node-server/serve-static'
@@ -6,7 +7,9 @@ import { streamSSE } from 'hono/streaming'
 import { getBoardState } from './query.js'
 import { addClient } from './sse.js'
 
-// Resolve the public dir relative to this file so npx (any cwd) works correctly
+// Resolve the public dir relative to this file so npx (any cwd) works correctly.
+// Only register static middleware when the directory exists — in dev mode Vite
+// serves the frontend, so dist/public won't be present.
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const publicRoot = resolve(__dirname, '../public')
 
@@ -30,4 +33,6 @@ app.get('/events', (c) =>
 )
 
 // Static files served from the package's own dist/public/ (absolute path)
-app.use('/*', serveStatic({ root: publicRoot }))
+if (existsSync(publicRoot)) {
+  app.use('/*', serveStatic({ root: publicRoot }))
+}
