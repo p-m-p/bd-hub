@@ -15,8 +15,8 @@ dist/
 node_modules/
 coverage/
 
-# Spec docs (local only)
-docs/
+# Brainstorm sessions (local only)
+.superpowers/
 
 # E2E test runtime state and results
 tests/e2e/.test-state.json
