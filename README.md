@@ -1,4 +1,4 @@
-# beads-dashboard
+# bd-hub
 
 Real-time kanban dashboard for [bd (beads)](https://github.com/gastownhall/beads) issue tracking. Run it from any project that uses beads.
 
@@ -10,7 +10,7 @@ Real-time kanban dashboard for [bd (beads)](https://github.com/gastownhall/beads
 ## Usage
 
 ```sh
-npx beads-dashboard
+npx bd-hub
 ```
 
 Opens the dashboard at `http://localhost:3003`. The board shows your beads tasks grouped by epic, with columns for open (blocked), ready, in-progress, and done. Updates in real time as you run `bd` commands.
@@ -26,8 +26,8 @@ Opens the dashboard at `http://localhost:3003`. The board shows your beads tasks
 ### Examples
 
 ```sh
-npx beads-dashboard --open          # start and open browser
-npx beads-dashboard --port 4000     # use a different port
+npx bd-hub --open          # start and open browser
+npx bd-hub --port 4000     # use a different port
 ```
 
 ## Install beads

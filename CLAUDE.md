@@ -58,7 +58,7 @@ This project uses modern JavaScript tooling with strict quality standards.
 ### Installation & Setup
 ```bash
 pnpm install
-npx beads-dashboard
+npx bd-hub
 ```
 
 ### Testing
@@ -77,7 +77,7 @@ pnpm dev               # Dev server (Vite :5173 + Hono :3003 with proxy)
 
 ## Architecture Overview
 
-**beads-dashboard** is a real-time kanban dashboard for bd (beads) issue tracking, distributed as an npm package (`npx beads-dashboard`).
+**bd-hub** is a real-time kanban dashboard for bd (beads) issue tracking, distributed as an npm package (`npx bd-hub`).
 
 - **Server**: Hono on port 3003 — serves static files, `/api/board`, `/events` (SSE)
 - **Frontend**: Lit web components with Material Web UI, Catppuccin Mocha theme

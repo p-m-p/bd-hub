@@ -31,10 +31,10 @@ export function parseArgs(argv = process.argv.slice(2)): {
 
 function printHelp(): void {
   console.log(`
-beads-dashboard — kanban dashboard for bd (beads) issue tracker
+bd-hub — kanban dashboard for bd (beads) issue tracker
 
 USAGE
-  npx beads-dashboard [options]
+  npx bd-hub [options]
 
 OPTIONS
   --port <n>   Port to listen on (default: 3003)

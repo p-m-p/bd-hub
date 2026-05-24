@@ -1,5 +1,5 @@
 {
-  "name": "beads-dashboard",
+  "name": "bd-hub",
   "version": "0.1.0",
   "type": "module",
   "description": "Kanban dashboard for the bd (beads) issue tracker",
@@ -7,7 +7,7 @@
     "node": ">=20"
   },
   "bin": {
-    "beads-dashboard": "dist/server/index.js"
+    "bd-hub": "dist/server/index.js"
   },
   "files": [
     "dist/"

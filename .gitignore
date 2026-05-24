@@ -21,4 +21,4 @@ docs/
 # E2E test runtime state and results
 tests/e2e/.test-state.json
 test-results/
-beads-dashboard-*.tgz
+*.tgz
