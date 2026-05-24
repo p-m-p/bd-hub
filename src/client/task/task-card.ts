@@ -116,9 +116,11 @@ export class BdTaskCard extends LitElement {
         </div>
         <div class="card-meta">
           <span class="bead-id">${task.id}</span>
-          ${task.subtaskTotal > 0
-            ? html`<span class="subtask-count">${task.subtaskDone} / ${task.subtaskTotal} subtasks</span>`
-            : ''}
+          ${
+            task.subtaskTotal > 0
+              ? html`<span class="subtask-count">${task.subtaskDone} / ${task.subtaskTotal} subtasks</span>`
+              : ''
+          }
         </div>
       </div>
     `

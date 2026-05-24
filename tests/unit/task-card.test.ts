@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import type { BoardState, Task } from '../../src/client/store/context.js'
 import { emptyBoardState } from '../../src/client/store/context.js'
-import { cardViewTransitionName, isDoneTask } from '../../src/client/task/task-card.js'
+import {
+  cardViewTransitionName,
+  isDoneTask,
+} from '../../src/client/task/task-card.js'
 
 // ---------------------------------------------------------------------------
 // PRIORITY_COLOURS logic (mirrors task-card.ts constant)
@@ -199,7 +202,9 @@ describe('cardViewTransitionName()', () => {
   })
 
   it('handles typical bead ID format', () => {
-    expect(cardViewTransitionName('beads-dashboard-1oq')).toBe('card-beads-dashboard-1oq')
+    expect(cardViewTransitionName('beads-dashboard-1oq')).toBe(
+      'card-beads-dashboard-1oq',
+    )
   })
 
   it('replaces dots and special chars', () => {
