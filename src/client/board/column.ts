@@ -42,6 +42,7 @@ export class BdColumn extends LitElement {
   static override styles = css`
     :host {
       display: block;
+      height: 100%;
       border-right: 1px solid var(--bd-mocha-surface, #313244);
     }
     :host(:last-child) {
@@ -50,6 +51,7 @@ export class BdColumn extends LitElement {
     .column {
       display: flex;
       flex-direction: column;
+      height: 100%;
       min-height: 3rem;
       padding: 0.5rem 0.625rem;
     }
