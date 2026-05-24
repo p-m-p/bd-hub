@@ -102,6 +102,19 @@ describe('filterTasksByEpic', () => {
   })
 })
 
+describe('COLUMN_LABELS exact values', () => {
+  it('has exactly four entries', () => {
+    expect(Object.keys(COLUMN_LABELS)).toHaveLength(4)
+  })
+
+  it('labels are Open, Ready, In Progress, Done', () => {
+    expect(COLUMN_LABELS.open).toBe('Open')
+    expect(COLUMN_LABELS.ready).toBe('Ready')
+    expect(COLUMN_LABELS.inProgress).toBe('In Progress')
+    expect(COLUMN_LABELS.done).toBe('Done')
+  })
+})
+
 describe('module smoke tests', () => {
   it('imports BdBoard without errors', async () => {
     const mod = await import('../../src/client/board/board.js')

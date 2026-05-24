@@ -15,7 +15,10 @@ export class BdBoard extends LitElement {
 
   static override styles = css`
     :host {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      height: 100dvh;
+      --col-header-h: 2rem;
       --bd-mocha-base: #1e1e2e;
       --bd-mocha-surface: #313244;
       --bd-mocha-text: #cdd6f4;
@@ -26,23 +29,46 @@ export class BdBoard extends LitElement {
       --bd-mocha-red: #f38ba8;
       --bd-mocha-peach: #fab387;
     }
-    .board {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
+    .column-header-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      position: sticky;
+      top: 0;
+      z-index: 20;
       background: var(--bd-mocha-base);
-      min-height: 100vh;
-      padding: 1rem;
+      border-bottom: 1px solid var(--bd-mocha-surface);
+      height: var(--col-header-h);
+    }
+    .column-label {
+      display: flex;
+      align-items: center;
+      padding: 0 0.75rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--bd-mocha-subtext);
+    }
+    .column-label--inprogress { color: var(--bd-mocha-blue); }
+    .column-label--done { color: var(--bd-mocha-green); }
+    .board-scroll {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
   `
 
   override render() {
     return html`
-      <div class="board">
+      <div class="column-header-row">
+        <div class="column-label">Open</div>
+        <div class="column-label">Ready</div>
+        <div class="column-label column-label--inprogress">In Progress</div>
+        <div class="column-label column-label--done">Done</div>
+      </div>
+      <div class="board-scroll">
         ${this.boardState.epics.map(
-          (epic) => html`
-          <bd-epic-lane epic-id=${epic.id}></bd-epic-lane>
-        `,
+          (epic) => html`<bd-epic-lane epic-id=${epic.id}></bd-epic-lane>`,
         )}
       </div>
     `

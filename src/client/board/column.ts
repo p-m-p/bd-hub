@@ -39,17 +39,9 @@ export class BdColumn extends LitElement {
     .column {
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
-      padding: 0.75rem;
+      padding: 0.5rem 0.625rem;
     }
-    .column-header {
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--bd-mocha-subtext, #a6adc8);
-      padding: 0.5rem 0;
-    }
+    .cards { flex: 1; }
   `
 
   get tasks(): Task[] {
@@ -60,12 +52,11 @@ export class BdColumn extends LitElement {
   override render() {
     return html`
       <div class="column">
-        <div class="column-header">${COLUMN_LABELS[this.column]}</div>
-        ${this.tasks.map(
-          (task) => html`
-          <bd-task-card bead-id=${task.id}></bd-task-card>
-        `,
-        )}
+        <div class="cards">
+          ${this.tasks.map(
+            (task) => html`<bd-task-card bead-id=${task.id}></bd-task-card>`,
+          )}
+        </div>
       </div>
     `
   }
