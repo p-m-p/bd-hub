@@ -34,18 +34,18 @@ test.describe('Board rendering', () => {
     expect(epicTitles).toContain('Server Layer')
   })
 
-  test('epic swim lanes render status summaries', async ({ page }) => {
-    // Each epic lane should have a non-empty status summary
-    const epicStatuses = await page
+  test('epic swim lanes each render four column sections', async ({ page }) => {
+    // Each epic lane contains 4 bd-column elements (open, ready, inProgress, done)
+    const columnCounts = await page
       .locator('bd-epic-lane')
       .evaluateAll((elements: Element[]) =>
-        elements.map((el) =>
-          el.shadowRoot?.querySelector('.epic-status')?.textContent?.trim(),
+        elements.map(
+          (el) => el.shadowRoot?.querySelectorAll('bd-column').length,
         ),
       )
-    for (const status of epicStatuses) {
-      expect(status).toBeTruthy()
-      expect(status).not.toBe('no tasks')
+    expect(columnCounts.length).toBeGreaterThan(0)
+    for (const count of columnCounts) {
+      expect(count).toBe(4)
     }
   })
 
