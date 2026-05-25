@@ -29,14 +29,14 @@ export class BdEpicLane extends LitElement {
       position: sticky;
       top: 0;
       z-index: 10;
-      background: var(--bd-mocha-mantle, #181825);
-      border-top: 2px solid var(--bd-mocha-surface, #313244);
-      border-bottom: 1px solid var(--bd-mocha-surface, #313244);
+      background: var(--bd-color-bg-mantle);
+      border-top: 2px solid var(--bd-color-border);
+      border-bottom: 1px solid var(--bd-color-border);
     }
     .epic-title {
       font-size: 0.875rem;
       font-weight: 600;
-      color: var(--bd-mocha-text, #cdd6f4);
+      color: var(--bd-color-text-primary);
       margin: 0;
     }
     .columns {

@@ -18,17 +18,7 @@ export class BdBoard extends LitElement {
       display: flex;
       flex-direction: column;
       height: 100dvh;
-      --col-header-h: 2rem;
-      --bd-mocha-base: #1e1e2e;
-      --bd-mocha-mantle: #181825;
-      --bd-mocha-surface: #313244;
-      --bd-mocha-text: #cdd6f4;
-      --bd-mocha-subtext: #a6adc8;
-      --bd-mocha-blue: #89b4fa;
-      --bd-mocha-green: #a6e3a1;
-      --bd-mocha-yellow: #f9e2af;
-      --bd-mocha-red: #f38ba8;
-      --bd-mocha-peach: #fab387;
+      --bd-col-header-h: 2rem;
     }
     .column-header-row {
       display: grid;
@@ -36,9 +26,9 @@ export class BdBoard extends LitElement {
       position: sticky;
       top: 0;
       z-index: 20;
-      background: var(--bd-mocha-mantle);
-      border-bottom: 1px solid var(--bd-mocha-surface);
-      height: var(--col-header-h);
+      background: var(--bd-color-bg-mantle);
+      border-bottom: 1px solid var(--bd-color-border);
+      height: var(--bd-col-header-h);
     }
     .column-label {
       display: flex;
@@ -48,10 +38,10 @@ export class BdBoard extends LitElement {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: var(--bd-mocha-subtext);
+      color: var(--bd-color-text-muted);
     }
-    .column-label--inprogress { color: var(--bd-mocha-blue); }
-    .column-label--done { color: var(--bd-mocha-green); }
+    .column-label--inprogress { color: var(--bd-color-accent-in-progress); }
+    .column-label--done { color: var(--bd-color-accent-done); }
     .board-region {
       flex: 1;
       min-height: 0;
