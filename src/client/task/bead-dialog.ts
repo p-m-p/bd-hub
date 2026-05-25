@@ -5,12 +5,28 @@ import { customElement, property, query, state } from 'lit/decorators.js'
 import { unsafeHTML } from 'lit/directives/unsafe-html.js'
 import MarkdownIt from 'markdown-it'
 import Prism from 'prismjs'
+import 'prismjs/components/prism-bash'
+import 'prismjs/components/prism-json'
+import 'prismjs/components/prism-markdown'
+import 'prismjs/components/prism-typescript'
+import 'prismjs/components/prism-yaml'
+
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
 
 const md = new MarkdownIt({
   highlight(code, lang) {
     const grammar = Prism.languages[lang]
-    if (grammar) return Prism.highlight(code, grammar, lang)
-    return code
+    const highlighted = grammar
+      ? Prism.highlight(code, grammar, lang)
+      : escapeHtml(code)
+    const cls = lang ? ` class="language-${lang}"` : ''
+    return `<pre${cls}><code${cls}>${highlighted}</code></pre>`
   },
 })
 
