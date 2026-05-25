@@ -8,6 +8,7 @@ import {
 } from '../store/context.js'
 import '../task/bead-dialog.js'
 import type { BdBeadDialog } from '../task/bead-dialog.js'
+import './title-bar.js'
 
 @customElement('bd-board')
 export class BdBoard extends LitElement {
@@ -68,6 +69,7 @@ export class BdBoard extends LitElement {
 
   override render() {
     return html`
+      <bd-title-bar></bd-title-bar>
       <div class="board-region" role="region" aria-label="Kanban board">
         <header class="column-header-row" role="row" aria-label="Board columns">
           <div class="column-label" role="columnheader">Open</div>
