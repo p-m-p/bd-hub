@@ -1,0 +1,44 @@
+/* =============================================================
+   bd-hub Design Tokens
+   Dark  → Catppuccin Mocha  (default)
+   Light → Catppuccin Latte
+   ============================================================= */
+
+/* Dark theme — Catppuccin Mocha */
+:root,
+:root[data-theme="dark"] {
+  --bd-color-bg-base: #1e1e2e;
+  --bd-color-bg-mantle: #181825;
+  --bd-color-bg-surface: #313244;
+  --bd-color-border: #313244;
+  --bd-color-border-muted: #45475a;
+  --bd-color-text-primary: #cdd6f4;
+  --bd-color-text-muted: #a6adc8;
+  --bd-color-text-on-accent: #1e1e2e;
+  --bd-color-accent-in-progress: #89b4fa;
+  --bd-color-accent-done: #a6e3a1;
+  --bd-color-priority-p0: #f38ba8;
+  --bd-color-priority-p1: #fab387;
+  --bd-color-priority-p2: #f9e2af;
+  --bd-color-priority-p3: #a6e3a1;
+  --bd-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Light theme — Catppuccin Latte */
+:root[data-theme="light"] {
+  --bd-color-bg-base: #eff1f5;
+  --bd-color-bg-mantle: #e6e9ef;
+  --bd-color-bg-surface: #ccd0da;
+  --bd-color-border: #ccd0da;
+  --bd-color-border-muted: #bcc0cc;
+  --bd-color-text-primary: #4c4f69;
+  --bd-color-text-muted: #6c6f85;
+  --bd-color-text-on-accent: #eff1f5;
+  --bd-color-accent-in-progress: #1e66f5;
+  --bd-color-accent-done: #40a02b;
+  --bd-color-priority-p0: #d20f39;
+  --bd-color-priority-p1: #fe640b;
+  --bd-color-priority-p2: #df8e1d;
+  --bd-color-priority-p3: #40a02b;
+  --bd-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.08);
+}

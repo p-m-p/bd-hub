@@ -1,3 +1,4 @@
+import './styles/tokens.css'
 // entry point — components registered here
 import './board/board.js'
 import './board/column.js'

@@ -11,12 +11,22 @@
         padding: 0;
         height: 100%;
         font-family: system-ui, -apple-system, sans-serif;
-        background: #1e1e2e;
-        color: #cdd6f4;
+        background: var(--bd-color-bg-base);
+        color: var(--bd-color-text-primary);
       }
     </style>
   </head>
   <body>
+    <!-- Sets data-theme before first paint — must be synchronous, no defer -->
+    <script>
+      ;(function () {
+        var stored = localStorage.getItem('bd-theme')
+        var theme =
+          stored ||
+          (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+        document.documentElement.dataset.theme = theme
+      })()
+    </script>
     <script type="module" src="/src/client/main.ts"></script>
   </body>
 </html>
