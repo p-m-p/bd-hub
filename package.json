@@ -36,12 +36,14 @@
     "@hono/node-server": "^2.0.3",
     "@lit/context": "^1.1.6",
     "@types/markdown-it": "^14.1.2",
+    "@types/prismjs": "^1.26.6",
+    "catppuccin-prismjs": "github:catppuccin/prismjs",
     "chokidar": "^5.0.0",
     "execa": "^9.6.1",
     "hono": "^4.12.21",
     "lit": "^3.3.3",
     "markdown-it": "^14.2.0",
-    "prismjs": "github:catppuccin/prismjs"
+    "prismjs": "^1.30.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",

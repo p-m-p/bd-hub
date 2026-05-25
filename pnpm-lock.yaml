@@ -17,6 +17,12 @@ importers:
       '@types/markdown-it':
         specifier: ^14.1.2
         version: 14.1.2
+      '@types/prismjs':
+        specifier: ^1.26.6
+        version: 1.26.6
+      catppuccin-prismjs:
+        specifier: github:catppuccin/prismjs
+        version: https://codeload.github.com/catppuccin/prismjs/tar.gz/d5cddefcc6f2190f5396d56b42f1f0927d64f6bb
       chokidar:
         specifier: ^5.0.0
         version: 5.0.0
@@ -33,8 +39,8 @@ importers:
         specifier: ^14.2.0
         version: 14.2.0
       prismjs:
-        specifier: github:catppuccin/prismjs
-        version: https://codeload.github.com/catppuccin/prismjs/tar.gz/d5cddefcc6f2190f5396d56b42f1f0927d64f6bb
+        specifier: ^1.30.0
+        version: 1.30.0
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.4.15
@@ -553,6 +559,9 @@ packages:
   '@types/node@25.9.1':
     resolution: {integrity: sha512-xfrlY7UD5rMJk3ZVJP8BNzS28J36YJg+xp+LPXV1TdWxr8uMH5A860QNxYDGQe/ylDSgjxE52Q9VnO7p75tJxg==}
 
+  '@types/prismjs@1.26.6':
+    resolution: {integrity: sha512-vqlvI7qlMvcCBbVe0AKAb4f97//Hy0EBTaiW8AalRnG/xAN5zOiWWyrNqNXeq8+KAuvRewjCVY1+IPxk4RdNYw==}
+
   '@types/trusted-types@2.0.7':
     resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
 
@@ -614,6 +623,10 @@ packages:
 
   bidi-js@1.0.3:
     resolution: {integrity: sha512-RKshQI1R3YQ+n9YJz2QQ147P66ELpa1FQEg20Dk8oW9t2KgLbpDLLp9aGZ7y8WHSshDknG0bknqGw5/tyCs5tw==}
+
+  catppuccin-prismjs@https://codeload.github.com/catppuccin/prismjs/tar.gz/d5cddefcc6f2190f5396d56b42f1f0927d64f6bb:
+    resolution: {tarball: https://codeload.github.com/catppuccin/prismjs/tar.gz/d5cddefcc6f2190f5396d56b42f1f0927d64f6bb}
+    version: 0.0.0
 
   chai@6.2.2:
     resolution: {integrity: sha512-NUPRluOfOiTKBKvWPtSD4PhFvWCqOi0BGStNWs57X9js7XGTprSmFoz5F0tWhR4WPjNeR9jXqdC7/UpSJTnlRg==}
@@ -960,9 +973,9 @@ packages:
     resolution: {integrity: sha512-gjVS5hOP+M3wMm5nmNOucbIrqudzs9v/57bWRHQWLYklXqoXKrVfYW2W9+glfGsqtPgpiz5WwyEEB+ksXIx3gQ==}
     engines: {node: '>=18'}
 
-  prismjs@https://codeload.github.com/catppuccin/prismjs/tar.gz/d5cddefcc6f2190f5396d56b42f1f0927d64f6bb:
-    resolution: {tarball: https://codeload.github.com/catppuccin/prismjs/tar.gz/d5cddefcc6f2190f5396d56b42f1f0927d64f6bb}
-    version: 0.0.0
+  prismjs@1.30.0:
+    resolution: {integrity: sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==}
+    engines: {node: '>=6'}
 
   punycode.js@2.3.1:
     resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
@@ -1569,6 +1582,8 @@ snapshots:
     dependencies:
       undici-types: 7.24.6
 
+  '@types/prismjs@1.26.6': {}
+
   '@types/trusted-types@2.0.7': {}
 
   '@vitest/coverage-v8@4.1.6(vitest@4.1.6)':
@@ -1645,6 +1660,8 @@ snapshots:
   bidi-js@1.0.3:
     dependencies:
       require-from-string: 2.0.2
+
+  catppuccin-prismjs@https://codeload.github.com/catppuccin/prismjs/tar.gz/d5cddefcc6f2190f5396d56b42f1f0927d64f6bb: {}
 
   chai@6.2.2: {}
 
@@ -1991,7 +2008,7 @@ snapshots:
     dependencies:
       parse-ms: 4.0.0
 
-  prismjs@https://codeload.github.com/catppuccin/prismjs/tar.gz/d5cddefcc6f2190f5396d56b42f1f0927d64f6bb: {}
+  prismjs@1.30.0: {}
 
   punycode.js@2.3.1: {}
 

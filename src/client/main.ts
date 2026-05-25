@@ -5,6 +5,7 @@ import './board/column.js'
 import './epic/epic-lane.js'
 import './task/task-card.js'
 import './task/subtask-tally.js'
+import './task/bead-dialog.js'
 import './store/board-store.js'
 
 document.body.innerHTML =
