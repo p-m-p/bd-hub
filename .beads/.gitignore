@@ -69,6 +69,5 @@ bd.db
 # Config files (metadata.json, config.yaml) are tracked by git by default
 # since no pattern above ignores them.
 
-# Passive exports and runtime interaction logs — local only, regenerated on every bd command
-issues.jsonl
-interactions.jsonl
+# All JSONL files are runtime exports/logs — local only, regenerated on every bd command
+*.jsonl
