@@ -7,11 +7,13 @@ vi.mock('lit', () => ({
   LitElement: class {},
   html: vi.fn(),
   css: vi.fn(),
+  unsafeCSS: vi.fn((s) => s),
 }))
 
 vi.mock('lit/decorators.js', () => ({
   customElement: () => (cls) => cls,
   property: () => () => undefined,
+  query: () => () => undefined,
   state: () => () => undefined,
 }))
 

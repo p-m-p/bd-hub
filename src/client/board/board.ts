@@ -1,14 +1,18 @@
 import { consume } from '@lit/context'
 import { css, html, LitElement } from 'lit'
-import { customElement, state } from 'lit/decorators.js'
+import { customElement, query, state } from 'lit/decorators.js'
 import {
   type BoardState,
   boardContext,
   emptyBoardState,
 } from '../store/context.js'
+import '../task/bead-dialog.js'
+import type { BdBeadDialog } from '../task/bead-dialog.js'
 
 @customElement('bd-board')
 export class BdBoard extends LitElement {
+  @query('bd-bead-dialog') private _dialog!: BdBeadDialog
+
   @consume({ context: boardContext, subscribe: true })
   @state()
   boardState: BoardState = emptyBoardState
@@ -56,6 +60,12 @@ export class BdBoard extends LitElement {
     }
   `
 
+  private _onOpenBead(e: Event) {
+    const { beadId } = (e as CustomEvent<{ beadId: string }>).detail
+    this._dialog.beadId = beadId
+    void this._dialog.open()
+  }
+
   override render() {
     return html`
       <div class="board-region" role="region" aria-label="Kanban board">
@@ -65,12 +75,13 @@ export class BdBoard extends LitElement {
           <div class="column-label column-label--inprogress" role="columnheader">In Progress</div>
           <div class="column-label column-label--done" role="columnheader">Done</div>
         </header>
-        <div class="board-scroll">
+        <div class="board-scroll" @open-bead=${this._onOpenBead}>
           ${this.boardState.epics.map(
             (epic) => html`<bd-epic-lane epic-id=${epic.id}></bd-epic-lane>`,
           )}
         </div>
       </div>
+      <bd-bead-dialog></bd-bead-dialog>
     `
   }
 }

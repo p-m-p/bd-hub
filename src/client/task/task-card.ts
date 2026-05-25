@@ -1,14 +1,12 @@
 import { consume } from '@lit/context'
 import { css, html, LitElement, nothing } from 'lit'
-import { customElement, property, query, state } from 'lit/decorators.js'
+import { customElement, property, state } from 'lit/decorators.js'
 import {
   type BoardState,
   boardContext,
   emptyBoardState,
   type Task,
 } from '../store/context.js'
-import './bead-dialog.js'
-import type { BdBeadDialog } from './bead-dialog.js'
 
 export function cardViewTransitionName(beadId: string): string {
   return `card-${beadId.replace(/[^a-z0-9]/gi, '-')}`
@@ -22,8 +20,6 @@ export function isDoneTask(status: string): boolean {
 export class BdTaskCard extends LitElement {
   @property({ type: String, attribute: 'bead-id' })
   beadId = ''
-
-  @query('bd-bead-dialog') private _dialog!: BdBeadDialog
 
   @consume({ context: boardContext, subscribe: true })
   @state()
@@ -100,7 +96,13 @@ export class BdTaskCard extends LitElement {
   `
 
   private _openDialog() {
-    this._dialog?.open()
+    this.dispatchEvent(
+      new CustomEvent('open-bead', {
+        detail: { beadId: this.beadId },
+        bubbles: true,
+        composed: true,
+      }),
+    )
   }
 
   private get task(): Task | undefined {
@@ -138,7 +140,6 @@ export class BdTaskCard extends LitElement {
               : ''
           }
         </footer>
-        <bd-bead-dialog bead-id=${this.beadId}></bd-bead-dialog>
       </article>
     `
   }
