@@ -11,22 +11,22 @@
   color-scheme: light dark;
 
   /* Backgrounds */
-  --bd-color-bg-base: light-dark(#eff1f5, #1e1e2e);
-  --bd-color-bg-mantle: light-dark(#e6e9ef, #181825);
-  --bd-color-bg-surface: light-dark(#ccd0da, #313244);
+  --bd-color-bg-base:    light-dark(#e6e9ef, #1e1e2e);
+  --bd-color-bg-mantle:  light-dark(#dce0e8, #181825);
+  --bd-color-bg-surface: light-dark(#eff1f5, #313244);
 
   /* Borders */
-  --bd-color-border: light-dark(#ccd0da, #313244);
+  --bd-color-border:       light-dark(#ccd0da, #313244);
   --bd-color-border-muted: light-dark(#bcc0cc, #45475a);
 
   /* Text */
-  --bd-color-text-primary: light-dark(#4c4f69, #cdd6f4);
-  --bd-color-text-muted: light-dark(#6c6f85, #a6adc8);
+  --bd-color-text-primary:   light-dark(#4c4f69, #cdd6f4);
+  --bd-color-text-muted:     light-dark(#6c6f85, #a6adc8);
   --bd-color-text-on-accent: light-dark(#eff1f5, #1e1e2e);
 
   /* Column accents */
   --bd-color-accent-in-progress: light-dark(#1e66f5, #89b4fa);
-  --bd-color-accent-done: light-dark(#40a02b, #a6e3a1);
+  --bd-color-accent-done:        light-dark(#40a02b, #a6e3a1);
 
   /* Priority chip backgrounds */
   --bd-color-priority-p0: light-dark(#d20f39, #f38ba8);

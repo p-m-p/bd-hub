@@ -31,9 +31,9 @@ const css = `/* ================================================================
   color-scheme: light dark;
 
   /* Backgrounds */
-  --bd-color-bg-base:    ${ld(l.base.hex, m.base.hex)};
-  --bd-color-bg-mantle:  ${ld(l.mantle.hex, m.mantle.hex)};
-  --bd-color-bg-surface: ${ld(l.surface0.hex, m.surface0.hex)};
+  --bd-color-bg-base:    ${ld(l.mantle.hex, m.base.hex)};
+  --bd-color-bg-mantle:  ${ld(l.crust.hex, m.mantle.hex)};
+  --bd-color-bg-surface: ${ld(l.base.hex, m.surface0.hex)};
 
   /* Borders */
   --bd-color-border:       ${ld(l.surface0.hex, m.surface0.hex)};
