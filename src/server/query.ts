@@ -1,3 +1,4 @@
+import path from 'node:path'
 import { execa } from 'execa'
 import type { BdIssue, BoardState, Epic, Task } from './types.js'
 
@@ -57,6 +58,24 @@ export async function getBeadDetail(
     console.error(`[getBeadDetail] Failed to fetch bead "${id}":`, err)
     return null
   }
+}
+
+function toTitleCase(slug: string): string {
+  return slug
+    .replace(/[-_]+/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .trim()
+}
+
+export async function getProjectInfo(): Promise<{ name: string }> {
+  try {
+    const result = await execa('bd', ['config', 'list'])
+    const match = result.stdout.match(/issue_prefix\s*=\s*(\S+)/)
+    if (match?.[1]) return { name: toTitleCase(match[1]) }
+  } catch {
+    // bd not available or not a bd project
+  }
+  return { name: toTitleCase(path.basename(process.cwd())) }
 }
 
 export async function getBoardState(): Promise<BoardState> {

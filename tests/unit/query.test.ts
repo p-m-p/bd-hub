@@ -9,6 +9,7 @@ import { execa } from 'execa'
 import {
   getBeadDetail,
   getBoardState,
+  getProjectInfo,
   ORPHAN_EPIC_ID,
 } from '../../src/server/query.js'
 import type { BoardState } from '../../src/server/types.js'
@@ -326,5 +327,32 @@ describe('getBeadDetail()', () => {
     )
     await getBeadDetail('bd-1')
     expect(mockExeca).toHaveBeenCalledWith('bd', ['show', 'bd-1', '--json'])
+  })
+})
+
+describe('getProjectInfo()', () => {
+  it('parses issue_prefix from bd config list and title-cases it', async () => {
+    vi.mocked(execa).mockResolvedValueOnce({
+      stdout: '  issue_prefix = my-cool-project\n',
+      stderr: '',
+    } as ReturnType<typeof execa>)
+    const info = await getProjectInfo()
+    expect(info.name).toBe('My Cool Project')
+  })
+
+  it('handles hyphen and underscore separators', async () => {
+    vi.mocked(execa).mockResolvedValueOnce({
+      stdout: 'issue_prefix = hello_world\n',
+      stderr: '',
+    } as ReturnType<typeof execa>)
+    const info = await getProjectInfo()
+    expect(info.name).toBe('Hello World')
+  })
+
+  it('falls back to a non-empty string when bd throws', async () => {
+    vi.mocked(execa).mockRejectedValueOnce(new Error('bd not found'))
+    const info = await getProjectInfo()
+    expect(typeof info.name).toBe('string')
+    expect(info.name.length).toBeGreaterThan(0)
   })
 })

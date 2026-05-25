@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 vi.mock('../../src/server/query.js', () => ({
   getBoardState: vi.fn(),
   getBeadDetail: vi.fn(),
+  getProjectInfo: vi.fn(),
 }))
 
 vi.mock('../../src/server/sse.js', () => ({
@@ -15,12 +16,17 @@ vi.mock('@hono/node-server/serve-static', () => ({
   serveStatic: () => async () => new Response('Not Found', { status: 404 }),
 }))
 
-import { getBeadDetail, getBoardState } from '../../src/server/query.js'
+import {
+  getBeadDetail,
+  getBoardState,
+  getProjectInfo,
+} from '../../src/server/query.js'
 import { addClient } from '../../src/server/sse.js'
 import type { BoardState } from '../../src/server/types.js'
 
 const mockGetBoardState = vi.mocked(getBoardState)
 const mockGetBeadDetail = vi.mocked(getBeadDetail)
+const mockGetProjectInfo = vi.mocked(getProjectInfo)
 const mockAddClient = vi.mocked(addClient)
 
 const sampleBoardState: BoardState = {
@@ -142,6 +148,17 @@ describe('GET /api/bead/:id', () => {
     await app.request('/api/bead/bd-42')
 
     expect(mockGetBeadDetail).toHaveBeenCalledWith('bd-42')
+  })
+})
+
+describe('GET /api/info', () => {
+  it('returns 200 with project name', async () => {
+    mockGetProjectInfo.mockResolvedValueOnce({ name: 'Test Project' })
+    const { app } = await import('../../src/server/app.js')
+    const res = await app.request('/api/info')
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body).toEqual({ name: 'Test Project' })
   })
 })
 
