@@ -108,6 +108,7 @@ export class BdBeadDialog extends LitElement {
       border-radius: 6px;
       overflow-x: auto;
       margin: 0.75rem 0;
+      padding: 0.75rem 1rem;
     }
     .dialog-loading {
       color: var(--bd-color-text-muted);
