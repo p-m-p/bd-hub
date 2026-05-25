@@ -23,6 +23,7 @@ vi.mock('@lit/context', () => ({
 import {
   COLUMN_LABELS,
   filterTasksByEpic,
+  ORPHAN_EPIC_ID,
   tallyText,
 } from '../../src/client/board/column.js'
 
@@ -100,6 +101,16 @@ describe('filterTasksByEpic', () => {
     const result = filterTasksByEpic(tasks, 'ep-2')
     expect(result).toHaveLength(1)
     expect(result[0].id).toBe('t2')
+  })
+
+  it('returns tasks with no epicId when epicId is ORPHAN_EPIC_ID', () => {
+    const result = filterTasksByEpic(tasks, ORPHAN_EPIC_ID)
+    expect(result).toHaveLength(1)
+    expect(result[0].id).toBe('t3')
+  })
+
+  it('ORPHAN_EPIC_ID is "__orphan__"', () => {
+    expect(ORPHAN_EPIC_ID).toBe('__orphan__')
   })
 })
 

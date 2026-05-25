@@ -10,6 +10,8 @@ import {
 
 export type ColumnName = 'open' | 'ready' | 'inProgress' | 'done'
 
+export const ORPHAN_EPIC_ID = '__orphan__'
+
 export const COLUMN_LABELS: Record<ColumnName, string> = {
   open: 'Open',
   ready: 'Ready',
@@ -19,6 +21,8 @@ export const COLUMN_LABELS: Record<ColumnName, string> = {
 
 export function filterTasksByEpic(tasks: Task[], epicId: string): Task[] {
   if (!epicId) return tasks
+  if (epicId === ORPHAN_EPIC_ID)
+    return tasks.filter((t) => t.epicId === undefined)
   return tasks.filter((t) => t.epicId === epicId)
 }
 
