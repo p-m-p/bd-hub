@@ -85,8 +85,8 @@ test.describe('Board rendering', () => {
 
   test('closed tasks appear in done column', async ({ page }) => {
     // "Implement query module" was closed and belongs to "Server Layer" epic.
-    // "Configure Vite" was also closed but has no parent epic, so it is not
-    // rendered in any epic swim lane (the board only shows tasks with an epic).
+    // "Configure Vite" was closed with no parent epic — it now appears in the
+    // "Everything else" swim lane.
     const doneColumnCards = await page
       .locator('bd-column[column="done"]')
       .evaluateAll((elements: Element[]) =>
@@ -114,6 +114,55 @@ test.describe('Board rendering', () => {
       )
     const nonEmpty = tallyTexts.filter(Boolean)
     expect(nonEmpty).toContain('2 / 3 subtasks')
+  })
+})
+
+test.describe('Everything else swim lane', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/')
+    await page.waitForSelector('bd-epic-lane', { timeout: 5000 })
+  })
+
+  test('Everything else lane is visible when orphan tasks exist', async ({
+    page,
+  }) => {
+    const epicTitles = await page
+      .locator('bd-epic-lane')
+      .evaluateAll((elements: Element[]) =>
+        elements.map((el) =>
+          el.shadowRoot?.querySelector('.epic-title')?.textContent?.trim(),
+        ),
+      )
+    expect(epicTitles).toContain('Everything else')
+  })
+
+  test('orphan closed task appears in the Everything else done column', async ({
+    page,
+  }) => {
+    // Get all task card titles in the done column of the Everything else lane
+    const doneTitles = await page
+      .locator('bd-epic-lane')
+      .evaluateAll((elements: Element[]) =>
+        elements
+          .filter(
+            (el) =>
+              el.shadowRoot
+                ?.querySelector('.epic-title')
+                ?.textContent?.trim() === 'Everything else',
+          )
+          .flatMap((el) => {
+            const doneCol = Array.from(
+              el.shadowRoot?.querySelectorAll('bd-column') ?? [],
+            ).find((col) => col.getAttribute('column') === 'done')
+            return Array.from(
+              doneCol?.shadowRoot?.querySelectorAll('bd-task-card') ?? [],
+            ).map((card) =>
+              card.shadowRoot?.querySelector('.title')?.textContent?.trim(),
+            )
+          }),
+      )
+
+    expect(doneTitles).toContain('Configure Vite')
   })
 })
 
