@@ -39,10 +39,12 @@ export class BdBeadDialog extends LitElement {
       padding: 0;
       width: min(720px, 90vw);
       max-height: 80vh;
-      display: flex;
-      flex-direction: column;
       background: var(--bd-color-bg-surface);
       color: var(--bd-color-text-primary);
+    }
+    dialog[open] {
+      display: flex;
+      flex-direction: column;
     }
     .dialog-header {
       display: flex;
