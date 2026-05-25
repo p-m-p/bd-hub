@@ -13,6 +13,8 @@ export class BdBoard extends LitElement {
   @state()
   boardState: BoardState = emptyBoardState
 
+  @state() private isDark = document.documentElement.dataset.theme !== 'light'
+
   static override styles = css`
     :host {
       display: flex;
@@ -54,7 +56,30 @@ export class BdBoard extends LitElement {
       overflow-y: auto;
       overflow-x: hidden;
     }
+    .theme-toggle {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--bd-color-text-muted);
+      padding: 0.25rem;
+      line-height: 1;
+    }
+    .theme-toggle:hover {
+      color: var(--bd-color-text-primary);
+    }
   `
+
+  private toggleTheme() {
+    this.isDark = !this.isDark
+    const theme = this.isDark ? 'dark' : 'light'
+    document.documentElement.dataset.theme = theme
+    localStorage.setItem('bd-theme', theme)
+  }
 
   override render() {
     return html`
@@ -64,6 +89,11 @@ export class BdBoard extends LitElement {
           <div class="column-label" role="columnheader">Ready</div>
           <div class="column-label column-label--inprogress" role="columnheader">In Progress</div>
           <div class="column-label column-label--done" role="columnheader">Done</div>
+          <button
+            class="theme-toggle"
+            @click=${this.toggleTheme}
+            aria-label=${this.isDark ? 'Switch to light theme' : 'Switch to dark theme'}
+          >${this.isDark ? '☀' : '☾'}</button>
         </header>
         <div class="board-scroll">
           ${this.boardState.epics.map(
