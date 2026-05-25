@@ -43,7 +43,7 @@ export class BdColumn extends LitElement {
     :host {
       display: flex;
       flex-direction: column;
-      border-right: 1px solid var(--bd-mocha-surface, #313244);
+      border-right: 1px solid var(--bd-color-border);
     }
     :host(:last-child) {
       border-right: none;
@@ -65,11 +65,11 @@ export class BdColumn extends LitElement {
     }
     .tally {
       font-size: 0.65rem;
-      color: var(--bd-mocha-subtext, #a6adc8);
+      color: var(--bd-color-text-muted);
       text-align: center;
       padding-top: 0.4rem;
       margin-top: auto;
-      border-top: 1px solid var(--bd-mocha-surface, #313244);
+      border-top: 1px solid var(--bd-color-border);
     }
   `
 

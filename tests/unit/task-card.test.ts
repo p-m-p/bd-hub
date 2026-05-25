@@ -7,21 +7,6 @@ import {
 } from '../../src/client/task/task-card.js'
 
 // ---------------------------------------------------------------------------
-// PRIORITY_COLOURS logic (mirrors task-card.ts constant)
-// ---------------------------------------------------------------------------
-const PRIORITY_COLOURS: Record<number, string> = {
-  0: '#f38ba8',
-  1: '#fab387',
-  2: '#f9e2af',
-  3: '#a6e3a1',
-  4: '#313244',
-}
-
-function priorityColour(priority: number): string {
-  return PRIORITY_COLOURS[priority] ?? PRIORITY_COLOURS[4]
-}
-
-// ---------------------------------------------------------------------------
 // Task lookup logic (mirrors BdTaskCard.task getter)
 // ---------------------------------------------------------------------------
 function findTask(boardState: BoardState, beadId: string): Task | undefined {
@@ -64,35 +49,6 @@ const taskWithAssignee: Task = {
   id: 'bd-task-3',
   assignee: 'alice',
 }
-
-// ---------------------------------------------------------------------------
-// PRIORITY_COLOURS tests
-// ---------------------------------------------------------------------------
-describe('PRIORITY_COLOURS', () => {
-  it('P0 maps to red (#f38ba8)', () => {
-    expect(priorityColour(0)).toBe('#f38ba8')
-  })
-
-  it('P1 maps to peach (#fab387)', () => {
-    expect(priorityColour(1)).toBe('#fab387')
-  })
-
-  it('P2 maps to yellow (#f9e2af)', () => {
-    expect(priorityColour(2)).toBe('#f9e2af')
-  })
-
-  it('P3 maps to green (#a6e3a1)', () => {
-    expect(priorityColour(3)).toBe('#a6e3a1')
-  })
-
-  it('P4 maps to surface (#313244)', () => {
-    expect(priorityColour(4)).toBe('#313244')
-  })
-
-  it('unknown priority falls back to P4 surface colour', () => {
-    expect(priorityColour(99)).toBe('#313244')
-  })
-})
 
 // ---------------------------------------------------------------------------
 // Task lookup tests
