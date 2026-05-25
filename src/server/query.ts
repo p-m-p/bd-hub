@@ -51,7 +51,8 @@ export async function getBeadDetail(
   try {
     const issues = await runBd(['show', id, '--json'])
     return (issues[0] as Record<string, unknown>) ?? null
-  } catch {
+  } catch (err) {
+    console.error(`[getBeadDetail] Failed to fetch bead "${id}":`, err)
     return null
   }
 }

@@ -124,13 +124,15 @@ describe('GET /api/bead/:id', () => {
     expect(body).toEqual(bead)
   })
 
-  it('returns 404 when bead is not found', async () => {
+  it('returns 404 with error body when bead is not found', async () => {
     mockGetBeadDetail.mockResolvedValueOnce(null)
 
     const { app } = await import('../../src/server/app.js')
     const res = await app.request('/api/bead/bd-missing')
 
     expect(res.status).toBe(404)
+    const body = await res.json()
+    expect(body).toEqual({ error: 'not found' })
   })
 
   it('calls getBeadDetail with the id from the URL', async () => {
