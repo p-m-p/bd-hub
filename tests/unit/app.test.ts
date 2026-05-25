@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 // Mock dependencies before importing app
 vi.mock('../../src/server/query.js', () => ({
   getBoardState: vi.fn(),
+  getBeadDetail: vi.fn(),
 }))
 
 vi.mock('../../src/server/sse.js', () => ({
@@ -14,11 +15,12 @@ vi.mock('@hono/node-server/serve-static', () => ({
   serveStatic: () => async () => new Response('Not Found', { status: 404 }),
 }))
 
-import { getBoardState } from '../../src/server/query.js'
+import { getBeadDetail, getBoardState } from '../../src/server/query.js'
 import { addClient } from '../../src/server/sse.js'
 import type { BoardState } from '../../src/server/types.js'
 
 const mockGetBoardState = vi.mocked(getBoardState)
+const mockGetBeadDetail = vi.mocked(getBeadDetail)
 const mockAddClient = vi.mocked(addClient)
 
 const sampleBoardState: BoardState = {
@@ -106,6 +108,38 @@ describe('GET /events', () => {
     const res = await app.request('/events')
 
     expect(res.headers.get('cache-control')).toBe('no-cache')
+  })
+})
+
+describe('GET /api/bead/:id', () => {
+  it('returns 200 with the bead object when found', async () => {
+    const bead = { id: 'bd-1', title: 'My Bead', description: 'Hello' }
+    mockGetBeadDetail.mockResolvedValueOnce(bead)
+
+    const { app } = await import('../../src/server/app.js')
+    const res = await app.request('/api/bead/bd-1')
+
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body).toEqual(bead)
+  })
+
+  it('returns 404 when bead is not found', async () => {
+    mockGetBeadDetail.mockResolvedValueOnce(null)
+
+    const { app } = await import('../../src/server/app.js')
+    const res = await app.request('/api/bead/bd-missing')
+
+    expect(res.status).toBe(404)
+  })
+
+  it('calls getBeadDetail with the id from the URL', async () => {
+    mockGetBeadDetail.mockResolvedValueOnce({ id: 'bd-42' })
+
+    const { app } = await import('../../src/server/app.js')
+    await app.request('/api/bead/bd-42')
+
+    expect(mockGetBeadDetail).toHaveBeenCalledWith('bd-42')
   })
 })
 

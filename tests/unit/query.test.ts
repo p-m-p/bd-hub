@@ -6,7 +6,7 @@ vi.mock('execa', () => ({
 }))
 
 import { execa } from 'execa'
-import { getBoardState } from '../../src/server/query.js'
+import { getBeadDetail, getBoardState } from '../../src/server/query.js'
 import type { BoardState } from '../../src/server/types.js'
 
 const mockExeca = vi.mocked(execa)
@@ -245,5 +245,44 @@ describe('getBoardState()', () => {
 
     expect(mockExeca).toHaveBeenCalledWith('bd', ['list', '--all', '--json'])
     expect(mockExeca).toHaveBeenCalledWith('bd', ['ready', '--json'])
+  })
+})
+
+describe('getBeadDetail()', () => {
+  it('returns the first issue as a generic object on success', async () => {
+    mockExeca.mockImplementationOnce(
+      () =>
+        mockResult([
+          { id: 'bd-1', title: 'My bead', description: 'Some desc' },
+        ]) as ReturnType<typeof execa>,
+    )
+    const result = await getBeadDetail('bd-1')
+    expect(result).toEqual({
+      id: 'bd-1',
+      title: 'My bead',
+      description: 'Some desc',
+    })
+  })
+
+  it('returns null when the result array is empty', async () => {
+    mockExeca.mockImplementationOnce(
+      () => mockResult([]) as ReturnType<typeof execa>,
+    )
+    const result = await getBeadDetail('bd-missing')
+    expect(result).toBeNull()
+  })
+
+  it('returns null when bd throws (e.g. id not found)', async () => {
+    mockExeca.mockRejectedValueOnce(new Error('exit code 1'))
+    const result = await getBeadDetail('bd-missing')
+    expect(result).toBeNull()
+  })
+
+  it('calls bd show <id> --json with the correct arguments', async () => {
+    mockExeca.mockImplementationOnce(
+      () => mockResult([{ id: 'bd-1' }]) as ReturnType<typeof execa>,
+    )
+    await getBeadDetail('bd-1')
+    expect(mockExeca).toHaveBeenCalledWith('bd', ['show', 'bd-1', '--json'])
   })
 })

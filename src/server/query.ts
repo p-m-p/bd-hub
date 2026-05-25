@@ -45,6 +45,17 @@ function toTask(
   }
 }
 
+export async function getBeadDetail(
+  id: string,
+): Promise<Record<string, unknown> | null> {
+  try {
+    const issues = await runBd(['show', id, '--json'])
+    return (issues[0] as Record<string, unknown>) ?? null
+  } catch {
+    return null
+  }
+}
+
 export async function getBoardState(): Promise<BoardState> {
   const [allIssues, readyIssues] = await Promise.all([
     runBd(['list', '--all', '--json']),

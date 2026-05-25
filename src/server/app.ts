@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { serveStatic } from '@hono/node-server/serve-static'
 import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
-import { getBoardState } from './query.js'
+import { getBeadDetail, getBoardState } from './query.js'
 import { addClient } from './sse.js'
 
 // Resolve the public dir relative to this file so npx (any cwd) works correctly.
@@ -18,6 +18,13 @@ export const app = new Hono()
 app.get('/api/board', async (c) => {
   const state = await getBoardState()
   return c.json(state)
+})
+
+app.get('/api/bead/:id', async (c) => {
+  const id = c.req.param('id')
+  const bead = await getBeadDetail(id)
+  if (!bead) return c.json({ error: 'not found' }, 404)
+  return c.json(bead)
 })
 
 app.get('/events', (c) =>
