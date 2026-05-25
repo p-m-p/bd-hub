@@ -1,12 +1,14 @@
 import { consume } from '@lit/context'
 import { css, html, LitElement, nothing } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { customElement, property, query, state } from 'lit/decorators.js'
 import {
   type BoardState,
   boardContext,
   emptyBoardState,
   type Task,
 } from '../store/context.js'
+import './bead-dialog.js'
+import type { BdBeadDialog } from './bead-dialog.js'
 
 export function cardViewTransitionName(beadId: string): string {
   return `card-${beadId.replace(/[^a-z0-9]/gi, '-')}`
@@ -20,6 +22,8 @@ export function isDoneTask(status: string): boolean {
 export class BdTaskCard extends LitElement {
   @property({ type: String, attribute: 'bead-id' })
   beadId = ''
+
+  @query('bd-bead-dialog') private _dialog!: BdBeadDialog
 
   @consume({ context: boardContext, subscribe: true })
   @state()
@@ -47,10 +51,20 @@ export class BdTaskCard extends LitElement {
       gap: 0.5rem;
     }
     .title {
+      background: none;
+      border: none;
+      padding: 0;
+      margin: 0;
+      font: inherit;
+      color: var(--bd-color-text-primary);
+      cursor: pointer;
+      text-align: left;
       font-size: 0.825rem;
       line-height: 1.35;
-      color: var(--bd-color-text-primary);
       flex: 1;
+    }
+    .title:hover {
+      text-decoration: underline;
     }
     .priority-chip {
       font-size: 0.6rem;
@@ -85,6 +99,10 @@ export class BdTaskCard extends LitElement {
     }
   `
 
+  private _openDialog() {
+    this._dialog?.open()
+  }
+
   private get task(): Task | undefined {
     const all = Object.values(this.boardState.tasks).flat()
     return all.find((t) => t.id === this.beadId)
@@ -104,7 +122,7 @@ export class BdTaskCard extends LitElement {
         aria-label="${task.title}${done ? ' (complete)' : ''}"
       >
         <header class="card-header">
-          <span class="title">${task.title}</span>
+          <button type="button" class="title" @click=${this._openDialog}>${task.title}</button>
           <span
             class="priority-chip"
             ?data-muted="${muted}"
@@ -120,6 +138,7 @@ export class BdTaskCard extends LitElement {
               : ''
           }
         </footer>
+        <bd-bead-dialog bead-id=${this.beadId}></bd-bead-dialog>
       </article>
     `
   }
