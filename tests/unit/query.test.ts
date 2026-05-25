@@ -6,7 +6,11 @@ vi.mock('execa', () => ({
 }))
 
 import { execa } from 'execa'
-import { getBeadDetail, getBoardState } from '../../src/server/query.js'
+import {
+  getBeadDetail,
+  getBoardState,
+  ORPHAN_EPIC_ID,
+} from '../../src/server/query.js'
 import type { BoardState } from '../../src/server/types.js'
 
 const mockExeca = vi.mocked(execa)
@@ -80,6 +84,16 @@ const sampleSubtaskOpen = {
   priority: 2,
   assignee: null,
   parent: 'bd-task-1',
+}
+
+const sampleOrphanTask = {
+  id: 'bd-task-orphan',
+  title: 'Orphan Task',
+  status: 'open',
+  issue_type: 'task',
+  priority: 2,
+  assignee: null,
+  parent: null, // <-- no parent
 }
 
 // Helper to build a mock execa result
@@ -245,6 +259,34 @@ describe('getBoardState()', () => {
 
     expect(mockExeca).toHaveBeenCalledWith('bd', ['list', '--all', '--json'])
     expect(mockExeca).toHaveBeenCalledWith('bd', ['ready', '--json'])
+  })
+})
+
+describe('orphan epic in getBoardState()', () => {
+  it('appends a virtual __orphan__ epic when tasks have no epicId', async () => {
+    setupMocks([sampleOrphanTask], [sampleOrphanTask])
+    const state = await getBoardState()
+    const orphan = state.epics.find((e) => e.id === '__orphan__')
+    expect(orphan).toBeDefined()
+    expect(orphan?.title).toBe('Everything else')
+  })
+
+  it('does NOT append the orphan epic when all tasks have an epic parent', async () => {
+    setupMocks([sampleEpic, sampleOpenTask], [sampleOpenTask])
+    const state = await getBoardState()
+    const orphan = state.epics.find((e) => e.id === '__orphan__')
+    expect(orphan).toBeUndefined()
+  })
+
+  it('does NOT append the orphan epic when there are no tasks at all', async () => {
+    setupMocks([sampleEpic], [])
+    const state = await getBoardState()
+    const orphan = state.epics.find((e) => e.id === '__orphan__')
+    expect(orphan).toBeUndefined()
+  })
+
+  it('exports ORPHAN_EPIC_ID as "__orphan__"', () => {
+    expect(ORPHAN_EPIC_ID).toBe('__orphan__')
   })
 })
 

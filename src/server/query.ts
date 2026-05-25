@@ -1,6 +1,8 @@
 import { execa } from 'execa'
 import type { BdIssue, BoardState, Epic, Task } from './types.js'
 
+export const ORPHAN_EPIC_ID = '__orphan__'
+
 async function runBd(args: string[]): Promise<BdIssue[]> {
   try {
     const result = await execa('bd', args)
@@ -125,6 +127,19 @@ export async function getBoardState(): Promise<BoardState> {
         // deferred / unknown statuses skipped for now
         break
     }
+  }
+
+  // Append a virtual epic for tasks with no parent epic
+  const hasOrphans = [...open, ...ready, ...inProgress, ...done].some(
+    (t) => t.epicId === undefined,
+  )
+  if (hasOrphans) {
+    epics.push({
+      id: ORPHAN_EPIC_ID,
+      title: 'Everything else',
+      status: 'open',
+      priority: 99,
+    })
   }
 
   return { epics, tasks: { open, ready, inProgress, done } }
