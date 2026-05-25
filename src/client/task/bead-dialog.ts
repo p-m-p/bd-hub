@@ -1,7 +1,7 @@
 import prismLight from 'catppuccin-prismjs/themes/latte.css?inline'
 import prismDark from 'catppuccin-prismjs/themes/mocha.css?inline'
 import { css, html, LitElement, unsafeCSS } from 'lit'
-import { customElement, property, state } from 'lit/decorators.js'
+import { customElement, property, query, state } from 'lit/decorators.js'
 import { unsafeHTML } from 'lit/directives/unsafe-html.js'
 import MarkdownIt from 'markdown-it'
 import Prism from 'prismjs'
@@ -22,6 +22,9 @@ export class BdBeadDialog extends LitElement {
   @state() private _bead: Record<string, unknown> | null = null
   @state() private _loading = false
   @state() private _error = false
+  @state() private _renderedHtml = ''
+
+  @query('dialog') private _dialog!: HTMLDialogElement
 
   static override styles = css`
     @media (prefers-color-scheme: dark) {
@@ -40,9 +43,6 @@ export class BdBeadDialog extends LitElement {
       flex-direction: column;
       background: var(--bd-color-bg-surface);
       color: var(--bd-color-text-primary);
-    }
-    dialog::backdrop {
-      background: rgba(0, 0, 0, 0.5);
     }
     .dialog-header {
       display: flex;
@@ -102,12 +102,19 @@ export class BdBeadDialog extends LitElement {
     }
   `
 
-  open() {
-    const dialog = this.shadowRoot?.querySelector('dialog')
-    if (!dialog) return
-    dialog.showModal()
+  override willUpdate(changed: Map<string, unknown>) {
+    if (changed.has('beadId') && changed.get('beadId') !== undefined) {
+      this._bead = null
+      this._error = false
+    }
+  }
+
+  async open() {
+    await this.updateComplete
+    if (!this._dialog) return
+    this._dialog.showModal()
     if (!this._bead && !this._loading) {
-      this._fetchBead()
+      void this._fetchBead()
     }
   }
 
@@ -118,6 +125,11 @@ export class BdBeadDialog extends LitElement {
       const res = await fetch(`/api/bead/${this.beadId}`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
       this._bead = (await res.json()) as Record<string, unknown>
+      const description = this._bead?.description
+      this._renderedHtml =
+        typeof description === 'string' && description
+          ? md.render(description)
+          : ''
     } catch {
       this._error = true
     } finally {
@@ -125,15 +137,12 @@ export class BdBeadDialog extends LitElement {
     }
   }
 
-  private _onDialogClick(e: MouseEvent) {
-    const dialog = e.currentTarget as HTMLDialogElement
-    if (e.target === dialog) dialog.close()
+  private _close() {
+    this._dialog?.close()
   }
 
-  private get _renderedHtml(): string {
-    const description = this._bead?.description
-    if (typeof description !== 'string' || !description) return ''
-    return md.render(description)
+  private _onDialogClick(e: MouseEvent) {
+    if (e.target === this._dialog) this._dialog.close()
   }
 
   override render() {
@@ -148,7 +157,7 @@ export class BdBeadDialog extends LitElement {
             type="button"
             class="dialog-close"
             aria-label="Close dialog"
-            @click=${() => this.shadowRoot?.querySelector('dialog')?.close()}
+            @click=${this._close}
           >✕</button>
         </header>
         <div class="dialog-body">
