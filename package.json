@@ -23,6 +23,7 @@
     "dist/"
   ],
   "scripts": {
+    "generate-tokens": "node scripts/generate-tokens.mjs",
     "dev": "concurrently \"vite\" \"tsx watch src/server/index.ts\"",
     "build": "vite build && esbuild src/server/index.ts --bundle --platform=node --format=esm --outfile=dist/server/index.js --packages=external",
     "postbuild": "node -e \"const fs=require('fs'),f='dist/server/index.js',b=fs.readFileSync(f,'utf8');fs.writeFileSync(f,'#!/usr/bin/env node\\n'+b);fs.chmodSync(f,0o755)\"",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",
+    "@catppuccin/palette": "^1.8.0",
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.9.1",
     "@vitest/coverage-v8": "^4.1.6",
