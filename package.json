@@ -29,6 +29,7 @@
     "postbuild": "node -e \"const fs=require('fs'),f='dist/server/index.js',b=fs.readFileSync(f,'utf8');fs.writeFileSync(f,'#!/usr/bin/env node\\n'+b);fs.chmodSync(f,0o755)\"",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
+    "release": "pnpm build && changeset publish",
     "test": "vitest run --coverage",
     "test:e2e": "playwright test"
   },
@@ -48,6 +49,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",
     "@catppuccin/palette": "^1.8.0",
+    "@changesets/cli": "^2.31.0",
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.9.1",
     "@vitest/coverage-v8": "^4.1.6",
