@@ -28,3 +28,4 @@
 {"id":"int-bde209e9","kind":"field_change","created_at":"2026-05-24T09:13:26.572992Z","actor":"Phil Parsons","issue_id":"beads-dashboard-zhg","extra":{"field":"status","new_value":"closed","old_value":"open","reason":"Closed"}}
 {"id":"int-7222cb53","kind":"field_change","created_at":"2026-05-24T09:24:21.65786Z","actor":"Phil Parsons","issue_id":"beads-dashboard-8ao","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
 {"id":"int-4646ce3f","kind":"field_change","created_at":"2026-05-24T09:25:14.683663Z","actor":"Phil Parsons","issue_id":"beads-dashboard-02m","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
+{"id":"int-f25ea493","kind":"field_change","created_at":"2026-05-24T11:23:25.196361Z","actor":"Phil Parsons","issue_id":"beads-dashboard-bpy","extra":{"field":"status","new_value":"closed","old_value":"in_progress","reason":"Closed"}}
