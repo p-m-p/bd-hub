@@ -111,14 +111,14 @@ export class BoardStore extends LitElement {
       ...this.boardState,
       ui: { collapsed: loadCollapsed(), updates: {} },
     }
-    this.addEventListener('toggle-epic', this._onToggleEpic as EventListener)
+    window.addEventListener('toggle-epic', this._onToggleEpic)
     this.loadInitialState()
     this.connectSSE()
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback()
-    this.removeEventListener('toggle-epic', this._onToggleEpic as EventListener)
+    window.removeEventListener('toggle-epic', this._onToggleEpic)
     this.eventSource?.close()
     this.eventSource = null
   }
@@ -153,10 +153,10 @@ export class BoardStore extends LitElement {
     })
   }
 
-  private _onToggleEpic(
-    e: CustomEvent<{ epicId: string; collapsed: boolean }>,
-  ) {
-    const { epicId, collapsed } = e.detail
+  private readonly _onToggleEpic = (e: Event) => {
+    const { epicId, collapsed } = (
+      e as CustomEvent<{ epicId: string; collapsed: boolean }>
+    ).detail
     const ui = this.boardState.ui
     const next = new Set(ui.collapsed)
     const updates = { ...ui.updates }

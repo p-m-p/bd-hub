@@ -149,8 +149,8 @@ export async function getBoardState(): Promise<BoardState> {
     }
   }
 
-  // Sort real epics by creation date ascending (ISO strings sort lexicographically)
-  epics.sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+  // Sort real epics by creation date descending — newest first
+  epics.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
 
   // Append a virtual epic for tasks with no parent epic — always last
   const hasOrphans = [...open, ...ready, ...inProgress, ...done].some(

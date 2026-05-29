@@ -164,7 +164,7 @@ describe('getBoardState()', () => {
     expect(state.epics[0].createdAt).toBe('2026-01-01T00:00:00Z')
   })
 
-  it('sorts epics by createdAt ascending', async () => {
+  it('sorts epics by createdAt descending (newest first)', async () => {
     const epicA = {
       ...sampleEpic,
       id: 'epic-a',
@@ -184,7 +184,7 @@ describe('getBoardState()', () => {
 
     const state = await getBoardState()
 
-    expect(state.epics.map((e) => e.id)).toEqual(['epic-b', 'epic-c', 'epic-a'])
+    expect(state.epics.map((e) => e.id)).toEqual(['epic-a', 'epic-c', 'epic-b'])
   })
 
   it('puts ready tasks (open and in bd ready) into tasks.ready', async () => {
