@@ -104,13 +104,7 @@ export class BdEpicLane extends LitElement {
   }
 
   private _toggle() {
-    this.dispatchEvent(
-      new CustomEvent('toggle-epic', {
-        detail: { epicId: this.epicId, collapsed: !this.collapsed },
-        bubbles: true,
-        composed: true,
-      }),
-    )
+    this.boardState.ui.toggleEpic(this.epicId, !this.collapsed)
   }
 
   override render() {

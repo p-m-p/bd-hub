@@ -72,7 +72,8 @@ function mergeWithUI(
   serverState: Omit<BoardState, 'ui'>,
   ui: BoardUIState,
 ): BoardState {
-  return { ...serverState, ui } as BoardState
+  // Cast needed: server state has no 'ui' field; we provide it here
+  return { ...(serverState as Omit<BoardState, 'ui'>), ui } as BoardState
 }
 
 export function applyStateUpdate(
@@ -109,16 +110,18 @@ export class BoardStore extends LitElement {
     // Restore collapsed state before first fetch so it's ready when data arrives
     this.boardState = {
       ...this.boardState,
-      ui: { collapsed: loadCollapsed(), updates: {} },
+      ui: {
+        collapsed: loadCollapsed(),
+        updates: {},
+        toggleEpic: this._toggleEpic,
+      },
     }
-    window.addEventListener('toggle-epic', this._onToggleEpic)
     this.loadInitialState()
     this.connectSSE()
   }
 
   override disconnectedCallback() {
     super.disconnectedCallback()
-    window.removeEventListener('toggle-epic', this._onToggleEpic)
     this.eventSource?.close()
     this.eventSource = null
   }
@@ -153,10 +156,7 @@ export class BoardStore extends LitElement {
     })
   }
 
-  private readonly _onToggleEpic = (e: Event) => {
-    const { epicId, collapsed } = (
-      e as CustomEvent<{ epicId: string; collapsed: boolean }>
-    ).detail
+  private readonly _toggleEpic = (epicId: string, collapsed: boolean) => {
     const ui = this.boardState.ui
     const next = new Set(ui.collapsed)
     const updates = { ...ui.updates }
@@ -169,7 +169,10 @@ export class BoardStore extends LitElement {
     }
 
     saveCollapsed(next)
-    this.boardState = { ...this.boardState, ui: { collapsed: next, updates } }
+    this.boardState = {
+      ...this.boardState,
+      ui: { ...ui, collapsed: next, updates },
+    }
   }
 
   override render() {
