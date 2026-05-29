@@ -89,6 +89,9 @@ export class BdEpicLane extends LitElement {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
     }
+    .columns[hidden] {
+      display: none;
+    }
   `
 
   private get epic(): Epic | undefined {
