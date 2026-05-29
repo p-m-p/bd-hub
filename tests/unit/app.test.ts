@@ -30,7 +30,15 @@ const mockGetProjectInfo = vi.mocked(getProjectInfo)
 const mockAddClient = vi.mocked(addClient)
 
 const sampleBoardState: BoardState = {
-  epics: [{ id: 'e1', title: 'Epic One', status: 'open', priority: 1 }],
+  epics: [
+    {
+      id: 'e1',
+      title: 'Epic One',
+      status: 'open',
+      priority: 1,
+      createdAt: '2026-01-01T00:00:00Z',
+    },
+  ],
   tasks: {
     open: [],
     ready: [

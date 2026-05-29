@@ -3,6 +3,7 @@ export interface Epic {
   title: string
   status: string
   priority: number
+  createdAt: string
 }
 
 export interface Task {
@@ -35,4 +36,5 @@ export interface BdIssue {
   priority: number
   assignee: string | null
   parent?: string | null
+  created_at: string
 }

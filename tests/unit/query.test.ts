@@ -25,6 +25,7 @@ const sampleEpic = {
   priority: 1,
   assignee: null,
   parent: null,
+  created_at: '2026-01-01T00:00:00Z',
 }
 
 const sampleOpenTask = {
@@ -35,6 +36,7 @@ const sampleOpenTask = {
   priority: 2,
   assignee: 'alice',
   parent: 'bd-epic-1',
+  created_at: '2026-01-02T00:00:00Z',
 }
 
 const sampleBlockedTask = {
@@ -45,6 +47,7 @@ const sampleBlockedTask = {
   priority: 3,
   assignee: null,
   parent: null,
+  created_at: '2026-01-03T00:00:00Z',
 }
 
 const sampleInProgressTask = {
@@ -55,6 +58,7 @@ const sampleInProgressTask = {
   priority: 1,
   assignee: 'bob',
   parent: 'bd-epic-1',
+  created_at: '2026-01-04T00:00:00Z',
 }
 
 const sampleClosedTask = {
@@ -65,6 +69,7 @@ const sampleClosedTask = {
   priority: 2,
   assignee: null,
   parent: null,
+  created_at: '2026-01-05T00:00:00Z',
 }
 
 const sampleSubtaskDone = {
@@ -75,6 +80,7 @@ const sampleSubtaskDone = {
   priority: 2,
   assignee: null,
   parent: 'bd-task-1',
+  created_at: '2026-01-06T00:00:00Z',
 }
 
 const sampleSubtaskOpen = {
@@ -85,6 +91,7 @@ const sampleSubtaskOpen = {
   priority: 2,
   assignee: null,
   parent: 'bd-task-1',
+  created_at: '2026-01-07T00:00:00Z',
 }
 
 const sampleOrphanTask = {
@@ -95,6 +102,7 @@ const sampleOrphanTask = {
   priority: 2,
   assignee: null,
   parent: null, // <-- no parent
+  created_at: '2026-01-08T00:00:00Z',
 }
 
 // Helper to build a mock execa result
@@ -146,6 +154,37 @@ describe('getBoardState()', () => {
     expect(state.epics).toHaveLength(1)
     expect(state.epics[0].id).toBe('bd-epic-1')
     expect(state.epics[0].title).toBe('Epic One')
+  })
+
+  it('maps created_at to createdAt on epics', async () => {
+    setupMocks([sampleEpic, sampleOpenTask], [sampleOpenTask])
+
+    const state = await getBoardState()
+
+    expect(state.epics[0].createdAt).toBe('2026-01-01T00:00:00Z')
+  })
+
+  it('sorts epics by createdAt ascending', async () => {
+    const epicA = {
+      ...sampleEpic,
+      id: 'epic-a',
+      created_at: '2026-03-01T00:00:00Z',
+    }
+    const epicB = {
+      ...sampleEpic,
+      id: 'epic-b',
+      created_at: '2026-01-01T00:00:00Z',
+    }
+    const epicC = {
+      ...sampleEpic,
+      id: 'epic-c',
+      created_at: '2026-02-01T00:00:00Z',
+    }
+    setupMocks([epicA, epicB, epicC], [])
+
+    const state = await getBoardState()
+
+    expect(state.epics.map((e) => e.id)).toEqual(['epic-b', 'epic-c', 'epic-a'])
   })
 
   it('puts ready tasks (open and in bd ready) into tasks.ready', async () => {
@@ -270,6 +309,21 @@ describe('orphan epic in getBoardState()', () => {
     const orphan = state.epics.find((e) => e.id === '__orphan__')
     expect(orphan).toBeDefined()
     expect(orphan?.title).toBe('Everything else')
+  })
+
+  it('always places the orphan epic last, after all real epics', async () => {
+    const earlyEpic = {
+      ...sampleEpic,
+      id: 'early-epic',
+      created_at: '2020-01-01T00:00:00Z',
+    }
+    setupMocks([earlyEpic, sampleOrphanTask], [sampleOrphanTask])
+
+    const state = await getBoardState()
+
+    const ids = state.epics.map((e) => e.id)
+    expect(ids[ids.length - 1]).toBe(ORPHAN_EPIC_ID)
+    expect(ids[0]).toBe('early-epic')
   })
 
   it('does NOT append the orphan epic when all tasks have an epic parent', async () => {

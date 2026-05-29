@@ -28,6 +28,7 @@ function toEpic(issue: BdIssue): Epic {
     title: issue.title,
     status: issue.status,
     priority: issue.priority,
+    createdAt: issue.created_at,
   }
 }
 
@@ -148,7 +149,10 @@ export async function getBoardState(): Promise<BoardState> {
     }
   }
 
-  // Append a virtual epic for tasks with no parent epic
+  // Sort real epics by creation date ascending (ISO strings sort lexicographically)
+  epics.sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+
+  // Append a virtual epic for tasks with no parent epic — always last
   const hasOrphans = [...open, ...ready, ...inProgress, ...done].some(
     (t) => t.epicId === undefined,
   )
@@ -158,6 +162,7 @@ export async function getBoardState(): Promise<BoardState> {
       title: 'Everything else',
       status: 'open',
       priority: 99,
+      createdAt: '',
     })
   }
 

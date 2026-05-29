@@ -29,14 +29,19 @@ describe('emptyBoardState', () => {
     expect(emptyBoardState.tasks).toHaveProperty('ready')
     expect(emptyBoardState.tasks).toHaveProperty('inProgress')
     expect(emptyBoardState.tasks).toHaveProperty('done')
+    expect(emptyBoardState).toHaveProperty('ui')
+    expect(emptyBoardState.ui).toHaveProperty('collapsed')
+    expect(emptyBoardState.ui).toHaveProperty('updates')
   })
 
-  it('has empty arrays for all collections', () => {
+  it('has empty arrays and ui defaults', () => {
     expect(emptyBoardState.epics).toEqual([])
     expect(emptyBoardState.tasks.open).toEqual([])
     expect(emptyBoardState.tasks.ready).toEqual([])
     expect(emptyBoardState.tasks.inProgress).toEqual([])
     expect(emptyBoardState.tasks.done).toEqual([])
+    expect(emptyBoardState.ui.collapsed).toEqual(new Set())
+    expect(emptyBoardState.ui.updates).toEqual({})
   })
 })
 
@@ -47,6 +52,7 @@ describe('BoardState type', () => {
       title: 'My Epic',
       status: 'open',
       priority: 1,
+      createdAt: '2026-01-01T00:00:00Z',
     }
 
     const task: Task = {
@@ -68,6 +74,7 @@ describe('BoardState type', () => {
         inProgress: [],
         done: [],
       },
+      ui: { collapsed: new Set(), updates: {} },
     }
 
     expect(state.epics).toHaveLength(1)
@@ -95,8 +102,17 @@ describe('BoardState type', () => {
 
 describe('applyStateUpdate()', () => {
   const newState: BoardState = {
-    epics: [{ id: 'e1', title: 'Epic', status: 'open', priority: 1 }],
+    epics: [
+      {
+        id: 'e1',
+        title: 'Epic',
+        status: 'open',
+        priority: 1,
+        createdAt: '2026-01-01T00:00:00Z',
+      },
+    ],
     tasks: { open: [], ready: [], inProgress: [], done: [] },
+    ui: { collapsed: new Set(), updates: {} },
   }
 
   it('calls setter directly when startViewTransition is unavailable', () => {
