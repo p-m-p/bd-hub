@@ -63,6 +63,9 @@ importers:
       concurrently:
         specifier: ^9.2.1
         version: 9.2.1
+      esbuild:
+        specifier: ^0.28.0
+        version: 0.28.0
       jsdom:
         specifier: ^29.1.1
         version: 29.1.1
@@ -736,7 +739,7 @@ packages:
     engines: {node: '>=8'}
 
   catppuccin-prismjs@https://codeload.github.com/catppuccin/prismjs/tar.gz/d5cddefcc6f2190f5396d56b42f1f0927d64f6bb:
-    resolution: {tarball: https://codeload.github.com/catppuccin/prismjs/tar.gz/d5cddefcc6f2190f5396d56b42f1f0927d64f6bb}
+    resolution: {gitHosted: true, tarball: https://codeload.github.com/catppuccin/prismjs/tar.gz/d5cddefcc6f2190f5396d56b42f1f0927d64f6bb}
     version: 0.0.0
 
   chai@6.2.2:
