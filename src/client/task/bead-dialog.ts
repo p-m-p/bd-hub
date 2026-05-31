@@ -162,10 +162,10 @@ export class BdBeadDialog extends LitElement {
     .dialog-footer {
       flex-shrink: 0;
       border-top: 1px solid var(--bd-color-border);
-      padding: 0.75rem 1.25rem 1rem;
+      padding: 0.5rem 1.25rem 0.65rem;
       display: flex;
       flex-direction: column;
-      gap: 0.65rem;
+      gap: 0.4rem;
     }
 
     /* Prose — shared between body and footer markdown content */
@@ -174,7 +174,8 @@ export class BdBeadDialog extends LitElement {
     :is(.dialog-body-inner, .dialog-footer) h3 { font-size: 0.875rem; margin: 0.7rem 0 0.25rem; font-weight: 600; }
     :is(.dialog-body-inner, .dialog-footer) :is(h1, h2, h3) { color: var(--bd-color-text-primary); }
     :is(.dialog-body-inner, .dialog-footer) p { margin: 0.4rem 0; }
-    :is(.dialog-body-inner, .dialog-footer) :is(ul, ol) { margin: 0.4rem 0; padding-left: 1.4rem; }
+    .dialog-body-inner :is(ul, ol) { margin: 0.4rem 0; padding-left: 1.4rem; }
+    .dialog-footer :is(ul, ol) { margin: 0.2rem 0; padding-left: 0; list-style: none; }
     :is(.dialog-body-inner, .dialog-footer) li { margin: 0.15rem 0; }
     :is(.dialog-body-inner, .dialog-footer) code:not([class]) {
       background: var(--bd-color-bg-mantle);
@@ -191,7 +192,7 @@ export class BdBeadDialog extends LitElement {
 
     /* Sections within the footer */
     .dialog-section {
-      padding-top: 0.6rem;
+      padding-top: 0.4rem;
       border-top: 1px solid var(--bd-color-border);
     }
     .dialog-section:first-child {
@@ -204,7 +205,7 @@ export class BdBeadDialog extends LitElement {
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--bd-color-text-muted);
-      margin: 0 0 0.4rem;
+      margin: 0 0 0.25rem;
     }
 
     /* Dependencies */
