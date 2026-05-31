@@ -1,5 +1,5 @@
 import { consume } from '@lit/context'
-import { css, html, LitElement } from 'lit'
+import { css, html, LitElement, nothing } from 'lit'
 import { customElement, query, state } from 'lit/decorators.js'
 import {
   type BoardState,
@@ -17,6 +17,12 @@ export class BdBoard extends LitElement {
   @consume({ context: boardContext, subscribe: true })
   @state()
   boardState: BoardState = emptyBoardState
+
+  /** Announce text queued for the live region; cleared after render. */
+  @state() private _liveText = ''
+
+  /** Total task count from the last render — used to detect updates. */
+  private _prevTaskCount = 0
 
   static override styles = css`
     :host {
@@ -59,6 +65,18 @@ export class BdBoard extends LitElement {
       overflow-y: auto;
       overflow-x: hidden;
     }
+    /* Visually-hidden live region — readable by screen readers only */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   `
 
   private _onOpenBead(e: Event) {
@@ -67,15 +85,37 @@ export class BdBoard extends LitElement {
     void this._dialog.open()
   }
 
+  override willUpdate(changed: Map<string, unknown>) {
+    if (changed.has('boardState')) {
+      const tasks = this.boardState.tasks
+      const total =
+        tasks.open.length +
+        tasks.ready.length +
+        tasks.inProgress.length +
+        tasks.done.length
+      if (this._prevTaskCount > 0 && total !== this._prevTaskCount) {
+        this._liveText = 'Board updated'
+        // Clear after a tick so future identical updates still fire
+        setTimeout(() => {
+          this._liveText = ''
+        }, 1000)
+      }
+      this._prevTaskCount = total
+    }
+  }
+
   override render() {
     return html`
+      <div aria-live="polite" aria-atomic="true" class="sr-only">
+        ${this._liveText || nothing}
+      </div>
       <bd-title-bar></bd-title-bar>
       <div class="board-region" role="region" aria-label="Kanban board">
-        <header class="column-header-row" role="row" aria-label="Board columns">
-          <div class="column-label" role="columnheader">Open</div>
-          <div class="column-label" role="columnheader">Ready</div>
-          <div class="column-label column-label--inprogress" role="columnheader">In Progress</div>
-          <div class="column-label column-label--done" role="columnheader">Done</div>
+        <header class="column-header-row" role="group" aria-label="Board columns">
+          <div class="column-label">Open</div>
+          <div class="column-label">Ready</div>
+          <div class="column-label column-label--inprogress">In Progress</div>
+          <div class="column-label column-label--done">Done</div>
         </header>
         <div class="board-scroll" @open-bead=${this._onOpenBead}>
           ${this.boardState.epics.map(

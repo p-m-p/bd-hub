@@ -87,6 +87,30 @@ export function applyStateUpdate(
   }
 }
 
+/**
+ * Creates paired error/open handlers for an EventSource that re-fetch board
+ * state after a reconnect following an error (e.g. server restart).
+ *
+ * @param onReconnect - called once when the connection re-opens after an error
+ */
+export function createReconnectHandlers(onReconnect: () => void): {
+  onError: () => void
+  onOpen: () => void
+} {
+  let hadError = false
+  return {
+    onError() {
+      hadError = true
+    },
+    onOpen() {
+      if (hadError) {
+        hadError = false
+        onReconnect()
+      }
+    },
+  }
+}
+
 @customElement('bd-board-store')
 export class BoardStore extends LitElement {
   private provider = new ContextProvider(this, {
@@ -139,6 +163,10 @@ export class BoardStore extends LitElement {
 
   private connectSSE() {
     this.eventSource = new EventSource('/events')
+    const { onError, onOpen } = createReconnectHandlers(
+      () => void this.loadInitialState(),
+    )
+
     this.eventSource.addEventListener('board-update', (e: MessageEvent) => {
       const serverState = JSON.parse(e.data as string) as Omit<BoardState, 'ui'>
       const updatedUI = diffUpdates(
@@ -151,9 +179,13 @@ export class BoardStore extends LitElement {
         this.boardState = s
       })
     })
+    // After a server restart EventSource auto-reconnects; re-fetch full state
+    // so the board is not silently stale.
     this.eventSource.addEventListener('error', (e) => {
       console.error('[bd-board-store] SSE connection error:', e)
+      onError()
     })
+    this.eventSource.addEventListener('open', onOpen)
   }
 
   private readonly _toggleEpic = (epicId: string, collapsed: boolean) => {

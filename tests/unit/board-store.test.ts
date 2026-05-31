@@ -1,6 +1,9 @@
 // @vitest-environment jsdom
 import { describe, expect, it, vi } from 'vitest'
-import { applyStateUpdate } from '../../src/client/store/board-store.js'
+import {
+  applyStateUpdate,
+  createReconnectHandlers,
+} from '../../src/client/store/board-store.js'
 import {
   type BoardState,
   boardContext,
@@ -153,5 +156,60 @@ describe('applyStateUpdate()', () => {
     applyStateUpdate(newState, setter)
 
     expect(setter.mock.calls[0][0]).toBe(newState)
+  })
+})
+
+describe('createReconnectHandlers()', () => {
+  it('does not call onReconnect when open fires without prior error', () => {
+    const onReconnect = vi.fn()
+    const { onOpen } = createReconnectHandlers(onReconnect)
+
+    onOpen()
+
+    expect(onReconnect).not.toHaveBeenCalled()
+  })
+
+  it('calls onReconnect when open fires after an error', () => {
+    const onReconnect = vi.fn()
+    const { onError, onOpen } = createReconnectHandlers(onReconnect)
+
+    onError()
+    onOpen()
+
+    expect(onReconnect).toHaveBeenCalledOnce()
+  })
+
+  it('only calls onReconnect once per error-open cycle', () => {
+    const onReconnect = vi.fn()
+    const { onError, onOpen } = createReconnectHandlers(onReconnect)
+
+    onError()
+    onOpen()
+    onOpen() // second open without a new error should be a no-op
+
+    expect(onReconnect).toHaveBeenCalledOnce()
+  })
+
+  it('calls onReconnect again after a second error-open cycle', () => {
+    const onReconnect = vi.fn()
+    const { onError, onOpen } = createReconnectHandlers(onReconnect)
+
+    onError()
+    onOpen() // first reconnect
+    onError()
+    onOpen() // second reconnect
+
+    expect(onReconnect).toHaveBeenCalledTimes(2)
+  })
+
+  it('multiple errors before open still result in one reconnect call', () => {
+    const onReconnect = vi.fn()
+    const { onError, onOpen } = createReconnectHandlers(onReconnect)
+
+    onError()
+    onError()
+    onOpen()
+
+    expect(onReconnect).toHaveBeenCalledOnce()
   })
 })

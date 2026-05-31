@@ -11,6 +11,17 @@ import 'prismjs/components/prism-markdown'
 import 'prismjs/components/prism-typescript'
 import 'prismjs/components/prism-yaml'
 
+/**
+ * Returns true when an in-flight fetch result should be discarded because the
+ * dialog has already navigated to a different bead.
+ */
+export function isStaleFetch(
+  currentBeadId: string,
+  targetBeadId: string,
+): boolean {
+  return currentBeadId !== targetBeadId
+}
+
 function escapeHtml(s: string): string {
   return s
     .replace(/&/g, '&amp;')
@@ -248,22 +259,31 @@ export class BdBeadDialog extends LitElement {
   }
 
   private async _fetchBead() {
+    // Snapshot the ID at fetch-start; discard response if it changed while in-flight.
+    const targetId = this.beadId
     this._loading = true
     this._error = false
     try {
-      const res = await fetch(`/api/bead/${this.beadId}`)
+      const res = await fetch(`/api/bead/${targetId}`)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      this._bead = (await res.json()) as Record<string, unknown>
+      const data = (await res.json()) as Record<string, unknown>
+      // Stale check: a dependency-link click may have changed beadId before we resolved
+      if (this.beadId !== targetId) return
+      this._bead = data
       const description = this._bead?.description
       this._renderedHtml =
         typeof description === 'string' && description
           ? md.render(description)
           : ''
     } catch (err) {
-      console.error(`[bd-bead-dialog] Failed to fetch "${this.beadId}":`, err)
-      this._error = true
+      if (this.beadId === targetId) {
+        console.error(`[bd-bead-dialog] Failed to fetch "${targetId}":`, err)
+        this._error = true
+      }
     } finally {
-      this._loading = false
+      if (this.beadId === targetId) {
+        this._loading = false
+      }
     }
   }
 
@@ -295,10 +315,10 @@ export class BdBeadDialog extends LitElement {
     const hasFooter = b && (b.notes || b.acceptance_criteria || deps.length)
 
     return html`
-      <dialog @click=${this._onDialogClick}>
+      <dialog aria-labelledby="dialog-title" @click=${this._onDialogClick}>
         <header class="dialog-header">
           <div>
-            <h2 class="dialog-title">${title}</h2>
+            <h2 id="dialog-title" class="dialog-title">${title}</h2>
             ${b?.id ? html`<div class="dialog-id">${b.id}</div>` : nothing}
           </div>
           <button type="button" class="dialog-close" aria-label="Close dialog" @click=${this._close}>✕</button>
