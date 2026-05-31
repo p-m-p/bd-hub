@@ -5,7 +5,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execa } from 'execa'
 
-const BD = '/opt/homebrew/bin/bd'
+const BD = process.env.BD_BIN ?? 'bd'
 const SERVER_PORT = 3099
 const STATE_FILE = path.join(
   path.dirname(fileURLToPath(import.meta.url)),

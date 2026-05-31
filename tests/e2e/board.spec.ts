@@ -3,7 +3,7 @@ import path from 'node:path'
 import { expect, test } from '@playwright/test'
 import { execa } from 'execa'
 
-const BD = '/opt/homebrew/bin/bd'
+const BD = process.env.BD_BIN ?? 'bd'
 
 // Read test state to get temp dir for bd commands
 function getTestState(): { tmpDir: string; serverPid: number } {
