@@ -42,7 +42,10 @@ vi.mock('prismjs/components/prism-markdown', () => ({}))
 vi.mock('prismjs/components/prism-typescript', () => ({}))
 vi.mock('prismjs/components/prism-yaml', () => ({}))
 
-import { isStaleFetch } from '../../src/client/task/bead-dialog.js'
+import {
+  isStaleFetch,
+  relativeTime,
+} from '../../src/client/task/bead-dialog.js'
 
 describe('isStaleFetch()', () => {
   it('returns false when currentBeadId matches targetBeadId', () => {
@@ -81,5 +84,32 @@ describe('isStaleFetch() — concurrent fetch scenario', () => {
 
     // Second fetch resolves — targetId = currentBeadId = 'bead-002'
     expect(isStaleFetch(secondBeadId, secondBeadId)).toBe(false)
+  })
+})
+
+describe('relativeTime()', () => {
+  it('returns "just now" for timestamps within the last minute', () => {
+    const now = new Date().toISOString()
+    expect(relativeTime(now)).toBe('just now')
+  })
+
+  it('returns "Xm ago" for timestamps between 1 and 59 minutes ago', () => {
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60_000).toISOString()
+    expect(relativeTime(fiveMinutesAgo)).toBe('5m ago')
+  })
+
+  it('returns "Xh ago" for timestamps between 1 and 23 hours ago', () => {
+    const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60_000).toISOString()
+    expect(relativeTime(threeHoursAgo)).toBe('3h ago')
+  })
+
+  it('returns "Xd ago" for timestamps 24+ hours ago', () => {
+    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60_000).toISOString()
+    expect(relativeTime(twoDaysAgo)).toBe('2d ago')
+  })
+
+  it('returns "1m ago" for exactly 1 minute ago', () => {
+    const oneMinuteAgo = new Date(Date.now() - 60_000).toISOString()
+    expect(relativeTime(oneMinuteAgo)).toBe('1m ago')
   })
 })

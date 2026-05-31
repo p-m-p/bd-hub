@@ -31,7 +31,8 @@ function escapeHtml(s: string): string {
     .replace(/"/g, '&quot;')
 }
 
-function relativeTime(iso: string): string {
+/** Exported for testing. */
+export function relativeTime(iso: string): string {
   const ms = Date.now() - new Date(iso).getTime()
   const mins = Math.floor(ms / 60000)
   if (mins < 1) return 'just now'
@@ -64,8 +65,12 @@ export class BdBeadDialog extends LitElement {
   @state() private _loading = false
   @state() private _error = false
   @state() private _renderedHtml = ''
+  /** Incremented every 60 s to force a re-render of relativeTime stamps. */
+  @state() private _tick = 0
 
   @query('dialog') private _dialog!: HTMLDialogElement
+
+  private _tickInterval: ReturnType<typeof setInterval> | null = null
 
   static override styles = [
     buttonBase,
@@ -251,6 +256,10 @@ export class BdBeadDialog extends LitElement {
     if (!this._bead && !this._loading) {
       void this._fetchBead()
     }
+    // Refresh relative timestamps every 60 s while the dialog is open
+    this._tickInterval ??= setInterval(() => {
+      this._tick++
+    }, 60_000)
   }
 
   private async _fetchBead() {
@@ -283,11 +292,22 @@ export class BdBeadDialog extends LitElement {
   }
 
   private _close() {
+    this._stopTick()
     this._dialog?.close()
   }
 
+  private _stopTick() {
+    if (this._tickInterval !== null) {
+      clearInterval(this._tickInterval)
+      this._tickInterval = null
+    }
+  }
+
   private _onDialogClick(e: MouseEvent) {
-    if (e.target === this._dialog) this._dialog.close()
+    if (e.target === this._dialog) {
+      this._stopTick()
+      this._dialog.close()
+    }
   }
 
   private _navigateToBead(id: string) {
@@ -308,6 +328,8 @@ export class BdBeadDialog extends LitElement {
     ) as Dep[]
     const status = typeof b?.status === 'string' ? b.status : ''
     const hasFooter = b && (b.notes || b.acceptance_criteria || deps.length)
+    // _tick is read here so Lit re-renders this template when the interval fires
+    void this._tick
 
     return html`
       <dialog aria-labelledby="dialog-title" @click=${this._onDialogClick}>
