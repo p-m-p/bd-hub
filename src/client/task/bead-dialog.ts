@@ -151,38 +151,52 @@ export class BdBeadDialog extends LitElement {
     .dialog-body {
       overflow-y: auto;
       flex: 1;
+      min-height: 0;
     }
     .dialog-body-inner {
-      padding: 1rem 1.25rem 1.5rem;
+      padding: 1rem 1.25rem;
       line-height: 1.6;
     }
 
-    /* Prose */
-    .dialog-body h1 { font-size: 1.05rem; margin: 1rem 0 0.35rem; font-weight: 600; }
-    .dialog-body h2 { font-size: 0.95rem; margin: 0.85rem 0 0.3rem; font-weight: 600; }
-    .dialog-body h3 { font-size: 0.875rem; margin: 0.7rem 0 0.25rem; font-weight: 600; }
-    .dialog-body h1, .dialog-body h2, .dialog-body h3 { color: var(--bd-color-text-primary); }
-    .dialog-body p { margin: 0.4rem 0; }
-    .dialog-body ul, .dialog-body ol { margin: 0.4rem 0; padding-left: 1.4rem; }
-    .dialog-body li { margin: 0.15rem 0; }
-    .dialog-body code:not([class]) {
+    /* Footer — always visible, pinned below the scrollable body */
+    .dialog-footer {
+      flex-shrink: 0;
+      border-top: 1px solid var(--bd-color-border);
+      padding: 0.75rem 1.25rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    /* Prose — shared between body and footer markdown content */
+    :is(.dialog-body-inner, .dialog-footer) h1 { font-size: 1.05rem; margin: 1rem 0 0.35rem; font-weight: 600; }
+    :is(.dialog-body-inner, .dialog-footer) h2 { font-size: 0.95rem; margin: 0.85rem 0 0.3rem; font-weight: 600; }
+    :is(.dialog-body-inner, .dialog-footer) h3 { font-size: 0.875rem; margin: 0.7rem 0 0.25rem; font-weight: 600; }
+    :is(.dialog-body-inner, .dialog-footer) :is(h1, h2, h3) { color: var(--bd-color-text-primary); }
+    :is(.dialog-body-inner, .dialog-footer) p { margin: 0.4rem 0; }
+    :is(.dialog-body-inner, .dialog-footer) :is(ul, ol) { margin: 0.4rem 0; padding-left: 1.4rem; }
+    :is(.dialog-body-inner, .dialog-footer) li { margin: 0.15rem 0; }
+    :is(.dialog-body-inner, .dialog-footer) code:not([class]) {
       background: var(--bd-color-bg-mantle);
       border-radius: 3px;
       padding: 0.1em 0.35em;
       font-size: 0.875em;
     }
-    .dialog-body pre {
+    :is(.dialog-body-inner, .dialog-footer) pre {
       border-radius: 6px;
       overflow-x: auto;
       margin: 0.75rem 0;
       padding: 0.75rem 1rem;
     }
 
-    /* Sections (notes, criteria, deps) */
+    /* Sections within the footer */
     .dialog-section {
-      margin-top: 1rem;
-      padding-top: 0.75rem;
+      padding-top: 0.6rem;
       border-top: 1px solid var(--bd-color-border);
+    }
+    .dialog-section:first-child {
+      padding-top: 0;
+      border-top: none;
     }
     .section-title {
       font-size: 0.675rem;
@@ -190,7 +204,7 @@ export class BdBeadDialog extends LitElement {
       text-transform: uppercase;
       letter-spacing: 0.06em;
       color: var(--bd-color-text-muted);
-      margin: 0 0 0.5rem;
+      margin: 0 0 0.4rem;
     }
 
     /* Dependencies */
@@ -274,9 +288,10 @@ export class BdBeadDialog extends LitElement {
     const b = this._bead
     const title = typeof b?.title === 'string' ? b.title : this.beadId
     const deps = (
-      Array.isArray(b?.dependencies) ? b!.dependencies : []
+      Array.isArray(b?.dependencies) ? b?.dependencies : []
     ) as Dep[]
     const status = typeof b?.status === 'string' ? b.status : ''
+    const hasFooter = b && (b.notes || b.acceptance_criteria || deps.length)
 
     return html`
       <dialog @click=${this._onDialogClick}>
@@ -293,9 +308,7 @@ export class BdBeadDialog extends LitElement {
             ? html`
           <div class="dialog-meta">
             <span class="meta-chip meta-type">${b.issue_type}</span>
-            <span class="meta-chip meta-status" data-status=${status}>
-              ${status.replace(/_/g, ' ')}
-            </span>
+            <span class="meta-chip meta-status" data-status=${status}>${status.replace(/_/g, ' ')}</span>
             ${b.priority != null ? html`<span class="meta-chip meta-priority">P${b.priority}</span>` : nothing}
             ${b.assignee ? html`<span class="meta-dot">·</span><span class="meta-assignee">${b.assignee}</span>` : nothing}
             ${b.updated_at ? html`<span class="meta-dot">·</span><span class="meta-time">${relativeTime(b.updated_at as string)}</span>` : nothing}
@@ -306,61 +319,65 @@ export class BdBeadDialog extends LitElement {
 
         <div class="dialog-body">
           <div class="dialog-body-inner">
-          ${
-            this._loading
-              ? html`<p class="dialog-loading">Loading…</p>`
-              : this._error
-                ? html`<p class="dialog-error">Failed to load bead details.</p>`
-                : html`
-                  ${unsafeHTML(this._renderedHtml)}
-
-                  ${
-                    b?.notes
-                      ? html`
-                    <div class="dialog-section">
-                      <p class="section-title">Notes</p>
-                      ${this._renderMd(b.notes)}
-                    </div>
-                  `
-                      : nothing
-                  }
-
-                  ${
-                    b?.acceptance_criteria
-                      ? html`
-                    <div class="dialog-section">
-                      <p class="section-title">Acceptance criteria</p>
-                      ${this._renderMd(b.acceptance_criteria)}
-                    </div>
-                  `
-                      : nothing
-                  }
-
-                  ${
-                    deps.length
-                      ? html`
-                    <div class="dialog-section">
-                      <p class="section-title">Dependencies</p>
-                      <ul class="dep-list">
-                        ${deps.map(
-                          (dep) => html`
-                          <li class="dep-item">
-                            <button type="button" class="dep-link"
-                              @click=${() => this._navigateToBead(dep.id)}
-                            >${dep.title}</button>
-                            <span class="dep-status">${dep.status.replace(/_/g, ' ')}</span>
-                          </li>
-                        `,
-                        )}
-                      </ul>
-                    </div>
-                  `
-                      : nothing
-                  }
-                `
-          }
+            ${
+              this._loading
+                ? html`<p class="dialog-loading">Loading…</p>`
+                : this._error
+                  ? html`<p class="dialog-error">Failed to load bead details.</p>`
+                  : unsafeHTML(this._renderedHtml)
+            }
           </div>
         </div>
+
+        ${
+          hasFooter
+            ? html`
+          <footer class="dialog-footer">
+            ${
+              b.notes
+                ? html`
+              <div class="dialog-section">
+                <p class="section-title">Notes</p>
+                ${this._renderMd(b.notes)}
+              </div>
+            `
+                : nothing
+            }
+            ${
+              b.acceptance_criteria
+                ? html`
+              <div class="dialog-section">
+                <p class="section-title">Acceptance criteria</p>
+                ${this._renderMd(b.acceptance_criteria)}
+              </div>
+            `
+                : nothing
+            }
+            ${
+              deps.length
+                ? html`
+              <div class="dialog-section">
+                <p class="section-title">Dependencies</p>
+                <ul class="dep-list">
+                  ${deps.map(
+                    (dep) => html`
+                    <li class="dep-item">
+                      <button type="button" class="dep-link"
+                        @click=${() => this._navigateToBead(dep.id)}
+                      >${dep.title}</button>
+                      <span class="dep-status">${dep.status.replace(/_/g, ' ')}</span>
+                    </li>
+                  `,
+                  )}
+                </ul>
+              </div>
+            `
+                : nothing
+            }
+          </footer>
+        `
+            : nothing
+        }
       </dialog>
     `
   }
