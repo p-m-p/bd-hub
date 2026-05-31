@@ -147,18 +147,14 @@ export class BdBeadDialog extends LitElement {
     .meta-dot { color: var(--bd-color-border); }
     .meta-assignee, .meta-time { font-size: 0.75rem; color: var(--bd-color-text-muted); }
 
-    /* Body */
+    /* Body — scroll container must have no padding; inner wrapper carries it */
     .dialog-body {
-      padding: 1rem 1.25rem 1.25rem;
       overflow-y: auto;
       flex: 1;
-      line-height: 1.6;
     }
-    /* Overflow containers swallow bottom padding; use a pseudo-element instead */
-    .dialog-body::after {
-      content: '';
-      display: block;
-      height: 0.25rem;
+    .dialog-body-inner {
+      padding: 1rem 1.25rem 1.5rem;
+      line-height: 1.6;
     }
 
     /* Prose */
@@ -215,8 +211,8 @@ export class BdBeadDialog extends LitElement {
     .dep-link:hover { opacity: 0.8; }
     .dep-status { font-size: 0.65rem; color: var(--bd-color-text-muted); margin-left: auto; flex-shrink: 0; }
 
-    .dialog-loading { color: var(--bd-color-text-muted); padding: 2rem; text-align: center; }
-    .dialog-error   { color: var(--bd-color-text-muted); padding: 1rem; }
+    .dialog-loading { color: var(--bd-color-text-muted); padding-top: 1rem; text-align: center; }
+    .dialog-error   { color: var(--bd-color-text-muted); }
   `
 
   override willUpdate(changed: Map<string, unknown>) {
@@ -309,6 +305,7 @@ export class BdBeadDialog extends LitElement {
         }
 
         <div class="dialog-body">
+          <div class="dialog-body-inner">
           ${
             this._loading
               ? html`<p class="dialog-loading">Loading…</p>`
@@ -362,6 +359,7 @@ export class BdBeadDialog extends LitElement {
                   }
                 `
           }
+          </div>
         </div>
       </dialog>
     `
