@@ -7,6 +7,7 @@ import {
   emptyBoardState,
   type Task,
 } from '../store/context.js'
+import { buttonBase } from '../styles/button-base.js'
 
 export function cardViewTransitionName(beadId: string): string {
   return `card-${beadId.replace(/[^a-z0-9]/gi, '-')}`
@@ -25,75 +26,71 @@ export class BdTaskCard extends LitElement {
   @state()
   boardState: BoardState = emptyBoardState
 
-  static override styles = css`
-    :host { display: block; }
-    .card {
-      background: var(--bd-color-bg-surface);
-      border-radius: var(--bd-radius-md);
-      padding: 0.65rem var(--bd-space-3);
-      margin-bottom: var(--bd-space-2);
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-      box-shadow: var(--bd-shadow-card);
-    }
-    .card--done {
-      opacity: 0.5;
-    }
-    .card-header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: var(--bd-space-2);
-    }
-    .title {
-      background: none;
-      border: none;
-      padding: 0;
-      margin: 0;
-      font: inherit;
-      color: var(--bd-color-text-primary);
-      cursor: pointer;
-      text-align: left;
-      font-size: var(--bd-font-size-base);
-      line-height: var(--bd-line-height-tight);
-      flex: 1;
-    }
-    .title:hover {
-      text-decoration: underline;
-    }
-    .priority-chip {
-      font-size: var(--bd-font-size-2xs);
-      font-weight: var(--bd-font-weight-bold);
-      padding: 0.1rem 0.35rem;
-      border-radius: var(--bd-radius-sm);
-      color: var(--bd-color-text-on-accent);
-      flex-shrink: 0;
-    }
-    .priority-chip[data-priority="0"] { background: var(--bd-color-priority-p0); }
-    .priority-chip[data-priority="1"] { background: var(--bd-color-priority-p1); }
-    .priority-chip[data-priority="2"] { background: var(--bd-color-priority-p2); }
-    .priority-chip[data-priority="3"] { background: var(--bd-color-priority-p3); }
-    .priority-chip[data-muted] {
-      background: transparent;
-      color: var(--bd-color-text-muted);
-      border: 1px solid var(--bd-color-border-muted);
-    }
-    .card-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .bead-id {
-      font-size: var(--bd-font-size-2xs);
-      color: var(--bd-color-text-muted);
-      font-family: monospace;
-    }
-    .subtask-count {
-      font-size: var(--bd-font-size-2xs);
-      color: var(--bd-color-text-muted);
-    }
-  `
+  static override styles = [
+    buttonBase,
+    css`
+      :host { display: block; }
+      .card {
+        background: var(--bd-color-bg-surface);
+        border-radius: var(--bd-radius-md);
+        padding: 0.65rem var(--bd-space-3);
+        margin-bottom: var(--bd-space-2);
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        box-shadow: var(--bd-shadow-card);
+      }
+      .card--done {
+        opacity: 0.5;
+      }
+      .card-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: var(--bd-space-2);
+      }
+      .title {
+        color: var(--bd-color-text-primary);
+        font-size: var(--bd-font-size-base);
+        line-height: var(--bd-line-height-tight);
+        flex: 1;
+      }
+      .title:hover {
+        text-decoration: underline;
+      }
+      .priority-chip {
+        font-size: var(--bd-font-size-2xs);
+        font-weight: var(--bd-font-weight-bold);
+        padding: 0.1rem 0.35rem;
+        border-radius: var(--bd-radius-sm);
+        color: var(--bd-color-text-on-accent);
+        flex-shrink: 0;
+      }
+      .priority-chip[data-priority="0"] { background: var(--bd-color-priority-p0); }
+      .priority-chip[data-priority="1"] { background: var(--bd-color-priority-p1); }
+      .priority-chip[data-priority="2"] { background: var(--bd-color-priority-p2); }
+      .priority-chip[data-priority="3"] { background: var(--bd-color-priority-p3); }
+      .priority-chip[data-muted] {
+        background: transparent;
+        color: var(--bd-color-text-muted);
+        border: 1px solid var(--bd-color-border-muted);
+      }
+      .card-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .bead-id {
+        font-size: var(--bd-font-size-2xs);
+        color: var(--bd-color-text-muted);
+        font-family: monospace;
+      }
+      .subtask-count {
+        font-size: var(--bd-font-size-2xs);
+        color: var(--bd-color-text-muted);
+      }
+    `,
+  ]
 
   private _openDialog() {
     this.dispatchEvent(

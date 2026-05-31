@@ -70,6 +70,7 @@ describe('BoardState type', () => {
     }
 
     const state: BoardState = {
+      projectName: 'test-project',
       epics: [epic],
       tasks: {
         open: [],
@@ -77,7 +78,7 @@ describe('BoardState type', () => {
         inProgress: [],
         done: [],
       },
-      ui: { collapsed: new Set(), updates: {} },
+      ui: { collapsed: new Set(), updates: {}, toggleEpic: () => {} },
     }
 
     expect(state.epics).toHaveLength(1)
@@ -105,6 +106,7 @@ describe('BoardState type', () => {
 
 describe('applyStateUpdate()', () => {
   const newState: BoardState = {
+    projectName: '',
     epics: [
       {
         id: 'e1',
@@ -115,7 +117,7 @@ describe('applyStateUpdate()', () => {
       },
     ],
     tasks: { open: [], ready: [], inProgress: [], done: [] },
-    ui: { collapsed: new Set(), updates: {} },
+    ui: { collapsed: new Set(), updates: {}, toggleEpic: () => {} },
   }
 
   it('calls setter directly when startViewTransition is unavailable', () => {

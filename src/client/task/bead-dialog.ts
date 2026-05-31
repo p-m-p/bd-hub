@@ -10,6 +10,7 @@ import 'prismjs/components/prism-json'
 import 'prismjs/components/prism-markdown'
 import 'prismjs/components/prism-typescript'
 import 'prismjs/components/prism-yaml'
+import { buttonBase } from '../styles/button-base.js'
 
 /**
  * Returns true when an in-flight fetch result should be discarded because the
@@ -66,7 +67,9 @@ export class BdBeadDialog extends LitElement {
 
   @query('dialog') private _dialog!: HTMLDialogElement
 
-  static override styles = css`
+  static override styles = [
+    buttonBase,
+    css`
     @media (prefers-color-scheme: dark) {
       ${unsafeCSS(prismDark)}
     }
@@ -110,9 +113,6 @@ export class BdBeadDialog extends LitElement {
       margin-top: 0.2rem;
     }
     .dialog-close {
-      background: none;
-      border: none;
-      cursor: pointer;
       color: var(--bd-color-text-muted);
       font-size: 1.1rem;
       padding: var(--bd-space-1);
@@ -223,23 +223,18 @@ export class BdBeadDialog extends LitElement {
     .dep-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
     .dep-item { display: flex; align-items: baseline; gap: var(--bd-space-2); }
     .dep-link {
-      background: none;
-      border: none;
-      padding: 0;
-      font: inherit;
       font-size: var(--bd-font-size-sm);
       color: var(--bd-color-accent-in-progress);
-      cursor: pointer;
       text-decoration: underline;
       text-underline-offset: 2px;
-      text-align: left;
     }
     .dep-link:hover { opacity: 0.8; }
     .dep-status { font-size: var(--bd-font-size-xs); color: var(--bd-color-text-muted); margin-left: auto; flex-shrink: 0; }
 
     .dialog-loading { color: var(--bd-color-text-muted); padding-top: var(--bd-space-4); text-align: center; }
     .dialog-error   { color: var(--bd-color-text-muted); }
-  `
+  `,
+  ]
 
   override willUpdate(changed: Map<string, unknown>) {
     if (changed.has('beadId') && changed.get('beadId') !== undefined) {

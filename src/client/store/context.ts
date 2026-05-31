@@ -27,6 +27,7 @@ export interface BoardUIState {
 }
 
 export interface BoardState {
+  projectName: string
   epics: Epic[]
   tasks: {
     open: Task[]
@@ -42,6 +43,7 @@ export const boardContext = createContext<BoardState>('board-state')
 const noopToggle = (_epicId: string, _collapsed: boolean) => {}
 
 export const emptyBoardState: BoardState = {
+  projectName: '',
   epics: [],
   tasks: { open: [], ready: [], inProgress: [], done: [] },
   ui: { collapsed: new Set(), updates: {}, toggleEpic: noopToggle },

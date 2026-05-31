@@ -7,6 +7,7 @@ import {
   type Epic,
   emptyBoardState,
 } from '../store/context.js'
+import { buttonBase } from '../styles/button-base.js'
 import '../board/column.js'
 
 export function sanitiseId(id: string): string {
@@ -22,7 +23,9 @@ export class BdEpicLane extends LitElement {
   @state()
   boardState: BoardState = emptyBoardState
 
-  static override styles = css`
+  static override styles = [
+    buttonBase,
+    css`
     :host {
       display: block;
     }
@@ -42,20 +45,8 @@ export class BdEpicLane extends LitElement {
       display: flex;
       align-items: center;
       gap: var(--bd-space-2);
-      background: none;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      color: inherit;
-      font: inherit;
-      text-align: left;
       flex: 1;
       min-width: 0;
-    }
-    .epic-toggle:focus-visible {
-      outline: 2px solid var(--bd-color-accent-in-progress);
-      outline-offset: 2px;
-      border-radius: var(--bd-radius-sm);
     }
     .chevron {
       font-size: var(--bd-font-size-2xs);
@@ -92,7 +83,8 @@ export class BdEpicLane extends LitElement {
     .columns[hidden] {
       display: none;
     }
-  `
+  `,
+  ]
 
   private get epic(): Epic | undefined {
     return this.boardState.epics.find((e) => e.id === this.epicId)

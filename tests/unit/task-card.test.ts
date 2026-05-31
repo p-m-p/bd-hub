@@ -15,7 +15,7 @@ function findTask(boardState: BoardState, beadId: string): Task | undefined {
 }
 
 // ---------------------------------------------------------------------------
-// Subtask tally visibility logic (mirrors BdSubtaskTally.render condition)
+// Subtask tally visibility and text (inline logic in BdTaskCard)
 // ---------------------------------------------------------------------------
 function tallyVisible(total: number): boolean {
   return total > 0

@@ -152,10 +152,25 @@ export class BoardStore extends LitElement {
 
   private async loadInitialState() {
     try {
-      const response = await fetch('/api/board')
-      if (!response.ok) throw new Error(`HTTP ${response.status}`)
-      const serverState = (await response.json()) as Omit<BoardState, 'ui'>
-      this.boardState = mergeWithUI(serverState, this.boardState.ui)
+      const [boardRes, infoRes] = await Promise.all([
+        fetch('/api/board'),
+        fetch('/api/info'),
+      ])
+      if (!boardRes.ok) throw new Error(`HTTP ${boardRes.status}`)
+      const serverState = (await boardRes.json()) as Omit<
+        BoardState,
+        'ui' | 'projectName'
+      >
+      const projectName = infoRes.ok
+        ? ((await infoRes.json()) as { name: string }).name
+        : ''
+      if (projectName) {
+        document.title = `${projectName} — bd-hub`
+      }
+      this.boardState = mergeWithUI(
+        { ...serverState, projectName },
+        this.boardState.ui,
+      )
     } catch (err) {
       console.error('[bd-board-store] Failed to load board state:', err)
     }
@@ -168,13 +183,21 @@ export class BoardStore extends LitElement {
     )
 
     this.eventSource.addEventListener('board-update', (e: MessageEvent) => {
-      const serverState = JSON.parse(e.data as string) as Omit<BoardState, 'ui'>
+      const serverState = JSON.parse(e.data as string) as Omit<
+        BoardState,
+        'ui' | 'projectName'
+      >
+      // Preserve projectName from client state — SSE events only carry board data
+      const withName = {
+        ...serverState,
+        projectName: this.boardState.projectName,
+      }
       const updatedUI = diffUpdates(
         this.boardState,
-        { ...serverState, ui: this.boardState.ui } as BoardState,
+        { ...withName, ui: this.boardState.ui } as BoardState,
         this.boardState.ui,
       )
-      const newState = mergeWithUI(serverState, updatedUI)
+      const newState = mergeWithUI(withName, updatedUI)
       applyStateUpdate(newState, (s) => {
         this.boardState = s
       })
