@@ -215,3 +215,39 @@ describe('createReconnectHandlers()', () => {
     expect(onReconnect).toHaveBeenCalledOnce()
   })
 })
+
+describe('boardState setter identity guard', () => {
+  it('skips setValue when the same reference is set again', () => {
+    // Simulates the guard: `if (value === this.provider.value) return`
+    const mockSetValue = vi.fn()
+    let stored: BoardState = emptyBoardState
+    const provider = {
+      get value() {
+        return stored
+      },
+      setValue(v: BoardState) {
+        stored = v
+        mockSetValue(v)
+      },
+    }
+
+    function applyGuardedSet(value: BoardState) {
+      if (value === provider.value) return
+      provider.setValue(value)
+    }
+
+    // Setting the same reference must not call setValue
+    applyGuardedSet(emptyBoardState)
+    expect(mockSetValue).not.toHaveBeenCalled()
+
+    // Setting a different reference (new object) must call setValue
+    const updated: BoardState = { ...emptyBoardState, projectName: 'test' }
+    applyGuardedSet(updated)
+    expect(mockSetValue).toHaveBeenCalledOnce()
+    expect(mockSetValue).toHaveBeenCalledWith(updated)
+
+    // Setting the same updated reference again must not re-call setValue
+    applyGuardedSet(updated)
+    expect(mockSetValue).toHaveBeenCalledOnce()
+  })
+})

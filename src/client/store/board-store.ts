@@ -126,6 +126,7 @@ export class BoardStore extends LitElement {
   }
 
   set boardState(value: BoardState) {
+    if (value === this.provider.value) return
     this.provider.setValue(value)
   }
 
