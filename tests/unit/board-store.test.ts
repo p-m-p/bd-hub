@@ -34,7 +34,6 @@ describe('emptyBoardState', () => {
     expect(emptyBoardState.tasks).toHaveProperty('done')
     expect(emptyBoardState).toHaveProperty('ui')
     expect(emptyBoardState.ui).toHaveProperty('collapsed')
-    expect(emptyBoardState.ui).toHaveProperty('updates')
   })
 
   it('has empty arrays and ui defaults', () => {
@@ -44,7 +43,6 @@ describe('emptyBoardState', () => {
     expect(emptyBoardState.tasks.inProgress).toEqual([])
     expect(emptyBoardState.tasks.done).toEqual([])
     expect(emptyBoardState.ui.collapsed).toEqual(new Set())
-    expect(emptyBoardState.ui.updates).toEqual({})
   })
 })
 
@@ -78,7 +76,7 @@ describe('BoardState type', () => {
         inProgress: [],
         done: [],
       },
-      ui: { collapsed: new Set(), updates: {}, toggleEpic: () => {} },
+      ui: { collapsed: new Set(), toggleEpic: () => {} },
     }
 
     expect(state.epics).toHaveLength(1)
@@ -117,7 +115,7 @@ describe('applyStateUpdate()', () => {
       },
     ],
     tasks: { open: [], ready: [], inProgress: [], done: [] },
-    ui: { collapsed: new Set(), updates: {}, toggleEpic: () => {} },
+    ui: { collapsed: new Set(), toggleEpic: () => {} },
   }
 
   it('calls setter directly when startViewTransition is unavailable', () => {

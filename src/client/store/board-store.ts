@@ -6,7 +6,6 @@ import {
   type BoardUIState,
   boardContext,
   emptyBoardState,
-  type Task,
 } from './context.js'
 
 const LS_KEY = 'bd-collapsed-epics'
@@ -27,44 +26,6 @@ function saveCollapsed(collapsed: Set<string>): void {
   } catch {
     // ignore storage errors (e.g. private mode quota)
   }
-}
-
-/** Collect a sorted snapshot of {id, status} for all tasks belonging to an epic. */
-export function epicTaskSnapshot(state: BoardState, epicId: string): string {
-  const all: Task[] = [
-    ...state.tasks.open,
-    ...state.tasks.ready,
-    ...state.tasks.inProgress,
-    ...state.tasks.done,
-  ].filter(
-    (t) =>
-      t.epicId === epicId ||
-      (epicId === '__orphan__' && t.epicId === undefined),
-  )
-
-  return JSON.stringify(
-    all
-      .map((t) => ({ id: t.id, status: t.status }))
-      .sort((a, b) => a.id.localeCompare(b.id)),
-  )
-}
-
-/** Diff old vs new state for collapsed epics; returns updated ui. */
-export function diffUpdates(
-  oldState: BoardState,
-  newState: BoardState,
-  ui: BoardUIState,
-): BoardUIState {
-  if (ui.collapsed.size === 0) return ui
-  const updates = { ...ui.updates }
-  for (const epicId of ui.collapsed) {
-    if (
-      epicTaskSnapshot(oldState, epicId) !== epicTaskSnapshot(newState, epicId)
-    ) {
-      updates[epicId] = (updates[epicId] ?? 0) + 1
-    }
-  }
-  return { ...ui, updates }
 }
 
 /** Merge server-returned board data with existing client UI state. */
@@ -137,7 +98,6 @@ export class BoardStore extends LitElement {
       ...this.boardState,
       ui: {
         collapsed: loadCollapsed(),
-        updates: {},
         toggleEpic: this._toggleEpic,
       },
     }
@@ -193,12 +153,7 @@ export class BoardStore extends LitElement {
         ...serverState,
         projectName: this.boardState.projectName,
       }
-      const updatedUI = diffUpdates(
-        this.boardState,
-        { ...withName, ui: this.boardState.ui } as BoardState,
-        this.boardState.ui,
-      )
-      const newState = mergeWithUI(withName, updatedUI)
+      const newState = mergeWithUI(withName, this.boardState.ui)
       applyStateUpdate(newState, (s) => {
         this.boardState = s
       })
@@ -215,19 +170,17 @@ export class BoardStore extends LitElement {
   private readonly _toggleEpic = (epicId: string, collapsed: boolean) => {
     const ui = this.boardState.ui
     const next = new Set(ui.collapsed)
-    const updates = { ...ui.updates }
 
     if (collapsed) {
       next.add(epicId)
     } else {
       next.delete(epicId)
-      delete updates[epicId]
     }
 
     saveCollapsed(next)
     this.boardState = {
       ...this.boardState,
-      ui: { ...ui, collapsed: next, updates },
+      ui: { ...ui, collapsed: next },
     }
   }
 

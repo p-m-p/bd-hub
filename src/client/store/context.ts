@@ -21,7 +21,6 @@ export interface Task {
 
 export interface BoardUIState {
   collapsed: Set<string>
-  updates: Record<string, number>
   /** Called by epic-lane to toggle collapse; provided by board-store. */
   toggleEpic: (epicId: string, collapsed: boolean) => void
 }
@@ -46,5 +45,5 @@ export const emptyBoardState: BoardState = {
   projectName: '',
   epics: [],
   tasks: { open: [], ready: [], inProgress: [], done: [] },
-  ui: { collapsed: new Set(), updates: {}, toggleEpic: noopToggle },
+  ui: { collapsed: new Set(), toggleEpic: noopToggle },
 }

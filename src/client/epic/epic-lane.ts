@@ -1,5 +1,5 @@
 import { consume } from '@lit/context'
-import { css, html, LitElement, nothing } from 'lit'
+import { css, html, LitElement } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import {
   type BoardState,
@@ -12,6 +12,24 @@ import '../board/column.js'
 
 export function sanitiseId(id: string): string {
   return id.replace(/[^a-z0-9]/gi, '-')
+}
+
+/** Returns done and total task counts for an epic (or orphan lane). */
+export function epicTally(
+  state: BoardState,
+  epicId: string,
+): { done: number; total: number } {
+  const isOrphan = epicId === '__orphan__'
+  const matchesEpic = (taskEpicId: string | undefined) =>
+    isOrphan ? taskEpicId === undefined : taskEpicId === epicId
+
+  const { open, ready, inProgress, done } = state.tasks
+  const total = [...open, ...ready, ...inProgress, ...done].filter((t) =>
+    matchesEpic(t.epicId),
+  ).length
+  const doneCount = done.filter((t) => matchesEpic(t.epicId)).length
+
+  return { done: doneCount, total }
 }
 
 @customElement('bd-epic-lane')
@@ -66,15 +84,15 @@ export class BdEpicLane extends LitElement {
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .update-badge {
-      font-size: var(--bd-font-size-2xs);
-      font-weight: var(--bd-font-weight-bold);
-      background: var(--bd-color-accent-in-progress);
-      color: var(--bd-color-text-on-accent);
-      border-radius: var(--bd-radius-full);
-      padding: 0.1em 0.45em;
-      margin-left: auto;
+    .epic-tally {
+      font-size: var(--bd-font-size-xs);
+      color: var(--bd-color-text-muted);
       flex-shrink: 0;
+      white-space: nowrap;
+    }
+    .epic-tally-done {
+      color: var(--bd-color-accent-done);
+      font-weight: var(--bd-font-weight-semibold);
     }
     .columns {
       display: grid;
@@ -94,10 +112,6 @@ export class BdEpicLane extends LitElement {
     return this.boardState.ui.collapsed.has(this.epicId)
   }
 
-  private get updateCount(): number {
-    return this.boardState.ui.updates[this.epicId] ?? 0
-  }
-
   private _toggle() {
     this.boardState.ui.toggleEpic(this.epicId, !this.collapsed)
   }
@@ -107,6 +121,7 @@ export class BdEpicLane extends LitElement {
     if (!epic) return html``
     const bodyId = `epic-body-${sanitiseId(this.epicId)}`
     const expanded = !this.collapsed
+    const { done, total } = epicTally(this.boardState, this.epicId)
 
     return html`
       <section>
@@ -125,13 +140,11 @@ export class BdEpicLane extends LitElement {
             <h2 class="epic-title">${epic.title}</h2>
           </button>
           ${
-            this.collapsed && this.updateCount > 0
-              ? html`<span
-                class="update-badge"
-                role="status"
-                aria-label="${this.updateCount} task update${this.updateCount === 1 ? '' : 's'}"
-              >${this.updateCount}</span>`
-              : nothing
+            total > 0
+              ? html`<span class="epic-tally" aria-label="${done} of ${total} tasks done">
+                  <span class="epic-tally-done">${done}</span> / ${total}
+                </span>`
+              : ''
           }
         </header>
         <div id=${bodyId} class="columns" ?hidden=${this.collapsed}>

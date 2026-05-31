@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { sanitiseId } from '../../src/client/epic/epic-lane.js'
-import {
-  applyStateUpdate,
-  diffUpdates,
-  epicTaskSnapshot,
-} from '../../src/client/store/board-store.js'
+import { epicTally, sanitiseId } from '../../src/client/epic/epic-lane.js'
+import { applyStateUpdate } from '../../src/client/store/board-store.js'
 import type { BoardState, Task } from '../../src/client/store/context.js'
 import { emptyBoardState } from '../../src/client/store/context.js'
 
@@ -22,14 +18,10 @@ const baseTask: Task = {
   subtaskDone: 0,
 }
 
-function makeState(
-  overrides: Partial<BoardState['tasks']> = {},
-  ui: Partial<BoardState['ui']> = {},
-): BoardState {
+function makeState(overrides: Partial<BoardState['tasks']> = {}): BoardState {
   return {
     ...emptyBoardState,
     tasks: { ...emptyBoardState.tasks, ...overrides },
-    ui: { ...emptyBoardState.ui, ...ui },
   }
 }
 
@@ -56,118 +48,68 @@ describe('sanitiseId()', () => {
 })
 
 // ---------------------------------------------------------------------------
-// epicTaskSnapshot
+// epicTally
 // ---------------------------------------------------------------------------
 
-describe('epicTaskSnapshot()', () => {
-  it('returns JSON of sorted {id, status} pairs for the epic', () => {
-    const t2: Task = { ...baseTask, id: 'bd-task-2', status: 'in_progress' }
-    const state = makeState({ ready: [baseTask], inProgress: [t2] })
-
-    const snap = epicTaskSnapshot(state, 'epic-1')
-    expect(JSON.parse(snap)).toEqual([
-      { id: 'bd-task-1', status: 'open' },
-      { id: 'bd-task-2', status: 'in_progress' },
-    ])
+describe('epicTally()', () => {
+  it('returns zero counts when epic has no tasks', () => {
+    expect(epicTally(emptyBoardState, 'epic-1')).toEqual({ done: 0, total: 0 })
   })
 
-  it('sorts tasks by id regardless of column order', () => {
-    const tZ: Task = { ...baseTask, id: 'zzz', status: 'open' }
-    const tA: Task = { ...baseTask, id: 'aaa', status: 'closed' }
-    const state = makeState({ ready: [tZ], done: [tA] })
+  it('counts all tasks across all columns for the epic', () => {
+    const ready: Task = { ...baseTask, id: 'task-2', status: 'ready' }
+    const inProgress: Task = {
+      ...baseTask,
+      id: 'task-3',
+      status: 'in_progress',
+    }
+    const done: Task = { ...baseTask, id: 'task-4', status: 'closed' }
+    const state = makeState({
+      open: [baseTask],
+      ready: [ready],
+      inProgress: [inProgress],
+      done: [done],
+    })
 
-    const snap = JSON.parse(epicTaskSnapshot(state, 'epic-1'))
-    expect(snap[0].id).toBe('aaa')
-    expect(snap[1].id).toBe('zzz')
+    expect(epicTally(state, 'epic-1')).toEqual({ done: 1, total: 4 })
   })
 
-  it('returns empty array JSON for an epic with no tasks', () => {
-    expect(epicTaskSnapshot(emptyBoardState, 'epic-1')).toBe('[]')
+  it('counts only done-column tasks toward done', () => {
+    const done1: Task = { ...baseTask, id: 'done-1', status: 'closed' }
+    const done2: Task = { ...baseTask, id: 'done-2', status: 'closed' }
+    const state = makeState({ open: [baseTask], done: [done1, done2] })
+
+    expect(epicTally(state, 'epic-1')).toEqual({ done: 2, total: 3 })
+  })
+
+  it('excludes tasks belonging to other epics', () => {
+    const other: Task = { ...baseTask, id: 'other', epicId: 'epic-99' }
+    const state = makeState({ open: [baseTask, other] })
+
+    expect(epicTally(state, 'epic-1')).toEqual({ done: 0, total: 1 })
   })
 
   it('collects orphan tasks when epicId is __orphan__', () => {
     const orphan: Task = { ...baseTask, id: 'orphan-1', epicId: undefined }
-    const state = makeState({ open: [orphan] })
+    const orphanDone: Task = {
+      ...baseTask,
+      id: 'orphan-2',
+      epicId: undefined,
+      status: 'closed',
+    }
+    const state = makeState({ open: [orphan, baseTask], done: [orphanDone] })
 
-    const snap = JSON.parse(epicTaskSnapshot(state, '__orphan__'))
-    expect(snap).toHaveLength(1)
-    expect(snap[0].id).toBe('orphan-1')
+    expect(epicTally(state, '__orphan__')).toEqual({ done: 1, total: 2 })
   })
 
-  it('excludes tasks belonging to other epics', () => {
-    const other: Task = { ...baseTask, id: 'other-task', epicId: 'epic-99' }
-    const state = makeState({ open: [baseTask, other] })
+  it('all done returns done === total', () => {
+    const done1: Task = { ...baseTask, id: 'done-1' }
+    const done2: Task = { ...baseTask, id: 'done-2' }
+    const state = makeState({ done: [done1, done2] })
 
-    const snap = JSON.parse(epicTaskSnapshot(state, 'epic-1'))
-    expect(snap).toHaveLength(1)
-    expect(snap[0].id).toBe('bd-task-1')
-  })
-})
-
-// ---------------------------------------------------------------------------
-// diffUpdates
-// ---------------------------------------------------------------------------
-
-describe('diffUpdates()', () => {
-  it('increments update count for a collapsed epic when tasks change', () => {
-    const oldState = makeState({ ready: [baseTask] })
-    const movedTask: Task = { ...baseTask, status: 'in_progress' }
-    const newState = makeState({ inProgress: [movedTask] })
-    const ui = { collapsed: new Set(['epic-1']), updates: {} }
-
-    const result = diffUpdates(oldState, newState, ui)
-
-    expect(result.updates['epic-1']).toBe(1)
-  })
-
-  it('does not increment for an expanded epic', () => {
-    const oldState = makeState({ ready: [baseTask] })
-    const movedTask: Task = { ...baseTask, status: 'in_progress' }
-    const newState = makeState({ inProgress: [movedTask] })
-    const ui = { collapsed: new Set<string>(), updates: {} }
-
-    const result = diffUpdates(oldState, newState, ui)
-
-    expect(result.updates['epic-1']).toBeUndefined()
-  })
-
-  it('accumulates multiple updates', () => {
-    const task1: Task = { ...baseTask, id: 'task-1' }
-    const task1Moved: Task = { ...task1, status: 'in_progress' }
-    const oldState = makeState({ ready: [task1] })
-    const newState = makeState({ inProgress: [task1Moved] })
-    const ui = { collapsed: new Set(['epic-1']), updates: { 'epic-1': 2 } }
-
-    const result = diffUpdates(oldState, newState, ui)
-
-    expect(result.updates['epic-1']).toBe(3)
-  })
-
-  it('does not mutate the original ui object', () => {
-    const oldState = makeState({ ready: [baseTask] })
-    const newState = makeState({
-      inProgress: [{ ...baseTask, status: 'in_progress' }],
-    })
-    const ui = { collapsed: new Set(['epic-1']), updates: {} }
-
-    diffUpdates(oldState, newState, ui)
-
-    expect(ui.updates).toEqual({})
-  })
-
-  it('returns the same ui reference when no collapsed epics', () => {
-    const ui = { collapsed: new Set<string>(), updates: {} }
-    const result = diffUpdates(emptyBoardState, emptyBoardState, ui)
-    expect(result).toBe(ui)
-  })
-
-  it('does not increment when tasks are unchanged for a collapsed epic', () => {
-    const state = makeState({ ready: [baseTask] })
-    const ui = { collapsed: new Set(['epic-1']), updates: {} }
-
-    const result = diffUpdates(state, state, ui)
-
-    expect(result.updates['epic-1']).toBeUndefined()
+    const result = epicTally(state, 'epic-1')
+    expect(result.done).toBe(result.total)
+    expect(result.total).toBe(2)
   })
 })
 
