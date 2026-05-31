@@ -149,10 +149,16 @@ export class BdBeadDialog extends LitElement {
 
     /* Body */
     .dialog-body {
-      padding: 1rem 1.25rem;
+      padding: 1rem 1.25rem 1.25rem;
       overflow-y: auto;
       flex: 1;
       line-height: 1.6;
+    }
+    /* Overflow containers swallow bottom padding; use a pseudo-element instead */
+    .dialog-body::after {
+      content: '';
+      display: block;
+      height: 0.25rem;
     }
 
     /* Prose */
