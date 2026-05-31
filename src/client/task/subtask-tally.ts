@@ -9,11 +9,11 @@ export class BdSubtaskTally extends LitElement {
   static override styles = css`
     :host { display: inline-block; }
     .tally {
-      font-size: 0.7rem;
-      color: var(--bd-mocha-subtext, #a6adc8);
+      font-size: var(--bd-font-size-xs);
+      color: var(--bd-color-text-muted);
       padding: 0.1rem 0.4rem;
-      background: var(--bd-mocha-base, #1e1e2e);
-      border-radius: 0.25rem;
+      background: var(--bd-color-bg-mantle);
+      border-radius: var(--bd-radius-sm);
     }
   `
 

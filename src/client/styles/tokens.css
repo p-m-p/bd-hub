@@ -10,33 +10,88 @@
 :root {
   color-scheme: light dark;
 
-  /* Backgrounds */
+  /* ── Backgrounds ────────────────────────────────────────────── */
   --bd-color-bg-base: light-dark(#e6e9ef, #1e1e2e);
   --bd-color-bg-mantle: light-dark(#dce0e8, #181825);
   --bd-color-bg-surface: light-dark(#eff1f5, #313244);
 
-  /* Borders */
+  /* ── Borders ────────────────────────────────────────────────── */
   --bd-color-border: light-dark(#ccd0da, #313244);
   --bd-color-border-muted: light-dark(#bcc0cc, #45475a);
 
-  /* Text */
+  /* ── Text ───────────────────────────────────────────────────── */
   --bd-color-text-primary: light-dark(#4c4f69, #cdd6f4);
   --bd-color-text-muted: light-dark(#6c6f85, #a6adc8);
   --bd-color-text-on-accent: light-dark(#eff1f5, #1e1e2e);
 
-  /* Column accents */
+  /* ── Accents ────────────────────────────────────────────────── */
   --bd-color-accent-in-progress: light-dark(#1e66f5, #89b4fa);
   --bd-color-accent-done: light-dark(#40a02b, #a6e3a1);
 
-  /* Priority chip backgrounds */
+  /* ── Priority chips ─────────────────────────────────────────── */
   --bd-color-priority-p0: light-dark(#d20f39, #f38ba8);
   --bd-color-priority-p1: light-dark(#fe640b, #fab387);
   --bd-color-priority-p2: light-dark(#df8e1d, #f9e2af);
   --bd-color-priority-p3: light-dark(#40a02b, #a6e3a1);
 
-  /* Shadows */
+  /* ── Shadows ────────────────────────────────────────────────── */
   --bd-shadow-card: light-dark(
     0 1px 3px rgba(0, 0, 0, 0.1),
     0 1px 3px rgba(0, 0, 0, 0.4)
   );
+
+  /* ── Typography: font sizes ─────────────────────────────────── */
+  /** Tiny chips, badges, and labels */
+  --bd-font-size-2xs: 0.625rem;
+  /** Captions, tallies, secondary metadata */
+  --bd-font-size-xs: 0.7rem;
+  /** Secondary body text, action links */
+  --bd-font-size-sm: 0.8rem;
+  /** Primary body text, component titles */
+  --bd-font-size-base: 0.875rem;
+  /** Sub-headings, dialog section titles */
+  --bd-font-size-md: 0.95rem;
+  /** Top-level headings */
+  --bd-font-size-lg: 1.05rem;
+
+  /* ── Typography: font weights ───────────────────────────────── */
+  --bd-font-weight-normal: 400;
+  --bd-font-weight-semibold: 600;
+  --bd-font-weight-bold: 700;
+
+  /* ── Typography: line heights ───────────────────────────────── */
+  /** Compact headings and titles */
+  --bd-line-height-tight: 1.35;
+  /** Comfortable body/prose reading */
+  --bd-line-height-body: 1.6;
+
+  /* ── Typography: letter spacing ─────────────────────────────── */
+  /** Standard label tracking (chips, project name) */
+  --bd-tracking-label: 0.04em;
+  /** Tighter section-title tracking */
+  --bd-tracking-sm: 0.06em;
+  /** Strong heading tracking (column headers) */
+  --bd-tracking-lg: 0.08em;
+
+  /* ── Spacing ────────────────────────────────────────────────── */
+  /** 4 px — button padding, micro gaps */
+  --bd-space-1: 0.25rem;
+  /** 8 px — item gaps, inline padding */
+  --bd-space-2: 0.5rem;
+  /** 12 px — header/card padding, larger gaps */
+  --bd-space-3: 0.75rem;
+  /** 16 px — section padding */
+  --bd-space-4: 1rem;
+  /** 20 px — wide content padding */
+  --bd-space-5: 1.25rem;
+
+  /* ── Border radii ───────────────────────────────────────────── */
+  /** 3 px — chips, inline code */
+  --bd-radius-sm: 3px;
+  /** 6 px — cards, code blocks */
+  --bd-radius-md: 6px;
+  /** 8 px — dialogs, modals */
+  --bd-radius-lg: 8px;
+  /** Full pill shape — badges, tags */
+  --bd-radius-full: 9999px;
 }

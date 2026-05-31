@@ -75,7 +75,7 @@ export class BdBeadDialog extends LitElement {
     }
     dialog {
       border: none;
-      border-radius: 8px;
+      border-radius: var(--bd-radius-lg);
       padding: 0;
       width: min(720px, 90vw);
       max-height: 80vh;
@@ -92,19 +92,19 @@ export class BdBeadDialog extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      padding: 1rem 1.25rem 0.75rem;
+      padding: var(--bd-space-4) var(--bd-space-5) var(--bd-space-3);
       border-bottom: 1px solid var(--bd-color-border);
       flex-shrink: 0;
-      gap: 0.75rem;
+      gap: var(--bd-space-3);
     }
     .dialog-title {
       margin: 0;
-      font-size: 0.975rem;
-      font-weight: 600;
-      line-height: 1.35;
+      font-size: var(--bd-font-size-md);
+      font-weight: var(--bd-font-weight-semibold);
+      line-height: var(--bd-line-height-tight);
     }
     .dialog-id {
-      font-size: 0.65rem;
+      font-size: var(--bd-font-size-xs);
       color: var(--bd-color-text-muted);
       font-family: monospace;
       margin-top: 0.2rem;
@@ -115,7 +115,7 @@ export class BdBeadDialog extends LitElement {
       cursor: pointer;
       color: var(--bd-color-text-muted);
       font-size: 1.1rem;
-      padding: 0.25rem;
+      padding: var(--bd-space-1);
       line-height: 1;
       flex-shrink: 0;
     }
@@ -126,18 +126,18 @@ export class BdBeadDialog extends LitElement {
       display: flex;
       align-items: center;
       gap: 0.4rem;
-      padding: 0.45rem 1.25rem;
+      padding: 0.45rem var(--bd-space-5);
       border-bottom: 1px solid var(--bd-color-border);
       flex-shrink: 0;
       flex-wrap: wrap;
     }
     .meta-chip {
-      font-size: 0.625rem;
-      font-weight: 700;
+      font-size: var(--bd-font-size-2xs);
+      font-weight: var(--bd-font-weight-bold);
       padding: 0.15rem 0.4rem;
-      border-radius: 3px;
+      border-radius: var(--bd-radius-sm);
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: var(--bd-tracking-label);
     }
     .meta-type {
       background: var(--bd-color-bg-mantle);
@@ -156,7 +156,7 @@ export class BdBeadDialog extends LitElement {
       border: 1px solid var(--bd-color-border);
     }
     .meta-dot { color: var(--bd-color-border); }
-    .meta-assignee, .meta-time { font-size: 0.75rem; color: var(--bd-color-text-muted); }
+    .meta-assignee, .meta-time { font-size: var(--bd-font-size-sm); color: var(--bd-color-text-muted); }
 
     /* Body — scroll container must have no padding; inner wrapper carries it */
     .dialog-body {
@@ -165,24 +165,24 @@ export class BdBeadDialog extends LitElement {
       min-height: 0;
     }
     .dialog-body-inner {
-      padding: 1rem 1.25rem;
-      line-height: 1.6;
+      padding: var(--bd-space-4) var(--bd-space-5);
+      line-height: var(--bd-line-height-body);
     }
 
     /* Footer — always visible, pinned below the scrollable body */
     .dialog-footer {
       flex-shrink: 0;
       border-top: 1px solid var(--bd-color-border);
-      padding: 0.75rem 1.25rem;
+      padding: var(--bd-space-3) var(--bd-space-5);
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
     }
 
     /* Prose — shared between body and footer markdown content */
-    :is(.dialog-body-inner, .dialog-footer) h1 { font-size: 1.05rem; margin: 1rem 0 0.35rem; font-weight: 600; }
-    :is(.dialog-body-inner, .dialog-footer) h2 { font-size: 0.95rem; margin: 0.85rem 0 0.3rem; font-weight: 600; }
-    :is(.dialog-body-inner, .dialog-footer) h3 { font-size: 0.875rem; margin: 0.7rem 0 0.25rem; font-weight: 600; }
+    :is(.dialog-body-inner, .dialog-footer) h1 { font-size: var(--bd-font-size-lg); margin: var(--bd-space-4) 0 0.35rem; font-weight: var(--bd-font-weight-semibold); }
+    :is(.dialog-body-inner, .dialog-footer) h2 { font-size: var(--bd-font-size-md); margin: 0.85rem 0 0.3rem; font-weight: var(--bd-font-weight-semibold); }
+    :is(.dialog-body-inner, .dialog-footer) h3 { font-size: var(--bd-font-size-base); margin: 0.7rem 0 0.25rem; font-weight: var(--bd-font-weight-semibold); }
     :is(.dialog-body-inner, .dialog-footer) :is(h1, h2, h3) { color: var(--bd-color-text-primary); }
     :is(.dialog-body-inner, .dialog-footer) p { margin: 0.4rem 0; }
     .dialog-body-inner :is(ul, ol) { margin: 0.4rem 0; padding-left: 1.4rem; }
@@ -190,15 +190,15 @@ export class BdBeadDialog extends LitElement {
     .dialog-body-inner li { margin: 0.15rem 0; }
     :is(.dialog-body-inner, .dialog-footer) code:not([class]) {
       background: var(--bd-color-bg-mantle);
-      border-radius: 3px;
+      border-radius: var(--bd-radius-sm);
       padding: 0.1em 0.35em;
       font-size: 0.875em;
     }
     :is(.dialog-body-inner, .dialog-footer) pre {
-      border-radius: 6px;
+      border-radius: var(--bd-radius-md);
       overflow-x: auto;
-      margin: 0.75rem 0;
-      padding: 0.75rem 1rem;
+      margin: var(--bd-space-3) 0;
+      padding: var(--bd-space-3) var(--bd-space-4);
     }
 
     /* Sections within the footer */
@@ -211,23 +211,23 @@ export class BdBeadDialog extends LitElement {
       border-top: none;
     }
     .section-title {
-      font-size: 0.675rem;
-      font-weight: 700;
+      font-size: var(--bd-font-size-xs);
+      font-weight: var(--bd-font-weight-bold);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: var(--bd-tracking-sm);
       color: var(--bd-color-text-muted);
-      margin: 0 0 0.25rem;
+      margin: 0 0 var(--bd-space-1);
     }
 
     /* Dependencies */
     .dep-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
-    .dep-item { display: flex; align-items: baseline; gap: 0.5rem; }
+    .dep-item { display: flex; align-items: baseline; gap: var(--bd-space-2); }
     .dep-link {
       background: none;
       border: none;
       padding: 0;
       font: inherit;
-      font-size: 0.8rem;
+      font-size: var(--bd-font-size-sm);
       color: var(--bd-color-accent-in-progress);
       cursor: pointer;
       text-decoration: underline;
@@ -235,9 +235,9 @@ export class BdBeadDialog extends LitElement {
       text-align: left;
     }
     .dep-link:hover { opacity: 0.8; }
-    .dep-status { font-size: 0.65rem; color: var(--bd-color-text-muted); margin-left: auto; flex-shrink: 0; }
+    .dep-status { font-size: var(--bd-font-size-xs); color: var(--bd-color-text-muted); margin-left: auto; flex-shrink: 0; }
 
-    .dialog-loading { color: var(--bd-color-text-muted); padding-top: 1rem; text-align: center; }
+    .dialog-loading { color: var(--bd-color-text-muted); padding-top: var(--bd-space-4); text-align: center; }
     .dialog-error   { color: var(--bd-color-text-muted); }
   `
 

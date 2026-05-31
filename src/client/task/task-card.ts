@@ -29,9 +29,9 @@ export class BdTaskCard extends LitElement {
     :host { display: block; }
     .card {
       background: var(--bd-color-bg-surface);
-      border-radius: 6px;
-      padding: 0.65rem 0.75rem;
-      margin-bottom: 0.5rem;
+      border-radius: var(--bd-radius-md);
+      padding: 0.65rem var(--bd-space-3);
+      margin-bottom: var(--bd-space-2);
       display: flex;
       flex-direction: column;
       gap: 0.35rem;
@@ -44,7 +44,7 @@ export class BdTaskCard extends LitElement {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 0.5rem;
+      gap: var(--bd-space-2);
     }
     .title {
       background: none;
@@ -55,18 +55,18 @@ export class BdTaskCard extends LitElement {
       color: var(--bd-color-text-primary);
       cursor: pointer;
       text-align: left;
-      font-size: 0.825rem;
-      line-height: 1.35;
+      font-size: var(--bd-font-size-base);
+      line-height: var(--bd-line-height-tight);
       flex: 1;
     }
     .title:hover {
       text-decoration: underline;
     }
     .priority-chip {
-      font-size: 0.6rem;
-      font-weight: 700;
+      font-size: var(--bd-font-size-2xs);
+      font-weight: var(--bd-font-weight-bold);
       padding: 0.1rem 0.35rem;
-      border-radius: 3px;
+      border-radius: var(--bd-radius-sm);
       color: var(--bd-color-text-on-accent);
       flex-shrink: 0;
     }
@@ -85,12 +85,12 @@ export class BdTaskCard extends LitElement {
       justify-content: space-between;
     }
     .bead-id {
-      font-size: 0.625rem;
+      font-size: var(--bd-font-size-2xs);
       color: var(--bd-color-text-muted);
       font-family: monospace;
     }
     .subtask-count {
-      font-size: 0.625rem;
+      font-size: var(--bd-font-size-2xs);
       color: var(--bd-color-text-muted);
     }
   `

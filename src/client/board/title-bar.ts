@@ -16,9 +16,9 @@ export class BdTitleBar extends LitElement {
       flex-shrink: 0;
     }
     .project-name {
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
+      font-size: var(--bd-font-size-sm);
+      font-weight: var(--bd-font-weight-semibold);
+      letter-spacing: var(--bd-tracking-label);
       color: var(--bd-color-text-primary);
     }
     .spacer { flex: 1; }

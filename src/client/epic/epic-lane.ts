@@ -27,10 +27,10 @@ export class BdEpicLane extends LitElement {
       display: block;
     }
     .epic-header {
-      padding: 0.45rem 0.75rem;
+      padding: 0.45rem var(--bd-space-3);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: var(--bd-space-2);
       position: sticky;
       top: 0;
       z-index: 10;
@@ -41,7 +41,7 @@ export class BdEpicLane extends LitElement {
     .epic-toggle {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: var(--bd-space-2);
       background: none;
       border: none;
       padding: 0;
@@ -55,10 +55,10 @@ export class BdEpicLane extends LitElement {
     .epic-toggle:focus-visible {
       outline: 2px solid var(--bd-color-accent-in-progress);
       outline-offset: 2px;
-      border-radius: 3px;
+      border-radius: var(--bd-radius-sm);
     }
     .chevron {
-      font-size: 0.6rem;
+      font-size: var(--bd-font-size-2xs);
       color: var(--bd-color-text-muted);
       transition: transform 200ms ease;
       flex-shrink: 0;
@@ -67,8 +67,8 @@ export class BdEpicLane extends LitElement {
       transform: rotate(90deg);
     }
     .epic-title {
-      font-size: 0.875rem;
-      font-weight: 600;
+      font-size: var(--bd-font-size-base);
+      font-weight: var(--bd-font-weight-semibold);
       color: var(--bd-color-text-primary);
       margin: 0;
       white-space: nowrap;
@@ -76,11 +76,11 @@ export class BdEpicLane extends LitElement {
       text-overflow: ellipsis;
     }
     .update-badge {
-      font-size: 0.6rem;
-      font-weight: 700;
+      font-size: var(--bd-font-size-2xs);
+      font-weight: var(--bd-font-weight-bold);
       background: var(--bd-color-accent-in-progress);
       color: var(--bd-color-text-on-accent);
-      border-radius: 9999px;
+      border-radius: var(--bd-radius-full);
       padding: 0.1em 0.45em;
       margin-left: auto;
       flex-shrink: 0;

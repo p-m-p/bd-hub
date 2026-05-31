@@ -57,7 +57,7 @@ export class BdColumn extends LitElement {
       display: flex;
       flex-direction: column;
       min-height: 3rem;
-      padding: 0.5rem 0.625rem;
+      padding: var(--bd-space-2) 0.625rem;
     }
     ul {
       list-style: none;
@@ -68,7 +68,7 @@ export class BdColumn extends LitElement {
       display: block;
     }
     .tally {
-      font-size: 0.65rem;
+      font-size: var(--bd-font-size-xs);
       color: var(--bd-color-text-muted);
       text-align: center;
       padding-top: 0.4rem;

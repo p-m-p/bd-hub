@@ -44,11 +44,11 @@ export class BdBoard extends LitElement {
     .column-label {
       display: flex;
       align-items: center;
-      padding: 0 0.75rem;
-      font-size: 0.7rem;
-      font-weight: 700;
+      padding: 0 var(--bd-space-3);
+      font-size: var(--bd-font-size-xs);
+      font-weight: var(--bd-font-weight-bold);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: var(--bd-tracking-lg);
       color: var(--bd-color-text-muted);
     }
     .column-label--inprogress { color: var(--bd-color-accent-in-progress); }
