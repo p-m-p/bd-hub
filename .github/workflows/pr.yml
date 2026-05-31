@@ -30,3 +30,38 @@ jobs:
       - run: pnpm build
 
       - run: pnpm test
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - run: pnpm install
+
+      - run: pnpm build
+
+      - name: Install bd CLI
+        run: |
+          curl -fsSL https://github.com/gastownhall/beads/releases/download/v1.0.4/beads_1.0.4_linux_amd64.tar.gz \
+            | tar -xz -C /usr/local/bin bd
+          bd --version
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - run: pnpm test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-pr-${{ github.run_id }}
+          path: playwright-report/
+          retention-days: 7
