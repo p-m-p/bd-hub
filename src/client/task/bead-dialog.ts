@@ -175,7 +175,7 @@ export class BdBeadDialog extends LitElement {
     :is(.dialog-body-inner, .dialog-footer) :is(h1, h2, h3) { color: var(--bd-color-text-primary); }
     :is(.dialog-body-inner, .dialog-footer) p { margin: 0.4rem 0; }
     .dialog-body-inner :is(ul, ol) { margin: 0.4rem 0; padding-left: 1.4rem; }
-    .dialog-footer :is(ul, ol) { margin: 0; padding-left: 0; list-style: none; gap: 0.15rem; display: flex; flex-direction: column; }
+    .dialog-footer :is(ul, ol) { margin: 0; padding-left: 0; list-style: none; gap: 0.35rem; display: flex; flex-direction: column; }
     .dialog-body-inner li { margin: 0.15rem 0; }
     :is(.dialog-body-inner, .dialog-footer) code:not([class]) {
       background: var(--bd-color-bg-mantle);
@@ -209,7 +209,7 @@ export class BdBeadDialog extends LitElement {
     }
 
     /* Dependencies */
-    .dep-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.15rem; }
+    .dep-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
     .dep-item { display: flex; align-items: baseline; gap: 0.5rem; }
     .dep-link {
       background: none;
