@@ -3,6 +3,10 @@
   "version": "0.2.0",
   "type": "module",
   "description": "Real-time kanban dashboard for the bd (beads) issue tracker",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/p-m-p/bd-hub"
+  },
   "keywords": [
     "beads",
     "bd",
