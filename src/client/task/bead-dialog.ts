@@ -162,7 +162,7 @@ export class BdBeadDialog extends LitElement {
     .dialog-footer {
       flex-shrink: 0;
       border-top: 1px solid var(--bd-color-border);
-      padding: 0.5rem 1.25rem 0.65rem;
+      padding: 0.75rem 1.25rem;
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
@@ -175,8 +175,8 @@ export class BdBeadDialog extends LitElement {
     :is(.dialog-body-inner, .dialog-footer) :is(h1, h2, h3) { color: var(--bd-color-text-primary); }
     :is(.dialog-body-inner, .dialog-footer) p { margin: 0.4rem 0; }
     .dialog-body-inner :is(ul, ol) { margin: 0.4rem 0; padding-left: 1.4rem; }
-    .dialog-footer :is(ul, ol) { margin: 0.2rem 0; padding-left: 0; list-style: none; }
-    :is(.dialog-body-inner, .dialog-footer) li { margin: 0.15rem 0; }
+    .dialog-footer :is(ul, ol) { margin: 0; padding-left: 0; list-style: none; }
+    .dialog-body-inner li { margin: 0.15rem 0; }
     :is(.dialog-body-inner, .dialog-footer) code:not([class]) {
       background: var(--bd-color-bg-mantle);
       border-radius: 3px;
@@ -209,7 +209,7 @@ export class BdBeadDialog extends LitElement {
     }
 
     /* Dependencies */
-    .dep-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+    .dep-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
     .dep-item { display: flex; align-items: baseline; gap: 0.5rem; }
     .dep-link {
       background: none;
