@@ -5,14 +5,16 @@ import {
   type BoardState,
   type BoardUIState,
   boardContext,
+  type EpicAge,
   emptyBoardState,
 } from './context.js'
 
-const LS_KEY = 'bd-collapsed-epics'
+const LS_KEY_COLLAPSED = 'bd-collapsed-epics'
+const LS_KEY_EPIC_AGE = 'bd-epic-age'
 
 function loadCollapsed(): Set<string> {
   try {
-    const raw = localStorage.getItem(LS_KEY)
+    const raw = localStorage.getItem(LS_KEY_COLLAPSED)
     if (raw) return new Set(JSON.parse(raw) as string[])
   } catch {
     // ignore parse errors
@@ -22,9 +24,29 @@ function loadCollapsed(): Set<string> {
 
 function saveCollapsed(collapsed: Set<string>): void {
   try {
-    localStorage.setItem(LS_KEY, JSON.stringify([...collapsed]))
+    localStorage.setItem(LS_KEY_COLLAPSED, JSON.stringify([...collapsed]))
   } catch {
     // ignore storage errors (e.g. private mode quota)
+  }
+}
+
+const VALID_EPIC_AGES = new Set<EpicAge>(['1m', '3m', '6m', '12m', 'all'])
+
+function loadEpicAge(): EpicAge {
+  try {
+    const raw = localStorage.getItem(LS_KEY_EPIC_AGE)
+    if (raw && VALID_EPIC_AGES.has(raw as EpicAge)) return raw as EpicAge
+  } catch {
+    // ignore
+  }
+  return '1m'
+}
+
+function saveEpicAge(age: EpicAge): void {
+  try {
+    localStorage.setItem(LS_KEY_EPIC_AGE, age)
+  } catch {
+    // ignore
   }
 }
 
@@ -93,12 +115,14 @@ export class BoardStore extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback()
-    // Restore collapsed state before first fetch so it's ready when data arrives
+    // Restore persisted client UI state before first fetch
     this.boardState = {
       ...this.boardState,
       ui: {
         collapsed: loadCollapsed(),
+        epicAge: loadEpicAge(),
         toggleEpic: this._toggleEpic,
+        setEpicAge: this._setEpicAge,
       },
     }
     this.loadInitialState()
@@ -181,6 +205,14 @@ export class BoardStore extends LitElement {
     this.boardState = {
       ...this.boardState,
       ui: { ...ui, collapsed: next },
+    }
+  }
+
+  private readonly _setEpicAge = (age: EpicAge) => {
+    saveEpicAge(age)
+    this.boardState = {
+      ...this.boardState,
+      ui: { ...this.boardState.ui, epicAge: age },
     }
   }
 

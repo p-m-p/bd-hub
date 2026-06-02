@@ -4,8 +4,22 @@ import { customElement, query, state } from 'lit/decorators.js'
 import {
   type BoardState,
   boardContext,
+  type Epic,
+  type EpicAge,
   emptyBoardState,
 } from '../store/context.js'
+
+/**
+ * Returns true when an epic should be displayed given the current age filter.
+ * The orphan epic (createdAt === '') is always visible.
+ */
+export function isEpicVisible(epic: Epic, epicAge: EpicAge): boolean {
+  if (epicAge === 'all' || !epic.createdAt) return true
+  const months = ({ '1m': 1, '3m': 3, '6m': 6, '12m': 12 } as const)[epicAge]
+  const cutoff = new Date()
+  cutoff.setMonth(cutoff.getMonth() - months)
+  return new Date(epic.createdAt) >= cutoff
+}
 import '../task/bead-dialog.js'
 import type { BdBeadDialog } from '../task/bead-dialog.js'
 import './title-bar.js'
@@ -118,9 +132,11 @@ export class BdBoard extends LitElement {
           <div class="column-label column-label--done">Done</div>
         </header>
         <div class="board-scroll" @open-bead=${this._onOpenBead}>
-          ${this.boardState.epics.map(
-            (epic) => html`<bd-epic-lane epic-id=${epic.id}></bd-epic-lane>`,
-          )}
+          ${this.boardState.epics
+            .filter((epic) => isEpicVisible(epic, this.boardState.ui.epicAge))
+            .map(
+              (epic) => html`<bd-epic-lane epic-id=${epic.id}></bd-epic-lane>`,
+            )}
         </div>
       </div>
       <bd-bead-dialog></bd-bead-dialog>

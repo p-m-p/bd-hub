@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Mock Lit modules before importing components.
 // Vitest runs in Node (no DOM), so customElements.define does not exist.
@@ -22,12 +22,14 @@ vi.mock('@lit/context', () => ({
   createContext: (key) => key,
 }))
 
+import { isEpicVisible } from '../../src/client/board/board.js'
 import {
   COLUMN_LABELS,
   filterTasksByEpic,
   ORPHAN_EPIC_ID,
   tallyText,
 } from '../../src/client/board/column.js'
+import type { Epic, EpicAge } from '../../src/client/store/context.js'
 
 describe('COLUMN_LABELS', () => {
   it('has entries for all four columns', () => {
@@ -144,6 +146,69 @@ describe('tallyText()', () => {
 
   it('returns "10 tasks" for ten tasks', () => {
     expect(tallyText(10)).toBe('10 tasks')
+  })
+})
+
+// ---------------------------------------------------------------------------
+// isEpicVisible
+// ---------------------------------------------------------------------------
+
+const MOCK_NOW = new Date('2026-06-02T00:00:00Z')
+
+function makeEpic(createdAt: string): Epic {
+  return { id: 'e1', title: 'Epic', status: 'open', priority: 1, createdAt }
+}
+
+describe('isEpicVisible()', () => {
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(MOCK_NOW)
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('always shows an epic when age is "all"', () => {
+    expect(isEpicVisible(makeEpic('2020-01-01T00:00:00Z'), 'all')).toBe(true)
+  })
+
+  it('always shows the orphan epic (empty createdAt) regardless of filter', () => {
+    const ages: EpicAge[] = ['1m', '3m', '6m', '12m', 'all']
+    for (const age of ages) {
+      expect(isEpicVisible(makeEpic(''), age)).toBe(true)
+    }
+  })
+
+  it('"1m" shows an epic created on the cutoff day (2026-05-02)', () => {
+    expect(isEpicVisible(makeEpic('2026-05-02T00:00:00Z'), '1m')).toBe(true)
+  })
+
+  it('"1m" hides an epic created before the cutoff', () => {
+    expect(isEpicVisible(makeEpic('2026-05-01T23:59:59Z'), '1m')).toBe(false)
+  })
+
+  it('"3m" shows an epic created within 3 months', () => {
+    expect(isEpicVisible(makeEpic('2026-04-01T00:00:00Z'), '3m')).toBe(true)
+  })
+
+  it('"3m" hides an epic older than 3 months', () => {
+    expect(isEpicVisible(makeEpic('2026-03-01T00:00:00Z'), '3m')).toBe(false)
+  })
+
+  it('"6m" shows an epic created within 6 months', () => {
+    expect(isEpicVisible(makeEpic('2026-01-15T00:00:00Z'), '6m')).toBe(true)
+  })
+
+  it('"6m" hides an epic older than 6 months', () => {
+    expect(isEpicVisible(makeEpic('2025-11-01T00:00:00Z'), '6m')).toBe(false)
+  })
+
+  it('"12m" shows an epic created within 12 months', () => {
+    expect(isEpicVisible(makeEpic('2025-08-01T00:00:00Z'), '12m')).toBe(true)
+  })
+
+  it('"12m" hides an epic older than 12 months', () => {
+    expect(isEpicVisible(makeEpic('2025-06-01T00:00:00Z'), '12m')).toBe(false)
   })
 })
 

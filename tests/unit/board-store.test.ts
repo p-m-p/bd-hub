@@ -34,6 +34,7 @@ describe('emptyBoardState', () => {
     expect(emptyBoardState.tasks).toHaveProperty('done')
     expect(emptyBoardState).toHaveProperty('ui')
     expect(emptyBoardState.ui).toHaveProperty('collapsed')
+    expect(emptyBoardState.ui).toHaveProperty('epicAge')
   })
 
   it('has empty arrays and ui defaults', () => {
@@ -43,6 +44,7 @@ describe('emptyBoardState', () => {
     expect(emptyBoardState.tasks.inProgress).toEqual([])
     expect(emptyBoardState.tasks.done).toEqual([])
     expect(emptyBoardState.ui.collapsed).toEqual(new Set())
+    expect(emptyBoardState.ui.epicAge).toBe('1m')
   })
 })
 
@@ -76,7 +78,12 @@ describe('BoardState type', () => {
         inProgress: [],
         done: [],
       },
-      ui: { collapsed: new Set(), toggleEpic: () => {} },
+      ui: {
+        collapsed: new Set(),
+        epicAge: '1m',
+        toggleEpic: () => {},
+        setEpicAge: () => {},
+      },
     }
 
     expect(state.epics).toHaveLength(1)
@@ -115,7 +122,12 @@ describe('applyStateUpdate()', () => {
       },
     ],
     tasks: { open: [], ready: [], inProgress: [], done: [] },
-    ui: { collapsed: new Set(), toggleEpic: () => {} },
+    ui: {
+      collapsed: new Set(),
+      epicAge: '1m',
+      toggleEpic: () => {},
+      setEpicAge: () => {},
+    },
   }
 
   it('calls setter directly when startViewTransition is unavailable', () => {
