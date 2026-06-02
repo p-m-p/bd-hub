@@ -9,6 +9,8 @@ import {
 } from '../store/context.js'
 
 const AGE_OPTIONS: { value: EpicAge; label: string }[] = [
+  { value: '1w', label: 'Last week' },
+  { value: '2w', label: 'Last 2 weeks' },
   { value: '1m', label: 'Last month' },
   { value: '3m', label: 'Last 3 months' },
   { value: '6m', label: 'Last 6 months' },

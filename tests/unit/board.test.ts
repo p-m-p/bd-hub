@@ -173,10 +173,26 @@ describe('isEpicVisible()', () => {
   })
 
   it('always shows the orphan epic (empty createdAt) regardless of filter', () => {
-    const ages: EpicAge[] = ['1m', '3m', '6m', '12m', 'all']
+    const ages: EpicAge[] = ['1w', '2w', '1m', '3m', '6m', '12m', 'all']
     for (const age of ages) {
       expect(isEpicVisible(makeEpic(''), age)).toBe(true)
     }
+  })
+
+  it('"1w" shows an epic created on the cutoff day (2026-05-26)', () => {
+    expect(isEpicVisible(makeEpic('2026-05-26T00:00:00Z'), '1w')).toBe(true)
+  })
+
+  it('"1w" hides an epic created before the cutoff', () => {
+    expect(isEpicVisible(makeEpic('2026-05-25T23:59:59Z'), '1w')).toBe(false)
+  })
+
+  it('"2w" shows an epic created on the cutoff day (2026-05-19)', () => {
+    expect(isEpicVisible(makeEpic('2026-05-19T00:00:00Z'), '2w')).toBe(true)
+  })
+
+  it('"2w" hides an epic created before the cutoff', () => {
+    expect(isEpicVisible(makeEpic('2026-05-18T23:59:59Z'), '2w')).toBe(false)
   })
 
   it('"1m" shows an epic created on the cutoff day (2026-05-02)', () => {

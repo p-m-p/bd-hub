@@ -20,7 +20,7 @@ export interface Task {
 }
 
 /** How far back in time to display epics, keyed by their createdAt date. */
-export type EpicAge = '1m' | '3m' | '6m' | '12m' | 'all'
+export type EpicAge = '1w' | '2w' | '1m' | '3m' | '6m' | '12m' | 'all'
 
 export interface BoardUIState {
   collapsed: Set<string>

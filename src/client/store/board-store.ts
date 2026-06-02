@@ -30,7 +30,15 @@ function saveCollapsed(collapsed: Set<string>): void {
   }
 }
 
-const VALID_EPIC_AGES = new Set<EpicAge>(['1m', '3m', '6m', '12m', 'all'])
+const VALID_EPIC_AGES = new Set<EpicAge>([
+  '1w',
+  '2w',
+  '1m',
+  '3m',
+  '6m',
+  '12m',
+  'all',
+])
 
 function loadEpicAge(): EpicAge {
   try {
