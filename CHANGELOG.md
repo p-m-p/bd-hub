@@ -1,5 +1,18 @@
 # bd-hub
 
+## 0.2.1
+
+### Patch Changes
+
+- 0df4b2b: Add **Last week** and **Last 2 weeks** options to the epic age filter dropdown, sitting above the existing month-based choices. Week cutoffs use exact day arithmetic (`setDate - 7/14`) rather than month subtraction.
+- d85033a: ## Epic task tally in lane header
+
+  Replace the non-functional update badge on collapsed epic lanes with a permanent **done / total** task tally shown on the right of every epic header.
+
+  - The tally is always visible (expanded and collapsed), giving a quick progress read at a glance
+  - The done count renders in green; epics with no tasks show no tally
+  - Removes the `updates` bookkeeping from `BoardUIState` and the `diffUpdates` / `epicTaskSnapshot` internals that powered the old badge
+
 ## 0.2.0
 
 ### Minor Changes
