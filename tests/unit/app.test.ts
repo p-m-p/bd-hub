@@ -170,6 +170,25 @@ describe('GET /api/info', () => {
   })
 })
 
+describe('GET /theme.css', () => {
+  it('returns 200 with a text/css stylesheet', async () => {
+    const { app } = await import('../../src/server/app.js')
+    const res = await app.request('/theme.css')
+
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toMatch(/text\/css/)
+    const body = await res.text()
+    expect(body).toContain(':root {')
+  })
+
+  it('is not cached so config edits apply on refresh', async () => {
+    const { app } = await import('../../src/server/app.js')
+    const res = await app.request('/theme.css')
+
+    expect(res.headers.get('cache-control')).toBe('no-cache')
+  })
+})
+
 describe('GET /nonexistent', () => {
   it('returns 404 for unknown routes', async () => {
     const { app } = await import('../../src/server/app.js')

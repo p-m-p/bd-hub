@@ -33,11 +33,11 @@ export class BdTaskCard extends LitElement {
       .card {
         background: var(--bd-color-bg-surface);
         border-radius: var(--bd-radius-md);
-        padding: 0.65rem var(--bd-space-3);
+        padding: calc(0.65rem * var(--bd-space-scale)) var(--bd-space-3);
         margin-bottom: var(--bd-space-2);
         display: flex;
         flex-direction: column;
-        gap: 0.35rem;
+        gap: var(--bd-space-1-5);
         box-shadow: var(--bd-shadow-card);
       }
       .card--done {
@@ -61,7 +61,7 @@ export class BdTaskCard extends LitElement {
       .priority-chip {
         font-size: var(--bd-font-size-2xs);
         font-weight: var(--bd-font-weight-bold);
-        padding: 0.1rem 0.35rem;
+        padding: var(--bd-space-0-5) var(--bd-space-1-5);
         border-radius: var(--bd-radius-sm);
         color: var(--bd-color-text-on-accent);
         flex-shrink: 0;
@@ -83,7 +83,7 @@ export class BdTaskCard extends LitElement {
       .bead-id {
         font-size: var(--bd-font-size-2xs);
         color: var(--bd-color-text-muted);
-        font-family: monospace;
+        font-family: var(--bd-font-family-mono);
       }
       .subtask-count {
         font-size: var(--bd-font-size-2xs);

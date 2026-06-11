@@ -6,6 +6,7 @@ import { Hono } from 'hono'
 import { streamSSE } from 'hono/streaming'
 import { getBeadDetail, getBoardState, getProjectInfo } from './query.js'
 import { addClient } from './sse.js'
+import { generateThemeCss, loadThemeConfig } from './theme.js'
 
 // Resolve the public dir relative to this file so npx (any cwd) works correctly.
 // Only register static middleware when the directory exists — in dev mode Vite
@@ -30,6 +31,14 @@ app.get('/api/bead/:id', async (c) => {
 app.get('/api/info', async (c) => {
   const info = await getProjectInfo()
   return c.json(info)
+})
+
+// Read the config on every request so theme edits apply on browser refresh
+app.get('/theme.css', (c) => {
+  const css = generateThemeCss(loadThemeConfig())
+  c.header('Content-Type', 'text/css; charset=utf-8')
+  c.header('Cache-Control', 'no-cache')
+  return c.body(css)
 })
 
 app.get('/events', (c) =>

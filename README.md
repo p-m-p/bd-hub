@@ -30,6 +30,48 @@ npx bd-hub --open          # start and open browser
 npx bd-hub --port 4000     # use a different port
 ```
 
+## Theming
+
+The dashboard ships with the Catppuccin theme (Latte in light mode, Mocha in dark mode, following your OS preference). To customise it, create an optional `bd-hub.config.json` in the directory you start `bd-hub` from:
+
+```json
+{
+  "theme": {
+    "font": {
+      "family": "Inter, sans-serif",
+      "monoFamily": "JetBrains Mono, monospace",
+      "scale": 1.1
+    },
+    "spacing": "dense",
+    "mode": "auto",
+    "light": { "bgBase": "#fafafa" },
+    "dark": { "bgBase": "#11111b", "accentDone": "#94e2d5" }
+  }
+}
+```
+
+Everything is optional — anything you leave out keeps its Catppuccin default. Config edits apply on browser refresh; no server restart needed.
+
+- **`font.family`** / **`font.monoFamily`** — any CSS font stack
+- **`font.scale`** — multiplies all font sizes (e.g. `1.1` for 10% larger text)
+- **`spacing`** — `"dense"`, `"normal"`, or `"spacious"`
+- **`mode`** — `"auto"` (follow OS light/dark, default), `"light"`, or `"dark"` (fixed)
+- **`light`** / **`dark`** — color overrides per scheme
+- **`colors`** — a single set of color overrides applied in both schemes, for a custom theme that doesn't react to light/dark; combine with `mode` to fix the scheme used for native UI like scrollbars and form controls
+
+Color keys (any CSS color value works — hex, `rgb()`, `oklch()`, named):
+
+| Key | Used for |
+| --- | --- |
+| `bgBase` | page background |
+| `bgMantle` | recessed surfaces (chips, code) |
+| `bgSurface` | cards and dialogs |
+| `border` / `borderMuted` | separators and outlines |
+| `textPrimary` / `textMuted` | body and secondary text |
+| `textOnAccent` | text on filled chips |
+| `accentInProgress` / `accentDone` | column/status accents |
+| `priorityP0`–`priorityP3` | priority chips |
+
 ## Install beads
 
 ```sh

@@ -42,6 +42,11 @@ OPTIONS
   --open       Open the dashboard in your default browser on startup
   --help, -h   Show this help message
 
+THEMING
+  Create an optional bd-hub.config.json in the directory you start bd-hub
+  from to customise fonts, colors, spacing density and light/dark mode.
+  See https://github.com/p-m-p/bd-hub#theming for the config format.
+
 PREREQUISITES
   bd (beads) must be installed and available in PATH.
   Run from a directory that contains a .beads/ database (i.e. bd init has been run).

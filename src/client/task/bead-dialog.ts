@@ -114,7 +114,7 @@ export class BdBeadDialog extends LitElement {
     .dialog-id {
       font-size: var(--bd-font-size-xs);
       color: var(--bd-color-text-muted);
-      font-family: monospace;
+      font-family: var(--bd-font-family-mono);
       margin-top: 0.2rem;
     }
     .dialog-close {
@@ -130,8 +130,8 @@ export class BdBeadDialog extends LitElement {
     .dialog-meta {
       display: flex;
       align-items: center;
-      gap: 0.4rem;
-      padding: 0.45rem var(--bd-space-5);
+      gap: var(--bd-space-1-5);
+      padding: calc(0.45rem * var(--bd-space-scale)) var(--bd-space-5);
       border-bottom: 1px solid var(--bd-color-border);
       flex-shrink: 0;
       flex-wrap: wrap;
@@ -139,7 +139,7 @@ export class BdBeadDialog extends LitElement {
     .meta-chip {
       font-size: var(--bd-font-size-2xs);
       font-weight: var(--bd-font-weight-bold);
-      padding: 0.15rem 0.4rem;
+      padding: var(--bd-space-0-5) var(--bd-space-1-5);
       border-radius: var(--bd-radius-sm);
       text-transform: uppercase;
       letter-spacing: var(--bd-tracking-label);
@@ -181,7 +181,7 @@ export class BdBeadDialog extends LitElement {
       padding: var(--bd-space-3) var(--bd-space-5);
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: var(--bd-space-1-5);
     }
 
     /* Prose — shared between body and footer markdown content */
@@ -191,13 +191,16 @@ export class BdBeadDialog extends LitElement {
     :is(.dialog-body-inner, .dialog-footer) :is(h1, h2, h3) { color: var(--bd-color-text-primary); }
     :is(.dialog-body-inner, .dialog-footer) p { margin: 0.4rem 0; }
     .dialog-body-inner :is(ul, ol) { margin: 0.4rem 0; padding-left: 1.4rem; }
-    .dialog-footer :is(ul, ol) { margin: 0; padding-left: 0; list-style: none; gap: 0.35rem; display: flex; flex-direction: column; }
+    .dialog-footer :is(ul, ol) { margin: 0; padding-left: 0; list-style: none; gap: var(--bd-space-1-5); display: flex; flex-direction: column; }
     .dialog-body-inner li { margin: 0.15rem 0; }
     :is(.dialog-body-inner, .dialog-footer) code:not([class]) {
       background: var(--bd-color-bg-mantle);
       border-radius: var(--bd-radius-sm);
       padding: 0.1em 0.35em;
       font-size: 0.875em;
+    }
+    :is(.dialog-body-inner, .dialog-footer) :is(pre, code) {
+      font-family: var(--bd-font-family-mono);
     }
     :is(.dialog-body-inner, .dialog-footer) pre {
       border-radius: var(--bd-radius-md);
@@ -208,7 +211,7 @@ export class BdBeadDialog extends LitElement {
 
     /* Sections within the footer */
     .dialog-section {
-      padding-top: 0.4rem;
+      padding-top: var(--bd-space-1-5);
       border-top: 1px solid var(--bd-color-border);
     }
     .dialog-section:first-child {
@@ -225,7 +228,7 @@ export class BdBeadDialog extends LitElement {
     }
 
     /* Dependencies */
-    .dep-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.35rem; }
+    .dep-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--bd-space-1-5); }
     .dep-item { display: flex; align-items: baseline; gap: var(--bd-space-2); }
     .dep-link {
       font-size: var(--bd-font-size-sm);
