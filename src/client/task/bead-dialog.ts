@@ -174,50 +174,44 @@ export class BdBeadDialog extends LitElement {
       line-height: var(--bd-line-height-body);
     }
 
-    /* Footer — always visible, pinned below the scrollable body */
-    .dialog-footer {
-      flex-shrink: 0;
-      border-top: 1px solid var(--bd-color-border);
-      padding: var(--bd-space-3) var(--bd-space-5);
-      display: flex;
-      flex-direction: column;
-      gap: var(--bd-space-1-5);
-    }
-
-    /* Prose — shared between body and footer markdown content */
-    :is(.dialog-body-inner, .dialog-footer) h1 { font-size: var(--bd-font-size-lg); margin: var(--bd-space-4) 0 0.35rem; font-weight: var(--bd-font-weight-semibold); }
-    :is(.dialog-body-inner, .dialog-footer) h2 { font-size: var(--bd-font-size-md); margin: 0.85rem 0 0.3rem; font-weight: var(--bd-font-weight-semibold); }
-    :is(.dialog-body-inner, .dialog-footer) h3 { font-size: var(--bd-font-size-base); margin: 0.7rem 0 0.25rem; font-weight: var(--bd-font-weight-semibold); }
-    :is(.dialog-body-inner, .dialog-footer) :is(h1, h2, h3) { color: var(--bd-color-text-primary); }
-    :is(.dialog-body-inner, .dialog-footer) p { margin: 0.4rem 0; }
+    /* Prose */
+    .dialog-body-inner h1 { font-size: var(--bd-font-size-lg); margin: var(--bd-space-4) 0 0.35rem; font-weight: var(--bd-font-weight-semibold); }
+    .dialog-body-inner h2 { font-size: var(--bd-font-size-md); margin: 0.85rem 0 0.3rem; font-weight: var(--bd-font-weight-semibold); }
+    .dialog-body-inner h3 { font-size: var(--bd-font-size-base); margin: 0.7rem 0 0.25rem; font-weight: var(--bd-font-weight-semibold); }
+    .dialog-body-inner :is(h1, h2, h3) { color: var(--bd-color-text-primary); }
+    .dialog-body-inner p { margin: 0.4rem 0; }
     .dialog-body-inner :is(ul, ol) { margin: 0.4rem 0; padding-left: 1.4rem; }
-    .dialog-footer :is(ul, ol) { margin: 0; padding-left: 0; list-style: none; gap: var(--bd-space-1-5); display: flex; flex-direction: column; }
     .dialog-body-inner li { margin: 0.15rem 0; }
-    :is(.dialog-body-inner, .dialog-footer) code:not([class]) {
+    .dialog-body-inner code:not([class]) {
       background: var(--bd-color-bg-mantle);
       border-radius: var(--bd-radius-sm);
       padding: 0.1em 0.35em;
       font-size: 0.875em;
     }
-    :is(.dialog-body-inner, .dialog-footer) :is(pre, code) {
+    .dialog-body-inner :is(pre, code) {
       font-family: var(--bd-font-family-mono);
     }
-    :is(.dialog-body-inner, .dialog-footer) pre {
+    .dialog-body-inner pre {
       border-radius: var(--bd-radius-md);
       overflow-x: auto;
       margin: var(--bd-space-3) 0;
       padding: var(--bd-space-3) var(--bd-space-4);
     }
 
-    /* Sections within the footer */
+    /* Sections within the body */
     .dialog-section {
-      padding-top: var(--bd-space-1-5);
+      padding-top: var(--bd-space-3);
+      margin-top: var(--bd-space-3);
       border-top: 1px solid var(--bd-color-border);
     }
-    .dialog-section:first-child {
-      padding-top: 0;
-      border-top: none;
+
+    /* Footer — pinned, holds dependencies */
+    .dialog-footer {
+      flex-shrink: 0;
+      border-top: 1px solid var(--bd-color-border);
+      padding: var(--bd-space-3) var(--bd-space-5);
     }
+    .dialog-footer :is(ul, ol) { margin: 0; padding-left: 0; list-style: none; gap: var(--bd-space-1-5); display: flex; flex-direction: column; }
     .section-title {
       font-size: var(--bd-font-size-xs);
       font-weight: var(--bd-font-weight-bold);
@@ -330,7 +324,6 @@ export class BdBeadDialog extends LitElement {
       Array.isArray(b?.dependencies) ? b?.dependencies : []
     ) as Dep[]
     const status = typeof b?.status === 'string' ? b.status : ''
-    const hasFooter = b && (b.notes || b.acceptance_criteria || deps.length)
     // _tick is read here so Lit re-renders this template when the interval fires
     void this._tick
 
@@ -367,15 +360,8 @@ export class BdBeadDialog extends LitElement {
                   ? html`<p class="dialog-error">Failed to load bead details.</p>`
                   : unsafeHTML(this._renderedHtml)
             }
-          </div>
-        </div>
-
-        ${
-          hasFooter
-            ? html`
-          <footer class="dialog-footer">
             ${
-              b.notes
+              b?.notes
                 ? html`
               <div class="dialog-section">
                 <p class="section-title">Notes</p>
@@ -385,7 +371,7 @@ export class BdBeadDialog extends LitElement {
                 : nothing
             }
             ${
-              b.acceptance_criteria
+              b?.acceptance_criteria
                 ? html`
               <div class="dialog-section">
                 <p class="section-title">Acceptance criteria</p>
@@ -394,27 +380,26 @@ export class BdBeadDialog extends LitElement {
             `
                 : nothing
             }
-            ${
-              deps.length
-                ? html`
-              <div class="dialog-section">
-                <p class="section-title">Dependencies</p>
-                <ul class="dep-list">
-                  ${deps.map(
-                    (dep) => html`
-                    <li class="dep-item">
-                      <button type="button" class="dep-link"
-                        @click=${() => this._navigateToBead(dep.id)}
-                      >${dep.title}</button>
-                      <span class="dep-status">${dep.status.replace(/_/g, ' ')}</span>
-                    </li>
-                  `,
-                  )}
-                </ul>
-              </div>
-            `
-                : nothing
-            }
+          </div>
+        </div>
+
+        ${
+          deps.length
+            ? html`
+          <footer class="dialog-footer">
+            <p class="section-title">Dependencies</p>
+            <ul class="dep-list">
+              ${deps.map(
+                (dep) => html`
+                <li class="dep-item">
+                  <button type="button" class="dep-link"
+                    @click=${() => this._navigateToBead(dep.id)}
+                  >${dep.title}</button>
+                  <span class="dep-status">${dep.status.replace(/_/g, ' ')}</span>
+                </li>
+              `,
+              )}
+            </ul>
           </footer>
         `
             : nothing
