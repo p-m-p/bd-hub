@@ -171,6 +171,34 @@ describe('GET /api/info', () => {
   })
 })
 
+describe('GET /api/prism-theme', () => {
+  it('returns 200 with JSON containing dark and light keys', async () => {
+    const { app } = await import('../../src/server/app.js')
+    const res = await app.request('/api/prism-theme')
+
+    expect(res.status).toBe(200)
+    expect(res.headers.get('content-type')).toMatch(/application\/json/)
+    const body = await res.json()
+    expect(body).toHaveProperty('dark')
+    expect(body).toHaveProperty('light')
+  })
+
+  it('returns null for both schemes when no custom theme is configured', async () => {
+    const { app } = await import('../../src/server/app.js')
+    const res = await app.request('/api/prism-theme')
+
+    const body = await res.json()
+    expect(body.dark).toBeNull()
+    expect(body.light).toBeNull()
+  })
+
+  it('is not cached', async () => {
+    const { app } = await import('../../src/server/app.js')
+    const res = await app.request('/api/prism-theme')
+    expect(res.headers.get('cache-control')).toBe('no-cache')
+  })
+})
+
 describe('GET /theme.css', () => {
   it('returns 200 with a text/css stylesheet', async () => {
     const { app } = await import('../../src/server/app.js')

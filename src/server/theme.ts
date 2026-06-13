@@ -18,6 +18,7 @@ export interface ThemeConfig {
   colors?: ThemeColors
   light?: ThemeColors
   dark?: ThemeColors
+  prismTheme?: string | { dark?: string; light?: string }
 }
 
 /** Config color keys → token name suffixes used in tokens.css */
@@ -159,4 +160,37 @@ export function generateThemeCss(theme: ThemeConfig | null): string {
 
   const body = vars.map((v) => `  ${v}`).join('\n')
   return `/* bd-hub theme overrides — generated from ${CONFIG_FILENAME} */\n:root {\n${body}${body ? '\n' : ''}}\n`
+}
+
+/**
+ * Read custom Prism theme CSS files referenced by `prismTheme` in the config.
+ * Returns `{ dark: null, light: null }` when no custom theme is configured.
+ * A single string path is used for both schemes; `{ dark, light }` keys select
+ * per-scheme files. Missing files are warned and returned as null (falls back
+ * to the bundled Catppuccin theme in the client).
+ */
+export function loadPrismCss(
+  theme: ThemeConfig | null,
+  dir = process.cwd(),
+): { dark: string | null; light: string | null } {
+  if (!theme?.prismTheme) return { dark: null, light: null }
+
+  const readFile = (relPath: string): string | null => {
+    try {
+      return readFileSync(join(dir, relPath), 'utf8')
+    } catch {
+      console.warn(`bd-hub: could not read prismTheme file "${relPath}"`)
+      return null
+    }
+  }
+
+  if (typeof theme.prismTheme === 'string') {
+    const css = readFile(theme.prismTheme)
+    return { dark: css, light: css }
+  }
+
+  return {
+    dark: theme.prismTheme.dark ? readFile(theme.prismTheme.dark) : null,
+    light: theme.prismTheme.light ? readFile(theme.prismTheme.light) : null,
+  }
 }

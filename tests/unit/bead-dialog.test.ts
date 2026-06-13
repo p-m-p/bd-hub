@@ -45,6 +45,7 @@ vi.mock('prismjs/components/prism-yaml', () => ({}))
 import {
   isStaleFetch,
   relativeTime,
+  resolveScheme,
 } from '../../src/client/task/bead-dialog.js'
 
 describe('isStaleFetch()', () => {
@@ -84,6 +85,33 @@ describe('isStaleFetch() — concurrent fetch scenario', () => {
 
     // Second fetch resolves — targetId = currentBeadId = 'bead-002'
     expect(isStaleFetch(secondBeadId, secondBeadId)).toBe(false)
+  })
+})
+
+describe('resolveScheme()', () => {
+  it('returns "dark" when cssVar is explicitly "dark" regardless of OS', () => {
+    expect(resolveScheme('dark', false)).toBe('dark')
+    expect(resolveScheme('dark', true)).toBe('dark')
+  })
+
+  it('returns "light" when cssVar is explicitly "light" regardless of OS', () => {
+    expect(resolveScheme('light', true)).toBe('light')
+    expect(resolveScheme('light', false)).toBe('light')
+  })
+
+  it('strips surrounding whitespace before comparing', () => {
+    expect(resolveScheme('  dark  ', false)).toBe('dark')
+    expect(resolveScheme('  light  ', true)).toBe('light')
+  })
+
+  it('falls back to OS preference when cssVar is "light dark" (auto mode)', () => {
+    expect(resolveScheme('light dark', true)).toBe('dark')
+    expect(resolveScheme('light dark', false)).toBe('light')
+  })
+
+  it('falls back to OS preference when cssVar is empty', () => {
+    expect(resolveScheme('', true)).toBe('dark')
+    expect(resolveScheme('', false)).toBe('light')
   })
 })
 

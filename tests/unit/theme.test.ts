@@ -1,10 +1,11 @@
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import {
   CONFIG_FILENAME,
   generateThemeCss,
+  loadPrismCss,
   loadThemeConfig,
   type ThemeConfig,
 } from '../../src/server/theme.js'
@@ -192,5 +193,58 @@ describe('generateThemeCss', () => {
     expect(css).not.toContain('display: none')
     expect(css).not.toContain('@import')
     expect(warn).toHaveBeenCalled()
+  })
+})
+
+describe('loadPrismCss', () => {
+  function dirWithFiles(files: Record<string, string>): string {
+    const dir = mkdtempSync(join(tmpdir(), 'bd-hub-prism-'))
+    for (const [name, content] of Object.entries(files)) {
+      writeFileSync(join(dir, name), content)
+    }
+    tempDir = dir
+    return dir
+  }
+
+  it('returns { dark: null, light: null } when theme is null', () => {
+    expect(loadPrismCss(null)).toEqual({ dark: null, light: null })
+  })
+
+  it('returns { dark: null, light: null } when prismTheme is not set', () => {
+    expect(loadPrismCss({ mode: 'dark' })).toEqual({ dark: null, light: null })
+  })
+
+  it('reads a single string path and uses it for both schemes', () => {
+    const dir = dirWithFiles({ 'my-prism.css': '.token { color: red; }' })
+    const result = loadPrismCss({ prismTheme: 'my-prism.css' }, dir)
+    expect(result.dark).toBe('.token { color: red; }')
+    expect(result.light).toBe('.token { color: red; }')
+  })
+
+  it('reads separate dark and light files when given an object', () => {
+    const dir = dirWithFiles({
+      'dark.css': '.token { color: white; }',
+      'light.css': '.token { color: black; }',
+    })
+    const result = loadPrismCss({ prismTheme: { dark: 'dark.css', light: 'light.css' } }, dir)
+    expect(result.dark).toBe('.token { color: white; }')
+    expect(result.light).toBe('.token { color: black; }')
+  })
+
+  it('returns null for a scheme that has no file configured', () => {
+    const dir = dirWithFiles({ 'dark.css': '.token { color: white; }' })
+    const result = loadPrismCss({ prismTheme: { dark: 'dark.css' } }, dir)
+    expect(result.dark).toBe('.token { color: white; }')
+    expect(result.light).toBeNull()
+  })
+
+  it('warns and returns null when the file cannot be read', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const dir = mkdtempSync(join(tmpdir(), 'bd-hub-prism-'))
+    tempDir = dir
+    const result = loadPrismCss({ prismTheme: 'missing.css' }, dir)
+    expect(result.dark).toBeNull()
+    expect(result.light).toBeNull()
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('missing.css'))
   })
 })

@@ -1,6 +1,6 @@
 import prismLight from 'catppuccin-prismjs/themes/latte.css?inline'
 import prismDark from 'catppuccin-prismjs/themes/mocha.css?inline'
-import { css, html, LitElement, nothing, unsafeCSS } from 'lit'
+import { css, html, LitElement, nothing } from 'lit'
 import { customElement, property, query, state } from 'lit/decorators.js'
 import { unsafeHTML } from 'lit/directives/unsafe-html.js'
 import MarkdownIt from 'markdown-it'
@@ -29,6 +29,19 @@ function escapeHtml(s: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
+}
+
+/**
+ * Resolve the active color scheme from the CSS custom property and OS preference.
+ * When `--bd-color-scheme` is forced to "light" or "dark" by the theme config,
+ * that value wins. Otherwise falls back to the OS `prefers-color-scheme`.
+ * Exported for testing.
+ */
+export function resolveScheme(cssVar: string, osPrefersDark: boolean): 'light' | 'dark' {
+  const v = cssVar.trim()
+  if (v === 'dark') return 'dark'
+  if (v === 'light') return 'light'
+  return osPrefersDark ? 'dark' : 'light'
 }
 
 /** Exported for testing. */
@@ -67,20 +80,18 @@ export class BdBeadDialog extends LitElement {
   @state() private _renderedHtml = ''
   /** Incremented every 60 s to force a re-render of relativeTime stamps. */
   @state() private _tick = 0
+  @state() private _scheme: 'light' | 'dark' = 'dark'
+  @state() private _customPrismCss: { dark: string | null; light: string | null } | null = null
 
   @query('dialog') private _dialog!: HTMLDialogElement
 
   private _tickInterval: ReturnType<typeof setInterval> | null = null
+  private _mq: MediaQueryList | null = null
+  private _mqListener: (() => void) | null = null
 
   static override styles = [
     buttonBase,
     css`
-    @media (prefers-color-scheme: dark) {
-      ${unsafeCSS(prismDark)}
-    }
-    @media (prefers-color-scheme: light) {
-      ${unsafeCSS(prismLight)}
-    }
     dialog {
       border: none;
       border-radius: var(--bd-radius-lg);
@@ -238,6 +249,43 @@ export class BdBeadDialog extends LitElement {
   `,
   ]
 
+  override connectedCallback() {
+    super.connectedCallback()
+    this._updateScheme()
+    this._mq = window.matchMedia('(prefers-color-scheme: dark)')
+    this._mqListener = () => this._updateScheme()
+    this._mq.addEventListener('change', this._mqListener)
+    void this._fetchPrismTheme()
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback()
+    if (this._mq && this._mqListener) {
+      this._mq.removeEventListener('change', this._mqListener)
+      this._mq = null
+      this._mqListener = null
+    }
+  }
+
+  private _updateScheme() {
+    const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--bd-color-scheme')
+    this._scheme = resolveScheme(cssVar, window.matchMedia('(prefers-color-scheme: dark)').matches)
+  }
+
+  private async _fetchPrismTheme() {
+    try {
+      const res = await fetch('/api/prism-theme')
+      if (res.ok) {
+        this._customPrismCss = (await res.json()) as {
+          dark: string | null
+          light: string | null
+        }
+      }
+    } catch {
+      // fall back to bundled catppuccin themes
+    }
+  }
+
   override willUpdate(changed: Map<string, unknown>) {
     if (changed.has('beadId') && changed.get('beadId') !== undefined) {
       this._bead = null
@@ -326,8 +374,12 @@ export class BdBeadDialog extends LitElement {
     const status = typeof b?.status === 'string' ? b.status : ''
     // _tick is read here so Lit re-renders this template when the interval fires
     void this._tick
+    const prismCss =
+      this._customPrismCss?.[this._scheme] ??
+      (this._scheme === 'dark' ? prismDark : prismLight)
 
     return html`
+      <style>${prismCss}</style>
       <dialog aria-labelledby="dialog-title" @click=${this._onDialogClick}>
         <header class="dialog-header">
           <div>
