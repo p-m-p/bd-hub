@@ -30,7 +30,7 @@ import {
   tallyText,
 } from '../../src/client/board/column.js'
 import type { ColumnName } from '../../src/client/board/column.js'
-import type { Epic, EpicAge } from '../../src/client/store/context.js'
+import type { Epic, EpicAge, Task } from '../../src/client/store/context.js'
 
 describe('COLUMN_LABELS', () => {
   it('has entries for all four columns', () => {
@@ -58,7 +58,7 @@ describe('COLUMN_LABELS', () => {
 })
 
 describe('filterTasksByEpic', () => {
-  const tasks = [
+  const tasks: Task[] = [
     {
       id: 't1',
       title: 'Task 1',
@@ -67,6 +67,7 @@ describe('filterTasksByEpic', () => {
       epicId: 'ep-1',
       subtaskTotal: 0,
       subtaskDone: 0,
+      createdAt: '2026-06-01T00:00:00Z',
     },
     {
       id: 't2',
@@ -76,6 +77,7 @@ describe('filterTasksByEpic', () => {
       epicId: 'ep-2',
       subtaskTotal: 0,
       subtaskDone: 0,
+      createdAt: '2026-06-01T00:00:00Z',
     },
     {
       id: 't3',
@@ -84,6 +86,7 @@ describe('filterTasksByEpic', () => {
       priority: 3,
       subtaskTotal: 0,
       subtaskDone: 0,
+      createdAt: '2026-06-01T00:00:00Z',
     },
   ]
 
@@ -116,6 +119,58 @@ describe('filterTasksByEpic', () => {
 
   it('ORPHAN_EPIC_ID is "__orphan__"', () => {
     expect(ORPHAN_EPIC_ID).toBe('__orphan__')
+  })
+
+  it('filters orphan tasks by epicAge when provided', () => {
+    const recentTask: Task = {
+      id: 'recent',
+      title: 'Recent',
+      status: 'open',
+      priority: 1,
+      subtaskTotal: 0,
+      subtaskDone: 0,
+      createdAt: new Date().toISOString(),
+    }
+    const oldTask: Task = {
+      id: 'old',
+      title: 'Old',
+      status: 'open',
+      priority: 1,
+      subtaskTotal: 0,
+      subtaskDone: 0,
+      createdAt: '2020-01-01T00:00:00Z',
+    }
+    const result = filterTasksByEpic([recentTask, oldTask], ORPHAN_EPIC_ID, '1w')
+    expect(result).toHaveLength(1)
+    expect(result[0].id).toBe('recent')
+  })
+
+  it('returns all orphan tasks when epicAge is "all"', () => {
+    const old: Task = {
+      id: 'old',
+      title: 'Old',
+      status: 'open',
+      priority: 1,
+      subtaskTotal: 0,
+      subtaskDone: 0,
+      createdAt: '2020-01-01T00:00:00Z',
+    }
+    const result = filterTasksByEpic([old], ORPHAN_EPIC_ID, 'all')
+    expect(result).toHaveLength(1)
+  })
+
+  it('does not filter orphan tasks by age when epicAge is omitted', () => {
+    const old: Task = {
+      id: 'old',
+      title: 'Old',
+      status: 'open',
+      priority: 1,
+      subtaskTotal: 0,
+      subtaskDone: 0,
+      createdAt: '2020-01-01T00:00:00Z',
+    }
+    const result = filterTasksByEpic([old], ORPHAN_EPIC_ID)
+    expect(result).toHaveLength(1)
   })
 })
 

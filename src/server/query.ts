@@ -46,6 +46,7 @@ function toTask(
     ...(issue.parent != null ? { epicId: issue.parent } : {}),
     subtaskTotal,
     subtaskDone,
+    createdAt: issue.created_at,
   }
 }
 

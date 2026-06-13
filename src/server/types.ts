@@ -15,6 +15,7 @@ export interface Task {
   epicId?: string // parent epic id
   subtaskTotal: number
   subtaskDone: number
+  createdAt: string
 }
 
 export interface BoardState {

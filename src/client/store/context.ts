@@ -17,6 +17,7 @@ export interface Task {
   epicId?: string
   subtaskTotal: number
   subtaskDone: number
+  createdAt: string
 }
 
 /** How far back in time to display epics, keyed by their createdAt date. */

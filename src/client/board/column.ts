@@ -5,8 +5,10 @@ import {
   type BoardState,
   boardContext,
   emptyBoardState,
+  type EpicAge,
   type Task,
 } from '../store/context.js'
+import { epicAgeCutoff } from './board.js'
 
 export type ColumnName = 'open' | 'ready' | 'inProgress' | 'done'
 
@@ -19,10 +21,17 @@ export const COLUMN_LABELS: Record<ColumnName, string> = {
   done: 'Done',
 }
 
-export function filterTasksByEpic(tasks: Task[], epicId: string): Task[] {
+export function filterTasksByEpic(
+  tasks: Task[],
+  epicId: string,
+  epicAge?: EpicAge,
+): Task[] {
   if (!epicId) return tasks
-  if (epicId === ORPHAN_EPIC_ID)
-    return tasks.filter((t) => t.epicId === undefined)
+  if (epicId === ORPHAN_EPIC_ID) {
+    const orphans = tasks.filter((t) => t.epicId === undefined)
+    const cutoff = epicAge ? epicAgeCutoff(epicAge) : null
+    return cutoff ? orphans.filter((t) => new Date(t.createdAt) >= cutoff) : orphans
+  }
   return tasks.filter((t) => t.epicId === epicId)
 }
 
@@ -79,7 +88,7 @@ export class BdColumn extends LitElement {
 
   get tasks(): Task[] {
     const allTasks = this.boardState.tasks[this.column] ?? []
-    return filterTasksByEpic(allTasks, this.epicId)
+    return filterTasksByEpic(allTasks, this.epicId, this.boardState.ui.epicAge)
   }
 
   override render() {

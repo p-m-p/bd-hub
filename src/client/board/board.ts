@@ -9,12 +9,9 @@ import {
   emptyBoardState,
 } from '../store/context.js'
 
-/**
- * Returns true when an epic should be displayed given the current age filter.
- * The orphan epic (createdAt === '') is always visible.
- */
-export function isEpicVisible(epic: Epic, epicAge: EpicAge): boolean {
-  if (epicAge === 'all' || !epic.createdAt) return true
+/** Returns the oldest Date that should be visible for a given EpicAge, or null for 'all'. */
+export function epicAgeCutoff(epicAge: EpicAge): Date | null {
+  if (epicAge === 'all') return null
   const cutoff = new Date()
   if (epicAge === '1w') {
     cutoff.setDate(cutoff.getDate() - 7)
@@ -24,7 +21,17 @@ export function isEpicVisible(epic: Epic, epicAge: EpicAge): boolean {
     const months = ({ '1m': 1, '3m': 3, '6m': 6, '12m': 12 } as const)[epicAge]
     cutoff.setMonth(cutoff.getMonth() - months)
   }
-  return new Date(epic.createdAt) >= cutoff
+  return cutoff
+}
+
+/**
+ * Returns true when an epic should be displayed given the current age filter.
+ * The orphan epic (createdAt === '') is always visible.
+ */
+export function isEpicVisible(epic: Epic, epicAge: EpicAge): boolean {
+  if (!epic.createdAt) return true
+  const cutoff = epicAgeCutoff(epicAge)
+  return cutoff === null || new Date(epic.createdAt) >= cutoff
 }
 import '../task/bead-dialog.js'
 import type { BdBeadDialog } from '../task/bead-dialog.js'

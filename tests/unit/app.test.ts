@@ -49,6 +49,7 @@ const sampleBoardState: BoardState = {
         priority: 2,
         subtaskTotal: 0,
         subtaskDone: 0,
+        createdAt: '2026-01-01T00:00:00Z',
       },
     ],
     inProgress: [],

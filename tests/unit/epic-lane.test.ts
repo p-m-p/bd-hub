@@ -16,6 +16,7 @@ const baseTask: Task = {
   epicId: 'epic-1',
   subtaskTotal: 0,
   subtaskDone: 0,
+  createdAt: '2026-01-01T00:00:00Z',
 }
 
 function makeState(overrides: Partial<BoardState['tasks']> = {}): BoardState {

@@ -67,6 +67,7 @@ describe('BoardState type', () => {
       epicId: 'ep-1',
       subtaskTotal: 3,
       subtaskDone: 1,
+      createdAt: '2026-01-01T00:00:00Z',
     }
 
     const state: BoardState = {
@@ -102,6 +103,7 @@ describe('BoardState type', () => {
       priority: 1,
       subtaskTotal: 0,
       subtaskDone: 0,
+      createdAt: '',
     }
 
     expect(task.assignee).toBeUndefined()
