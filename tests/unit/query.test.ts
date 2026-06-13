@@ -389,7 +389,7 @@ describe('getProjectInfo()', () => {
     vi.mocked(execa).mockResolvedValueOnce({
       stdout: '  issue_prefix = my-cool-project\n',
       stderr: '',
-    } as ReturnType<typeof execa>)
+    } as unknown as Awaited<ReturnType<typeof execa>>)
     const info = await getProjectInfo()
     expect(info.name).toBe('My Cool Project')
   })
@@ -398,7 +398,7 @@ describe('getProjectInfo()', () => {
     vi.mocked(execa).mockResolvedValueOnce({
       stdout: 'issue_prefix = hello_world\n',
       stderr: '',
-    } as ReturnType<typeof execa>)
+    } as unknown as Awaited<ReturnType<typeof execa>>)
     const info = await getProjectInfo()
     expect(info.name).toBe('Hello World')
   })

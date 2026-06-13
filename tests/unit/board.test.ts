@@ -11,7 +11,7 @@ vi.mock('lit', () => ({
 }))
 
 vi.mock('lit/decorators.js', () => ({
-  customElement: () => (cls) => cls,
+  customElement: () => (cls: unknown) => cls,
   property: () => () => undefined,
   query: () => () => undefined,
   state: () => () => undefined,
@@ -19,7 +19,7 @@ vi.mock('lit/decorators.js', () => ({
 
 vi.mock('@lit/context', () => ({
   consume: () => () => undefined,
-  createContext: (key) => key,
+  createContext: (key: unknown) => key,
 }))
 
 import { isEpicVisible } from '../../src/client/board/board.js'
@@ -29,13 +29,14 @@ import {
   ORPHAN_EPIC_ID,
   tallyText,
 } from '../../src/client/board/column.js'
+import type { ColumnName } from '../../src/client/board/column.js'
 import type { Epic, EpicAge } from '../../src/client/store/context.js'
 
 describe('COLUMN_LABELS', () => {
   it('has entries for all four columns', () => {
     const keys = ['open', 'ready', 'inProgress', 'done']
     for (const key of keys) {
-      expect(COLUMN_LABELS[key]).toBeDefined()
+      expect(COLUMN_LABELS[key as ColumnName]).toBeDefined()
     }
   })
 

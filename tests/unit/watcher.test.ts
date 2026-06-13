@@ -19,7 +19,7 @@ describe('createWatcher', () => {
     vi.useFakeTimers()
     mockWatcher = { on: vi.fn().mockReturnThis(), close: vi.fn() }
     vi.mocked(chokidar.watch).mockReturnValue(
-      mockWatcher as ReturnType<typeof chokidar.watch>,
+      mockWatcher as unknown as ReturnType<typeof chokidar.watch>,
     )
   })
 
