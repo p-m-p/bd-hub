@@ -23,13 +23,13 @@ vi.mock('@lit/context', () => ({
 }))
 
 import { isEpicVisible } from '../../src/client/board/board.js'
+import type { ColumnName } from '../../src/client/board/column.js'
 import {
   COLUMN_LABELS,
   filterTasksByEpic,
   ORPHAN_EPIC_ID,
   tallyText,
 } from '../../src/client/board/column.js'
-import type { ColumnName } from '../../src/client/board/column.js'
 import type { Epic, EpicAge, Task } from '../../src/client/store/context.js'
 
 describe('COLUMN_LABELS', () => {
@@ -140,7 +140,11 @@ describe('filterTasksByEpic', () => {
       subtaskDone: 0,
       createdAt: '2020-01-01T00:00:00Z',
     }
-    const result = filterTasksByEpic([recentTask, oldTask], ORPHAN_EPIC_ID, '1w')
+    const result = filterTasksByEpic(
+      [recentTask, oldTask],
+      ORPHAN_EPIC_ID,
+      '1w',
+    )
     expect(result).toHaveLength(1)
     expect(result[0].id).toBe('recent')
   })

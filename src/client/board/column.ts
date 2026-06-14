@@ -4,8 +4,8 @@ import { customElement, property, state } from 'lit/decorators.js'
 import {
   type BoardState,
   boardContext,
-  emptyBoardState,
   type EpicAge,
+  emptyBoardState,
   type Task,
 } from '../store/context.js'
 import { epicAgeCutoff } from './board.js'
@@ -30,7 +30,9 @@ export function filterTasksByEpic(
   if (epicId === ORPHAN_EPIC_ID) {
     const orphans = tasks.filter((t) => t.epicId === undefined)
     const cutoff = epicAge ? epicAgeCutoff(epicAge) : null
-    return cutoff ? orphans.filter((t) => new Date(t.createdAt) >= cutoff) : orphans
+    return cutoff
+      ? orphans.filter((t) => new Date(t.createdAt) >= cutoff)
+      : orphans
   }
   return tasks.filter((t) => t.epicId === epicId)
 }

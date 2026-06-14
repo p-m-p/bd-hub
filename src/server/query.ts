@@ -98,11 +98,11 @@ export async function getBoardState(): Promise<BoardState> {
   const subtotalMap = new Map<string, { total: number; done: number }>()
   for (const issue of allIssues) {
     const isSubtask = issue.parent != null && !epicIds.has(issue.parent)
-    if (isSubtask) {
-      const counts = subtotalMap.get(issue.parent!) ?? { total: 0, done: 0 }
+    if (isSubtask && issue.parent != null) {
+      const counts = subtotalMap.get(issue.parent) ?? { total: 0, done: 0 }
       counts.total += 1
       if (issue.status === 'closed') counts.done += 1
-      subtotalMap.set(issue.parent!, counts)
+      subtotalMap.set(issue.parent, counts)
     }
   }
 

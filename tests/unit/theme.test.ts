@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -226,7 +226,10 @@ describe('loadPrismCss', () => {
       'dark.css': '.token { color: white; }',
       'light.css': '.token { color: black; }',
     })
-    const result = loadPrismCss({ prismTheme: { dark: 'dark.css', light: 'light.css' } }, dir)
+    const result = loadPrismCss(
+      { prismTheme: { dark: 'dark.css', light: 'light.css' } },
+      dir,
+    )
     expect(result.dark).toBe('.token { color: white; }')
     expect(result.light).toBe('.token { color: black; }')
   })

@@ -37,7 +37,10 @@ function escapeHtml(s: string): string {
  * that value wins. Otherwise falls back to the OS `prefers-color-scheme`.
  * Exported for testing.
  */
-export function resolveScheme(cssVar: string, osPrefersDark: boolean): 'light' | 'dark' {
+export function resolveScheme(
+  cssVar: string,
+  osPrefersDark: boolean,
+): 'light' | 'dark' {
   const v = cssVar.trim()
   if (v === 'dark') return 'dark'
   if (v === 'light') return 'light'
@@ -81,7 +84,10 @@ export class BdBeadDialog extends LitElement {
   /** Incremented every 60 s to force a re-render of relativeTime stamps. */
   @state() private _tick = 0
   @state() private _scheme: 'light' | 'dark' = 'dark'
-  @state() private _customPrismCss: { dark: string | null; light: string | null } | null = null
+  @state() private _customPrismCss: {
+    dark: string | null
+    light: string | null
+  } | null = null
 
   @query('dialog') private _dialog!: HTMLDialogElement
 
@@ -268,8 +274,13 @@ export class BdBeadDialog extends LitElement {
   }
 
   private _updateScheme() {
-    const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--bd-color-scheme')
-    this._scheme = resolveScheme(cssVar, window.matchMedia('(prefers-color-scheme: dark)').matches)
+    const cssVar = getComputedStyle(document.documentElement).getPropertyValue(
+      '--bd-color-scheme',
+    )
+    this._scheme = resolveScheme(
+      cssVar,
+      window.matchMedia('(prefers-color-scheme: dark)').matches,
+    )
   }
 
   private async _fetchPrismTheme() {

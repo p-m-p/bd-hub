@@ -134,7 +134,8 @@ describe('applyStateUpdate()', () => {
 
   it('calls setter directly when startViewTransition is unavailable', () => {
     const setter = vi.fn()
-    const originalVT = (document as unknown as Record<string, unknown>).startViewTransition
+    const originalVT = (document as unknown as Record<string, unknown>)
+      .startViewTransition
     delete (document as unknown as Record<string, unknown>).startViewTransition
 
     applyStateUpdate(newState, setter)
@@ -143,7 +144,8 @@ describe('applyStateUpdate()', () => {
     expect(setter).toHaveBeenCalledWith(newState)
 
     if (originalVT !== undefined) {
-      ;(document as unknown as Record<string, unknown>).startViewTransition = originalVT
+      ;(document as unknown as Record<string, unknown>).startViewTransition =
+        originalVT
     }
   })
 
@@ -153,7 +155,8 @@ describe('applyStateUpdate()', () => {
       cb()
       return {}
     })
-    ;(document as unknown as Record<string, unknown>).startViewTransition = mockTransition
+    ;(document as unknown as Record<string, unknown>).startViewTransition =
+      mockTransition
 
     applyStateUpdate(newState, setter)
 
