@@ -1,5 +1,39 @@
 # bd-hub
 
+## 0.4.0
+
+### Minor Changes
+
+- 6475011: Fix Prism syntax theme not following forced color mode. Code blocks now correctly switch between dark and light Prism themes based on the resolved `--bd-color-scheme` (set by `mode` in `bd-hub.config.json`) rather than the OS `prefers-color-scheme` media query.
+
+  Also allows users to supply custom Prism theme CSS via `bd-hub.config.json`:
+
+  ```json
+  {
+    "theme": {
+      "prismTheme": "./my-prism-theme.css"
+    }
+  }
+  ```
+
+  Or with separate dark/light themes:
+
+  ```json
+  {
+    "theme": {
+      "prismTheme": {
+        "dark": "./prism-dark.css",
+        "light": "./prism-light.css"
+      }
+    }
+  }
+  ```
+
+### Patch Changes
+
+- 8a8a579: Fix task dialog acceptance criteria and notes scrolling with the body. These sections were previously rendered in a pinned footer, making them appear stuck at the bottom outside the scroll area. They now scroll naturally with the description. Dependencies remain pinned in the footer.
+- 92248e1: Fix duration selector not filtering tasks in the "Everything else" swim lane. Orphan tasks (those with no parent epic) are now filtered by their own creation date when a non-"All time" duration is selected.
+
 ## 0.3.0
 
 ### Minor Changes
