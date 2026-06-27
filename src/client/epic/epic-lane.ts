@@ -56,7 +56,6 @@ export class BdEpicLane extends LitElement {
       top: 0;
       z-index: 10;
       background: var(--bd-color-bg-mantle);
-      border-top: 2px solid var(--bd-color-border);
       border-bottom: 1px solid var(--bd-color-border);
     }
     .epic-toggle {
