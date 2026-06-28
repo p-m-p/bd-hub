@@ -1,4 +1,5 @@
 import './styles/tokens.css'
+import './styles/view-transitions.css'
 // entry point — components registered here
 import './board/board.js'
 import './board/column.js'

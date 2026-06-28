@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import {
+  _resetTransitionForTesting,
   applyStateUpdate,
   createReconnectHandlers,
 } from '../../src/client/store/board-store.js'
@@ -112,6 +113,10 @@ describe('BoardState type', () => {
 })
 
 describe('applyStateUpdate()', () => {
+  beforeEach(() => {
+    _resetTransitionForTesting()
+  })
+
   const newState: BoardState = {
     projectName: '',
     epics: [
@@ -153,7 +158,7 @@ describe('applyStateUpdate()', () => {
     const setter = vi.fn()
     const mockTransition = vi.fn((cb: () => void) => {
       cb()
-      return {}
+      return { finished: Promise.resolve() }
     })
     ;(document as unknown as Record<string, unknown>).startViewTransition =
       mockTransition
@@ -162,6 +167,24 @@ describe('applyStateUpdate()', () => {
 
     expect(mockTransition).toHaveBeenCalledOnce()
     expect(setter).toHaveBeenCalledWith(newState)
+
+    delete (document as unknown as Record<string, unknown>).startViewTransition
+  })
+
+  it('calls setter directly when a transition is already in flight', () => {
+    const setter = vi.fn()
+    const mockTransition = vi.fn((cb: () => void) => {
+      cb()
+      return { finished: new Promise(() => {}) }
+    })
+    ;(document as unknown as Record<string, unknown>).startViewTransition =
+      mockTransition
+
+    applyStateUpdate(newState, setter)
+    applyStateUpdate(newState, setter)
+
+    expect(mockTransition).toHaveBeenCalledOnce()
+    expect(setter).toHaveBeenCalledTimes(2)
 
     delete (document as unknown as Record<string, unknown>).startViewTransition
   })

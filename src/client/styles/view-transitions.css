@@ -1,0 +1,23 @@
+/* Disable the default root cross-fade — only individual cards should transition */
+:root {
+  view-transition-name: none;
+}
+
+/* Cards slide smoothly between columns */
+::view-transition-group(.bd-task-card) {
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Non-transitioning elements remain interactive during card animations */
+::view-transition {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none;
+  }
+}

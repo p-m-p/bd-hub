@@ -67,15 +67,25 @@ function mergeWithUI(
   return { ...(serverState as Omit<BoardState, 'ui'>), ui } as BoardState
 }
 
+let pendingTransition: ViewTransition | null = null
+
+/** @internal Reset pending transition — for testing only */
+export function _resetTransitionForTesting(): void {
+  pendingTransition = null
+}
+
 export function applyStateUpdate(
   newState: BoardState,
   setter: (state: BoardState) => void,
 ): void {
-  if ('startViewTransition' in document) {
-    document.startViewTransition(() => setter(newState))
-  } else {
+  if (!('startViewTransition' in document) || pendingTransition) {
     setter(newState)
+    return
   }
+  pendingTransition = document.startViewTransition(() => setter(newState))
+  pendingTransition.finished.finally(() => {
+    pendingTransition = null
+  })
 }
 
 /**

@@ -31,6 +31,7 @@ export class BdTaskCard extends LitElement {
     css`
       :host { display: block; }
       .card {
+        view-transition-class: bd-task-card;
         background: var(--bd-color-bg-surface);
         border-radius: var(--bd-radius-md);
         padding: calc(0.65rem * var(--bd-space-scale)) var(--bd-space-3);
