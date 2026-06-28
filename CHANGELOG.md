@@ -1,5 +1,15 @@
 # bd-hub
 
+## 0.5.0
+
+### Minor Changes
+
+- 728b4ce: Replace full-page view transition fade with per-card FLIP animation. The previous implementation caused the entire board to cross-fade on every update and would flash when multiple SSE events fired in rapid succession. Cards now animate individually between columns using the Web Animations API — sliding from their previous position to the new one with a subtle counter-tilt that unwinds on arrival (clockwise for right-to-left travel, counter-clockwise for left-to-right). Overlapping transitions are skipped to eliminate flashing.
+
+### Patch Changes
+
+- 1402644: Fix double border between swimlane headers and the column header row. The epic lane header had a redundant `border-top` that stacked with the column header's `border-bottom`, producing a thickened double line. Most visible when lanes are collapsed.
+
 ## 0.4.0
 
 ### Minor Changes
