@@ -1,6 +1,7 @@
 import { ContextProvider } from '@lit/context'
 import { html, LitElement } from 'lit'
 import { customElement, state } from 'lit/decorators.js'
+import { snapshotPositions } from './card-flip.js'
 import {
   type BoardState,
   type BoardUIState,
@@ -78,6 +79,7 @@ export function applyStateUpdate(
   newState: BoardState,
   setter: (state: BoardState) => void,
 ): void {
+  snapshotPositions()
   if (!('startViewTransition' in document) || pendingTransition) {
     setter(newState)
     return
