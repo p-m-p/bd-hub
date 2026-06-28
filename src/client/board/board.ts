@@ -33,6 +33,7 @@ export function isEpicVisible(epic: Epic, epicAge: EpicAge): boolean {
   const cutoff = epicAgeCutoff(epicAge)
   return cutoff === null || new Date(epic.createdAt) >= cutoff
 }
+
 import '../task/bead-dialog.js'
 import type { BdBeadDialog } from '../task/bead-dialog.js'
 import './title-bar.js'
