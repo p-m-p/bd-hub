@@ -1,6 +1,11 @@
 import { consume } from '@lit/context'
-import { css, html, LitElement, nothing } from 'lit'
+import { css, html, LitElement, nothing, type PropertyValues } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
+import {
+  getOldPosition,
+  registerCard,
+  unregisterCard,
+} from '../store/card-flip.js'
 import {
   type BoardState,
   boardContext,
@@ -92,6 +97,39 @@ export class BdTaskCard extends LitElement {
       }
     `,
   ]
+
+  override disconnectedCallback() {
+    super.disconnectedCallback()
+    if (this.beadId) unregisterCard(this.beadId)
+  }
+
+  override updated(changed: PropertyValues<this>) {
+    if (!changed.has('beadId')) return
+
+    const oldBeadId = changed.get('beadId') as string | undefined
+    if (oldBeadId) unregisterCard(oldBeadId)
+    if (!this.beadId) return
+
+    registerCard(this.beadId, this)
+
+    const oldRect = getOldPosition(this.beadId)
+    if (!oldRect) return
+
+    const newRect = this.getBoundingClientRect()
+    const dx = oldRect.left - newRect.left
+    const dy = oldRect.top - newRect.top
+    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return
+
+    const rotation = Math.abs(dx) > 1 ? (dx > 0 ? 3 : -3) : 0
+    for (const a of this.getAnimations()) a.cancel()
+    this.animate(
+      [
+        { transform: `translate(${dx}px, ${dy}px) rotate(${rotation}deg)` },
+        { transform: 'none' },
+      ],
+      { duration: 300, easing: 'cubic-bezier(0.2, 0, 0, 1)' },
+    )
+  }
 
   private _openDialog() {
     this.dispatchEvent(
