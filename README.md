@@ -32,10 +32,27 @@ npx bd-hub --port 4000     # use a different port
 
 ## Theming
 
-The dashboard ships with the Catppuccin theme (Latte in light mode, Mocha in dark mode, following your OS preference). To customise it, create an optional `bd-hub.config.json` in the directory you start `bd-hub` from:
+The dashboard ships with the Catppuccin theme (Latte in light mode, Mocha in dark mode, following your OS preference). To customise it, create an optional `bd-hub.config.json` in the directory you start `bd-hub` from. The `theme` option accepts either the name of a built-in theme or a theme object.
+
+### Built-in themes
 
 ```json
 {
+  "$schema": "https://raw.githubusercontent.com/p-m-p/bd-hub/main/schema/config.schema.json",
+  "theme": "dracula"
+}
+```
+
+| Name | Description |
+| --- | --- |
+| `catppuccin` | The default — Latte in light mode, Mocha in dark mode |
+| `dracula` | [Dracula](https://draculatheme.com), dark mode only |
+
+### Custom themes
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/p-m-p/bd-hub/main/schema/config.schema.json",
   "theme": {
     "font": {
       "family": "Inter, sans-serif",
@@ -50,7 +67,7 @@ The dashboard ships with the Catppuccin theme (Latte in light mode, Mocha in dar
 }
 ```
 
-Everything is optional — anything you leave out keeps its Catppuccin default. Config edits apply on browser refresh; no server restart needed.
+Everything is optional — anything you leave out keeps its Catppuccin default. Config edits apply on browser refresh; no server restart needed. Adding the `$schema` reference gives you validation and autocompletion in editors that support JSON Schema.
 
 - **`font.family`** / **`font.monoFamily`** — any CSS font stack
 - **`font.scale`** — multiplies all font sizes (e.g. `1.1` for 10% larger text)

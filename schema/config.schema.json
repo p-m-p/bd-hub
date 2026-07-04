@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/p-m-p/bd-hub/main/schema/config.schema.json",
+  "title": "bd-hub configuration",
+  "description": "Configuration for the bd-hub dashboard, read from bd-hub.config.json in the directory bd-hub is started from.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema for editor validation."
+    },
+    "theme": {
+      "description": "Dashboard theme: a built-in theme name or a custom theme object. Defaults to catppuccin.",
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Name of a built-in theme.",
+          "enum": ["catppuccin", "dracula"],
+          "default": "catppuccin"
+        },
+        {
+          "type": "object",
+          "description": "Custom theme. Everything is optional — anything left out keeps its Catppuccin default.",
+          "properties": {
+            "font": {
+              "type": "object",
+              "description": "Font overrides.",
+              "properties": {
+                "family": {
+                  "type": "string",
+                  "description": "CSS font stack for body text, e.g. \"Inter, sans-serif\"."
+                },
+                "monoFamily": {
+                  "type": "string",
+                  "description": "CSS font stack for monospace text, e.g. \"JetBrains Mono, monospace\"."
+                },
+                "scale": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "description": "Multiplier applied to all font sizes, e.g. 1.1 for 10% larger text."
+                }
+              },
+              "additionalProperties": false
+            },
+            "spacing": {
+              "type": "string",
+              "enum": ["dense", "normal", "spacious"],
+              "default": "normal",
+              "description": "Layout density."
+            },
+            "mode": {
+              "type": "string",
+              "enum": ["auto", "light", "dark"],
+              "default": "auto",
+              "description": "Color scheme: auto follows the OS preference; light or dark fixes the scheme."
+            },
+            "colors": {
+              "$ref": "#/$defs/themeColors",
+              "description": "A single set of color overrides applied in both light and dark schemes."
+            },
+            "light": {
+              "$ref": "#/$defs/themeColors",
+              "description": "Color overrides applied only in the light scheme."
+            },
+            "dark": {
+              "$ref": "#/$defs/themeColors",
+              "description": "Color overrides applied only in the dark scheme."
+            },
+            "prismTheme": {
+              "description": "Path(s) to custom Prism syntax-highlighting CSS, relative to the directory bd-hub is started from.",
+              "oneOf": [
+                {
+                  "type": "string",
+                  "description": "A single CSS file used in both schemes."
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "dark": {
+                      "type": "string",
+                      "description": "CSS file used in the dark scheme."
+                    },
+                    "light": {
+                      "type": "string",
+                      "description": "CSS file used in the light scheme."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "themeColors": {
+      "type": "object",
+      "properties": {
+        "bgBase": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Page background."
+        },
+        "bgMantle": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Recessed surfaces (chips, code)."
+        },
+        "bgSurface": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Cards and dialogs."
+        },
+        "border": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Separators and outlines."
+        },
+        "borderMuted": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Subtle separators and outlines."
+        },
+        "textPrimary": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Body text."
+        },
+        "textMuted": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Secondary text."
+        },
+        "textOnAccent": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Text on filled chips."
+        },
+        "accentInProgress": {
+          "$ref": "#/$defs/cssColor",
+          "description": "In-progress column/status accent."
+        },
+        "accentDone": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Done column/status accent."
+        },
+        "priorityP0": {
+          "$ref": "#/$defs/cssColor",
+          "description": "P0 (critical) priority chip."
+        },
+        "priorityP1": {
+          "$ref": "#/$defs/cssColor",
+          "description": "P1 (high) priority chip."
+        },
+        "priorityP2": {
+          "$ref": "#/$defs/cssColor",
+          "description": "P2 (medium) priority chip."
+        },
+        "priorityP3": {
+          "$ref": "#/$defs/cssColor",
+          "description": "P3 (low) priority chip."
+        }
+      },
+      "additionalProperties": false
+    },
+    "cssColor": {
+      "type": "string",
+      "description": "Any CSS color value — hex, rgb(), oklch(), or a named color.",
+      "pattern": "^[^{};]*$"
+    }
+  }
+}

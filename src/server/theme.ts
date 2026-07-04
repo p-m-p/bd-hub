@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { BUILTIN_THEMES } from './themes.js'
 
 export const CONFIG_FILENAME = 'bd-hub.config.json'
 
@@ -22,7 +23,7 @@ export interface ThemeConfig {
 }
 
 /** Config color keys → token name suffixes used in tokens.css */
-const COLOR_KEYS = {
+export const COLOR_KEYS = {
   bgBase: 'bg-base',
   bgMantle: 'bg-mantle',
   bgSurface: 'bg-surface',
@@ -49,9 +50,10 @@ const SPACE_SCALES: Record<string, number> = {
 
 /**
  * Load the optional theme config from `bd-hub.config.json` in the given
- * directory (defaults to the server's working directory). Returns null when
- * the file is missing or unusable — the dashboard then falls back to the
- * built-in Catppuccin defaults in tokens.css.
+ * directory (defaults to the server's working directory). `theme` may be a
+ * built-in theme name (e.g. "catppuccin", "dracula") or a theme object.
+ * Returns null when the file is missing or unusable — the dashboard then
+ * falls back to the built-in Catppuccin defaults in tokens.css.
  */
 export function loadThemeConfig(dir = process.cwd()): ThemeConfig | null {
   const path = join(dir, CONFIG_FILENAME)
@@ -60,8 +62,21 @@ export function loadThemeConfig(dir = process.cwd()): ThemeConfig | null {
     const parsed = JSON.parse(readFileSync(path, 'utf8'))
     const theme = parsed?.theme
     if (theme === undefined) return null
+    if (typeof theme === 'string') {
+      const builtin = BUILTIN_THEMES[theme]
+      if (!builtin) {
+        const known = Object.keys(BUILTIN_THEMES).join(', ')
+        console.warn(
+          `bd-hub: unknown built-in theme "${theme}" (available: ${known})`,
+        )
+        return null
+      }
+      return builtin
+    }
     if (theme === null || typeof theme !== 'object' || Array.isArray(theme)) {
-      console.warn(`bd-hub: "theme" in ${CONFIG_FILENAME} must be an object`)
+      console.warn(
+        `bd-hub: "theme" in ${CONFIG_FILENAME} must be a built-in theme name or an object`,
+      )
       return null
     }
     return theme as ThemeConfig

@@ -9,6 +9,7 @@ import {
   loadThemeConfig,
   type ThemeConfig,
 } from '../../src/server/theme.js'
+import { BUILTIN_THEMES } from '../../src/server/themes.js'
 
 let tempDir: string | null = null
 
@@ -51,11 +52,56 @@ describe('loadThemeConfig', () => {
     expect(warn).toHaveBeenCalled()
   })
 
-  it('returns null and warns when theme is not an object', () => {
+  it('returns null and warns when theme is neither a string nor an object', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const dir = dirWithConfig(JSON.stringify({ theme: 42 }))
+    expect(loadThemeConfig(dir)).toBeNull()
+    expect(warn).toHaveBeenCalled()
+  })
+
+  it('resolves a built-in theme name to its theme object', () => {
+    const dir = dirWithConfig(JSON.stringify({ theme: 'dracula' }))
+    expect(loadThemeConfig(dir)).toEqual(BUILTIN_THEMES.dracula)
+  })
+
+  it('resolves the catppuccin name to the built-in default (no overrides)', () => {
+    const dir = dirWithConfig(JSON.stringify({ theme: 'catppuccin' }))
+    const theme = loadThemeConfig(dir)
+    expect(theme).toEqual(BUILTIN_THEMES.catppuccin)
+    expect(generateThemeCss(theme)).not.toContain('--bd-')
+  })
+
+  it('returns null and warns for an unknown built-in theme name', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const dir = dirWithConfig(JSON.stringify({ theme: 'mocha' }))
     expect(loadThemeConfig(dir)).toBeNull()
-    expect(warn).toHaveBeenCalled()
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('mocha'))
+  })
+})
+
+describe('built-in themes', () => {
+  it('includes catppuccin and dracula', () => {
+    expect(Object.keys(BUILTIN_THEMES).sort()).toEqual([
+      'catppuccin',
+      'dracula',
+    ])
+  })
+
+  it('dracula forces dark mode and emits Dracula palette overrides', () => {
+    const css = generateThemeCss(BUILTIN_THEMES.dracula)
+    expect(css).toContain('--bd-color-scheme: dark;')
+    expect(css).toContain('--bd-theme-dark-bg-base: #282a36;')
+    expect(css).toContain('--bd-theme-dark-text-primary: #f8f8f2;')
+    expect(css).toContain('--bd-theme-dark-accent-done: #50fa7b;')
+    expect(css).toContain('--bd-theme-dark-priority-p0: #ff5555;')
+  })
+
+  it('every built-in theme generates CSS without warnings', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    for (const theme of Object.values(BUILTIN_THEMES)) {
+      generateThemeCss(theme)
+    }
+    expect(warn).not.toHaveBeenCalled()
   })
 })
 
