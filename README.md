@@ -47,6 +47,7 @@ The dashboard ships with the Catppuccin theme (Latte in light mode, Mocha in dar
 | --- | --- |
 | `catppuccin` | The default — Latte in light mode, Mocha in dark mode |
 | `dracula` | [Dracula](https://draculatheme.com), dark mode only |
+| `monokai` | Classic [Monokai](https://monokai.pro), dark mode only |
 
 ### Custom themes
 

@@ -80,10 +80,11 @@ describe('loadThemeConfig', () => {
 })
 
 describe('built-in themes', () => {
-  it('includes catppuccin and dracula', () => {
+  it('includes catppuccin, dracula, and monokai', () => {
     expect(Object.keys(BUILTIN_THEMES).sort()).toEqual([
       'catppuccin',
       'dracula',
+      'monokai',
     ])
   })
 
@@ -94,6 +95,15 @@ describe('built-in themes', () => {
     expect(css).toContain('--bd-theme-dark-text-primary: #f8f8f2;')
     expect(css).toContain('--bd-theme-dark-accent-done: #50fa7b;')
     expect(css).toContain('--bd-theme-dark-priority-p0: #ff5555;')
+  })
+
+  it('monokai forces dark mode and emits Monokai palette overrides', () => {
+    const css = generateThemeCss(BUILTIN_THEMES.monokai)
+    expect(css).toContain('--bd-color-scheme: dark;')
+    expect(css).toContain('--bd-theme-dark-bg-base: #272822;')
+    expect(css).toContain('--bd-theme-dark-text-primary: #f8f8f2;')
+    expect(css).toContain('--bd-theme-dark-accent-done: #a6e22e;')
+    expect(css).toContain('--bd-theme-dark-priority-p0: #f92672;')
   })
 
   it('every built-in theme generates CSS without warnings', () => {

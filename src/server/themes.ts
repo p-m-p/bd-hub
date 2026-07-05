@@ -30,4 +30,24 @@ export const BUILTIN_THEMES: Record<string, ThemeConfig> = {
       priorityP3: '#50fa7b',
     },
   },
+  monokai: {
+    // Classic Monokai is a dark-only palette
+    mode: 'dark',
+    colors: {
+      bgBase: '#272822',
+      bgMantle: '#1e1f1c',
+      bgSurface: '#3e3d32',
+      border: '#49483e',
+      borderMuted: '#75715e',
+      textPrimary: '#f8f8f2',
+      textMuted: '#75715e',
+      textOnAccent: '#272822',
+      accentInProgress: '#66d9ef',
+      accentDone: '#a6e22e',
+      priorityP0: '#f92672',
+      priorityP1: '#fd971f',
+      priorityP2: '#e6db74',
+      priorityP3: '#a6e22e',
+    },
+  },
 }
