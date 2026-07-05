@@ -1,4 +1,7 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { mkdtempSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 // Mock dependencies before importing app
 vi.mock('../../src/server/query.js', () => ({
@@ -57,8 +60,17 @@ const sampleBoardState: BoardState = {
   },
 }
 
+// The theme endpoints read bd-hub.config.json from the working directory;
+// point cwd at an empty temp dir so a developer's local config (or the
+// lack of one) can't change what these tests observe.
+const emptyDir = mkdtempSync(join(tmpdir(), 'bd-hub-app-'))
+afterAll(() => {
+  rmSync(emptyDir, { recursive: true, force: true })
+})
+
 beforeEach(() => {
   vi.clearAllMocks()
+  vi.spyOn(process, 'cwd').mockReturnValue(emptyDir)
 })
 
 describe('GET /api/board', () => {

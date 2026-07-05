@@ -20,6 +20,12 @@ export interface ThemeConfig {
   light?: ThemeColors
   dark?: ThemeColors
   prismTheme?: string | { dark?: string; light?: string }
+  /**
+   * Inline Prism CSS, used by the built-in themes to ship matching syntax
+   * highlighting. Not part of the public config schema — users point
+   * `prismTheme` at CSS files instead.
+   */
+  prismCss?: { dark?: string; light?: string }
 }
 
 /** Config color keys → token name suffixes used in tokens.css */
@@ -182,13 +188,20 @@ export function generateThemeCss(theme: ThemeConfig | null): string {
  * Returns `{ dark: null, light: null }` when no custom theme is configured.
  * A single string path is used for both schemes; `{ dark, light }` keys select
  * per-scheme files. Missing files are warned and returned as null (falls back
- * to the bundled Catppuccin theme in the client).
+ * to the bundled Catppuccin theme in the client). Themes without `prismTheme`
+ * may carry inline `prismCss` instead — built-in themes use this to ship
+ * matching syntax highlighting.
  */
 export function loadPrismCss(
   theme: ThemeConfig | null,
   dir = process.cwd(),
 ): { dark: string | null; light: string | null } {
-  if (!theme?.prismTheme) return { dark: null, light: null }
+  if (!theme?.prismTheme) {
+    return {
+      dark: theme?.prismCss?.dark ?? null,
+      light: theme?.prismCss?.light ?? null,
+    }
+  }
 
   const readFile = (relPath: string): string | null => {
     try {

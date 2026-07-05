@@ -297,6 +297,48 @@ describe('loadPrismCss', () => {
     expect(result.light).toBeNull()
   })
 
+  it('returns inline prismCss when the theme carries one', () => {
+    const result = loadPrismCss({
+      prismCss: { dark: '.token { color: pink; }' },
+    })
+    expect(result.dark).toBe('.token { color: pink; }')
+    expect(result.light).toBeNull()
+  })
+
+  it('prefers user prismTheme files over inline prismCss', () => {
+    const dir = dirWithFiles({ 'user.css': '.token { color: user; }' })
+    const result = loadPrismCss(
+      {
+        prismTheme: 'user.css',
+        prismCss: { dark: '.token { color: builtin; }' },
+      },
+      dir,
+    )
+    expect(result.dark).toBe('.token { color: user; }')
+    expect(result.light).toBe('.token { color: user; }')
+  })
+
+  it('serves matching Prism CSS for the dracula built-in', () => {
+    const result = loadPrismCss(BUILTIN_THEMES.dracula)
+    expect(result.dark).toContain('#ff79c6')
+    expect(result.dark).toContain('.token')
+    expect(result.light).toBe(result.dark)
+  })
+
+  it('serves matching Prism CSS for the monokai built-in', () => {
+    const result = loadPrismCss(BUILTIN_THEMES.monokai)
+    expect(result.dark).toContain('#f92672')
+    expect(result.dark).toContain('.token')
+    expect(result.light).toBe(result.dark)
+  })
+
+  it('serves no Prism CSS for catppuccin (client bundles it)', () => {
+    expect(loadPrismCss(BUILTIN_THEMES.catppuccin)).toEqual({
+      dark: null,
+      light: null,
+    })
+  })
+
   it('warns and returns null when the file cannot be read', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const dir = mkdtempSync(join(tmpdir(), 'bd-hub-prism-'))
