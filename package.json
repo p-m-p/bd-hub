@@ -1,6 +1,6 @@
 {
   "name": "bd-hub",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
   "description": "Real-time kanban dashboard for the bd (beads) issue tracker",
   "repository": {
