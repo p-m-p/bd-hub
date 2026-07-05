@@ -2,4 +2,4 @@
 'bd-hub': minor
 ---
 
-Add `solarized-light` to the built-in themes — the first light built-in, with matching Prism syntax highlighting.
+Add `solarized` to the built-in themes — Solarized Light in light mode, Solarized Dark in dark mode, following the OS preference like `catppuccin`, with matching per-scheme Prism syntax highlighting.

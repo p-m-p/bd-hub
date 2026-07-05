@@ -48,7 +48,7 @@ The dashboard ships with the Catppuccin theme (Latte in light mode, Mocha in dar
 | `catppuccin` | The default — Latte in light mode, Mocha in dark mode |
 | `dracula` | [Dracula](https://draculatheme.com), dark mode only |
 | `monokai` | Classic [Monokai](https://monokai.pro), dark mode only |
-| `solarized-light` | [Solarized](https://ethanschoonover.com/solarized) Light, light mode only |
+| `solarized` | [Solarized](https://ethanschoonover.com/solarized) — Light in light mode, Dark in dark mode |
 
 Built-in themes include matching syntax highlighting for code blocks.
 

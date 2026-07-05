@@ -3,6 +3,84 @@ import type { ThemeConfig } from './theme.js'
 // Same minimal shape as the bundled catppuccin-prismjs themes: base color,
 // code background, and token colors only — layout comes from the dialog.
 
+/**
+ * Solarized Dark Prism: same token mapping as the light variant — Solarized
+ * shares its accent colors between schemes and only swaps the monotones.
+ */
+const SOLARIZED_DARK_PRISM_CSS = `
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #839496;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+  background: #002b36;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #586e75;
+}
+
+.token.punctuation {
+  color: #93a1a1;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #268bd2;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #2aa198;
+}
+
+.token.operator,
+.token.entity,
+.token.url {
+  color: #839496;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #859900;
+}
+
+.token.function,
+.token.class-name {
+  color: #b58900;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #cb4b16;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+`
+
 /** Based on Prism's solarizedlight theme (MIT, ethanschoonover.com/solarized) */
 const SOLARIZED_LIGHT_PRISM_CSS = `
 code[class*="language-"],
@@ -278,14 +356,14 @@ export const BUILTIN_THEMES: Record<string, ThemeConfig> = {
     },
     prismCss: { dark: MONOKAI_PRISM_CSS, light: MONOKAI_PRISM_CSS },
   },
-  'solarized-light': {
-    // Solarized Light (ethanschoonover.com/solarized) is a light-only
-    // palette. Cards get base3, the page base2, matching the structural
-    // pattern tokens.css uses for Catppuccin Latte (cards lightest);
-    // the recessed/border tans are derived — Solarized defines no tones
-    // below base2.
-    mode: 'light',
-    colors: {
+  solarized: {
+    // Solarized (ethanschoonover.com/solarized) is a matched light/dark
+    // pair sharing its accent colors, so like catppuccin it follows the OS
+    // scheme. Cards get the lighter background tone in each scheme,
+    // matching the structural pattern tokens.css uses for Catppuccin;
+    // the recessed/border tones are derived — Solarized defines no tones
+    // beyond base3/base2 (light) and base03/base02 (dark).
+    light: {
       bgBase: '#eee8d5',
       bgMantle: '#e3dcc6',
       bgSurface: '#fdf6e3',
@@ -301,8 +379,24 @@ export const BUILTIN_THEMES: Record<string, ThemeConfig> = {
       priorityP2: '#b58900',
       priorityP3: '#859900',
     },
+    dark: {
+      bgBase: '#002b36',
+      bgMantle: '#00212b',
+      bgSurface: '#073642',
+      border: '#0e4756',
+      borderMuted: '#1a5666',
+      textPrimary: '#93a1a1',
+      textMuted: '#657b83',
+      textOnAccent: '#002b36',
+      accentInProgress: '#268bd2',
+      accentDone: '#859900',
+      priorityP0: '#dc322f',
+      priorityP1: '#cb4b16',
+      priorityP2: '#b58900',
+      priorityP3: '#859900',
+    },
     prismCss: {
-      dark: SOLARIZED_LIGHT_PRISM_CSS,
+      dark: SOLARIZED_DARK_PRISM_CSS,
       light: SOLARIZED_LIGHT_PRISM_CSS,
     },
   },

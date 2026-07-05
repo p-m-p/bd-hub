@@ -80,12 +80,12 @@ describe('loadThemeConfig', () => {
 })
 
 describe('built-in themes', () => {
-  it('includes catppuccin, dracula, monokai, and solarized-light', () => {
+  it('includes catppuccin, dracula, monokai, and solarized', () => {
     expect(Object.keys(BUILTIN_THEMES).sort()).toEqual([
       'catppuccin',
       'dracula',
       'monokai',
-      'solarized-light',
+      'solarized',
     ])
   })
 
@@ -107,13 +107,19 @@ describe('built-in themes', () => {
     expect(css).toContain('--bd-theme-dark-priority-p0: #f92672;')
   })
 
-  it('solarized-light forces light mode and emits Solarized palette overrides', () => {
-    const css = generateThemeCss(BUILTIN_THEMES['solarized-light'])
-    expect(css).toContain('--bd-color-scheme: light;')
+  it('solarized reacts to the OS scheme with per-scheme Solarized palettes', () => {
+    const css = generateThemeCss(BUILTIN_THEMES.solarized)
+    expect(css).not.toContain('--bd-color-scheme')
     expect(css).toContain('--bd-theme-light-bg-surface: #fdf6e3;')
     expect(css).toContain('--bd-theme-light-text-primary: #586e75;')
+    expect(css).toContain('--bd-theme-dark-bg-base: #002b36;')
+    expect(css).toContain('--bd-theme-dark-bg-surface: #073642;')
+    expect(css).toContain('--bd-theme-dark-text-primary: #93a1a1;')
+    // Solarized's signature: accents are shared between the schemes
     expect(css).toContain('--bd-theme-light-accent-in-progress: #268bd2;')
+    expect(css).toContain('--bd-theme-dark-accent-in-progress: #268bd2;')
     expect(css).toContain('--bd-theme-light-priority-p0: #dc322f;')
+    expect(css).toContain('--bd-theme-dark-priority-p0: #dc322f;')
   })
 
   it('every built-in theme generates CSS without warnings', () => {
@@ -342,11 +348,13 @@ describe('loadPrismCss', () => {
     expect(result.light).toBe(result.dark)
   })
 
-  it('serves matching Prism CSS for the solarized-light built-in', () => {
-    const result = loadPrismCss(BUILTIN_THEMES['solarized-light'])
+  it('serves per-scheme Prism CSS for the solarized built-in', () => {
+    const result = loadPrismCss(BUILTIN_THEMES.solarized)
     expect(result.light).toContain('#fdf6e3')
     expect(result.light).toContain('.token')
-    expect(result.dark).toBe(result.light)
+    expect(result.dark).toContain('#002b36')
+    expect(result.dark).toContain('.token')
+    expect(result.dark).not.toBe(result.light)
   })
 
   it('serves no Prism CSS for catppuccin (client bundles it)', () => {

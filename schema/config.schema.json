@@ -15,7 +15,7 @@
         {
           "type": "string",
           "description": "Name of a built-in theme.",
-          "enum": ["catppuccin", "dracula", "monokai", "solarized-light"],
+          "enum": ["catppuccin", "dracula", "monokai", "solarized"],
           "default": "catppuccin"
         },
         {
