@@ -1,0 +1,20 @@
+{
+  "mode": "dark",
+  "colors": {
+    "bgBase": "#282a36",
+    "bgMantle": "#21222c",
+    "bgSurface": "#343746",
+    "border": "#44475a",
+    "borderMuted": "#6272a4",
+    "textPrimary": "#f8f8f2",
+    "textMuted": "#6272a4",
+    "textOnAccent": "#282a36",
+    "accentInProgress": "#bd93f9",
+    "accentDone": "#50fa7b",
+    "priorityP0": "#ff5555",
+    "priorityP1": "#ffb86c",
+    "priorityP2": "#f1fa8c",
+    "priorityP3": "#50fa7b"
+  },
+  "prismTheme": "dracula.prism.css"
+}

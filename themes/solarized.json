@@ -1,0 +1,38 @@
+{
+  "light": {
+    "bgBase": "#eee8d5",
+    "bgMantle": "#e3dcc6",
+    "bgSurface": "#fdf6e3",
+    "border": "#d5cdb6",
+    "borderMuted": "#c6bea5",
+    "textPrimary": "#586e75",
+    "textMuted": "#839496",
+    "textOnAccent": "#fdf6e3",
+    "accentInProgress": "#268bd2",
+    "accentDone": "#859900",
+    "priorityP0": "#dc322f",
+    "priorityP1": "#cb4b16",
+    "priorityP2": "#b58900",
+    "priorityP3": "#859900"
+  },
+  "dark": {
+    "bgBase": "#002b36",
+    "bgMantle": "#00212b",
+    "bgSurface": "#073642",
+    "border": "#0e4756",
+    "borderMuted": "#1a5666",
+    "textPrimary": "#93a1a1",
+    "textMuted": "#657b83",
+    "textOnAccent": "#002b36",
+    "accentInProgress": "#268bd2",
+    "accentDone": "#859900",
+    "priorityP0": "#dc322f",
+    "priorityP1": "#cb4b16",
+    "priorityP2": "#b58900",
+    "priorityP3": "#859900"
+  },
+  "prismTheme": {
+    "dark": "solarized.prism-dark.css",
+    "light": "solarized.prism-light.css"
+  }
+}

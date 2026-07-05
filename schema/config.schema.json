@@ -15,7 +15,12 @@
         {
           "type": "string",
           "description": "Name of a built-in theme.",
-          "enum": ["catppuccin", "dracula", "monokai", "solarized"],
+          "enum": [
+            "catppuccin",
+            "dracula",
+            "monokai",
+            "solarized"
+          ],
           "default": "catppuccin"
         },
         {
@@ -44,13 +49,21 @@
             },
             "spacing": {
               "type": "string",
-              "enum": ["dense", "normal", "spacious"],
+              "enum": [
+                "dense",
+                "normal",
+                "spacious"
+              ],
               "default": "normal",
               "description": "Layout density."
             },
             "mode": {
               "type": "string",
-              "enum": ["auto", "light", "dark"],
+              "enum": [
+                "auto",
+                "light",
+                "dark"
+              ],
               "default": "auto",
               "description": "Color scheme: auto follows the OS preference; light or dark fixes the scheme."
             },

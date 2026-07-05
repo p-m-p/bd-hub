@@ -52,6 +52,14 @@ The dashboard ships with the Catppuccin theme (Latte in light mode, Mocha in dar
 
 Built-in themes include matching syntax highlighting for code blocks.
 
+#### Contributing a theme
+
+Built-in themes are plain JSON files in the [`themes/`](themes/) directory — the file name is the theme name, and only the active theme is loaded at runtime. To add one:
+
+1. Create `themes/<name>.json` with the same shape as a custom theme object (see below). Fixed-scheme palettes set `"mode"` and `"colors"` (like `dracula.json`); light/dark pairs use `"light"` and `"dark"` blocks (like `solarized.json`).
+2. Optionally add Prism syntax CSS as sibling files and reference them with `"prismTheme": "<name>.prism.css"` (or `{ "dark": …, "light": … }`), resolved relative to `themes/`.
+3. Run `pnpm generate-schema` to add the name to the config JSON schema — a unit test fails if you forget.
+
 ### Custom themes
 
 ```json

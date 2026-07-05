@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { COLOR_KEYS } from '../../src/server/theme.js'
-import { BUILTIN_THEMES } from '../../src/server/themes.js'
+import { listBuiltinThemes } from '../../src/server/themes.js'
 
 const schemaPath = join(process.cwd(), 'schema', 'config.schema.json')
 
@@ -19,12 +19,12 @@ describe('config JSON schema', () => {
     expect(schema.$id).toContain('config.schema.json')
   })
 
-  it('accepts theme as a built-in name matching the code registry', () => {
+  it('lists every theme file in the built-in name enum (run pnpm generate-schema after adding a theme)', () => {
     const schema = loadSchema()
     const variants = schema.properties.theme.oneOf
     // biome-ignore lint/suspicious/noExplicitAny: schema is free-form JSON
     const named = variants.find((v: any) => v.enum)
-    expect(named.enum.sort()).toEqual(Object.keys(BUILTIN_THEMES).sort())
+    expect(named.enum).toEqual(listBuiltinThemes())
   })
 
   it('describes every color key the server understands', () => {

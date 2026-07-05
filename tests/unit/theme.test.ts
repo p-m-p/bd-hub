@@ -9,7 +9,11 @@ import {
   loadThemeConfig,
   type ThemeConfig,
 } from '../../src/server/theme.js'
-import { BUILTIN_THEMES } from '../../src/server/themes.js'
+import {
+  DEFAULT_THEME,
+  listBuiltinThemes,
+  loadBuiltinTheme,
+} from '../../src/server/themes.js'
 
 let tempDir: string | null = null
 
@@ -27,10 +31,89 @@ afterEach(() => {
   vi.restoreAllMocks()
 })
 
+describe('built-in theme files', () => {
+  it('indexes themes by file name in the themes directory', () => {
+    expect(listBuiltinThemes()).toEqual([
+      'catppuccin',
+      'dracula',
+      'monokai',
+      'solarized',
+    ])
+  })
+
+  it('catppuccin is the default theme name', () => {
+    expect(DEFAULT_THEME).toBe('catppuccin')
+  })
+
+  it('loads a theme file with its Prism CSS inlined', () => {
+    const theme = loadBuiltinTheme('dracula')
+    expect(theme?.mode).toBe('dark')
+    expect(theme?.colors?.bgBase).toBe('#282a36')
+    expect(theme?.prismCss?.dark).toContain('#8be9fd')
+    // paths are resolved at load time; nothing left pointing at disk
+    expect(theme?.prismTheme).toBeUndefined()
+  })
+
+  it('loads per-scheme Prism CSS for solarized', () => {
+    const theme = loadBuiltinTheme('solarized')
+    expect(theme?.prismCss?.light).toContain('#fdf6e3')
+    expect(theme?.prismCss?.dark).toContain('#002b36')
+    expect(theme?.prismCss?.dark).not.toBe(theme?.prismCss?.light)
+  })
+
+  it('catppuccin carries no Prism CSS (client bundles it)', () => {
+    const theme = loadBuiltinTheme('catppuccin')
+    expect(theme?.light?.bgBase).toBe('#e6e9ef')
+    expect(theme?.dark?.bgBase).toBe('#1e1e2e')
+    expect(theme?.prismCss).toBeUndefined()
+  })
+
+  it('warns and returns null for an unknown theme name', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    expect(loadBuiltinTheme('mocha')).toBeNull()
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('mocha'))
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('catppuccin'))
+  })
+
+  it('rejects names that could escape the themes directory', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    expect(loadBuiltinTheme('../package')).toBeNull()
+    expect(loadBuiltinTheme('a/b')).toBeNull()
+    expect(warn).toHaveBeenCalled()
+  })
+
+  it('loads only the requested theme file', () => {
+    // A broken sibling theme must not affect loading the active one
+    const dir = mkdtempSync(join(tmpdir(), 'bd-hub-themes-'))
+    tempDir = dir
+    writeFileSync(join(dir, 'good.json'), JSON.stringify({ mode: 'dark' }))
+    writeFileSync(join(dir, 'broken.json'), '{ not json')
+    expect(listBuiltinThemes(dir)).toEqual(['broken', 'good'])
+    expect(loadBuiltinTheme('good', dir)).toEqual({ mode: 'dark' })
+  })
+
+  it('warns and returns null for an unreadable theme file', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const dir = mkdtempSync(join(tmpdir(), 'bd-hub-themes-'))
+    tempDir = dir
+    writeFileSync(join(dir, 'broken.json'), '{ not json')
+    expect(loadBuiltinTheme('broken', dir)).toBeNull()
+    expect(warn).toHaveBeenCalled()
+  })
+
+  it('every built-in theme generates CSS without warnings', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    for (const name of listBuiltinThemes()) {
+      generateThemeCss(loadBuiltinTheme(name))
+    }
+    expect(warn).not.toHaveBeenCalled()
+  })
+})
+
 describe('loadThemeConfig', () => {
-  it('returns null when no config file exists', () => {
+  it('returns the catppuccin default when no config file exists', () => {
     tempDir = mkdtempSync(join(tmpdir(), 'bd-hub-theme-'))
-    expect(loadThemeConfig(tempDir)).toBeNull()
+    expect(loadThemeConfig(tempDir)).toEqual(loadBuiltinTheme(DEFAULT_THEME))
   })
 
   it('returns the theme object from the config file', () => {
@@ -40,94 +123,35 @@ describe('loadThemeConfig', () => {
     expect(loadThemeConfig(dir)).toEqual({ spacing: 'dense', mode: 'dark' })
   })
 
-  it('returns null when the config file has no theme key', () => {
+  it('returns the catppuccin default when the config has no theme key', () => {
     const dir = dirWithConfig(JSON.stringify({ other: true }))
-    expect(loadThemeConfig(dir)).toBeNull()
+    expect(loadThemeConfig(dir)).toEqual(loadBuiltinTheme(DEFAULT_THEME))
   })
 
-  it('returns null and warns when the config file is invalid JSON', () => {
+  it('falls back to the default and warns when the config file is invalid JSON', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const dir = dirWithConfig('{ not json')
-    expect(loadThemeConfig(dir)).toBeNull()
+    expect(loadThemeConfig(dir)).toEqual(loadBuiltinTheme(DEFAULT_THEME))
     expect(warn).toHaveBeenCalled()
   })
 
-  it('returns null and warns when theme is neither a string nor an object', () => {
+  it('falls back to the default and warns when theme is neither a string nor an object', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const dir = dirWithConfig(JSON.stringify({ theme: 42 }))
-    expect(loadThemeConfig(dir)).toBeNull()
+    expect(loadThemeConfig(dir)).toEqual(loadBuiltinTheme(DEFAULT_THEME))
     expect(warn).toHaveBeenCalled()
   })
 
-  it('resolves a built-in theme name to its theme object', () => {
+  it('resolves a built-in theme name to its theme file', () => {
     const dir = dirWithConfig(JSON.stringify({ theme: 'dracula' }))
-    expect(loadThemeConfig(dir)).toEqual(BUILTIN_THEMES.dracula)
+    expect(loadThemeConfig(dir)).toEqual(loadBuiltinTheme('dracula'))
   })
 
-  it('resolves the catppuccin name to the built-in default (no overrides)', () => {
-    const dir = dirWithConfig(JSON.stringify({ theme: 'catppuccin' }))
-    const theme = loadThemeConfig(dir)
-    expect(theme).toEqual(BUILTIN_THEMES.catppuccin)
-    expect(generateThemeCss(theme)).not.toContain('--bd-')
-  })
-
-  it('returns null and warns for an unknown built-in theme name', () => {
+  it('falls back to the default and warns for an unknown built-in theme name', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const dir = dirWithConfig(JSON.stringify({ theme: 'mocha' }))
-    expect(loadThemeConfig(dir)).toBeNull()
+    expect(loadThemeConfig(dir)).toEqual(loadBuiltinTheme(DEFAULT_THEME))
     expect(warn).toHaveBeenCalledWith(expect.stringContaining('mocha'))
-  })
-})
-
-describe('built-in themes', () => {
-  it('includes catppuccin, dracula, monokai, and solarized', () => {
-    expect(Object.keys(BUILTIN_THEMES).sort()).toEqual([
-      'catppuccin',
-      'dracula',
-      'monokai',
-      'solarized',
-    ])
-  })
-
-  it('dracula forces dark mode and emits Dracula palette overrides', () => {
-    const css = generateThemeCss(BUILTIN_THEMES.dracula)
-    expect(css).toContain('--bd-color-scheme: dark;')
-    expect(css).toContain('--bd-theme-dark-bg-base: #282a36;')
-    expect(css).toContain('--bd-theme-dark-text-primary: #f8f8f2;')
-    expect(css).toContain('--bd-theme-dark-accent-done: #50fa7b;')
-    expect(css).toContain('--bd-theme-dark-priority-p0: #ff5555;')
-  })
-
-  it('monokai forces dark mode and emits Monokai palette overrides', () => {
-    const css = generateThemeCss(BUILTIN_THEMES.monokai)
-    expect(css).toContain('--bd-color-scheme: dark;')
-    expect(css).toContain('--bd-theme-dark-bg-base: #272822;')
-    expect(css).toContain('--bd-theme-dark-text-primary: #f8f8f2;')
-    expect(css).toContain('--bd-theme-dark-accent-done: #a6e22e;')
-    expect(css).toContain('--bd-theme-dark-priority-p0: #f92672;')
-  })
-
-  it('solarized reacts to the OS scheme with per-scheme Solarized palettes', () => {
-    const css = generateThemeCss(BUILTIN_THEMES.solarized)
-    expect(css).not.toContain('--bd-color-scheme')
-    expect(css).toContain('--bd-theme-light-bg-surface: #fdf6e3;')
-    expect(css).toContain('--bd-theme-light-text-primary: #586e75;')
-    expect(css).toContain('--bd-theme-dark-bg-base: #002b36;')
-    expect(css).toContain('--bd-theme-dark-bg-surface: #073642;')
-    expect(css).toContain('--bd-theme-dark-text-primary: #93a1a1;')
-    // Solarized's signature: accents are shared between the schemes
-    expect(css).toContain('--bd-theme-light-accent-in-progress: #268bd2;')
-    expect(css).toContain('--bd-theme-dark-accent-in-progress: #268bd2;')
-    expect(css).toContain('--bd-theme-light-priority-p0: #dc322f;')
-    expect(css).toContain('--bd-theme-dark-priority-p0: #dc322f;')
-  })
-
-  it('every built-in theme generates CSS without warnings', () => {
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
-    for (const theme of Object.values(BUILTIN_THEMES)) {
-      generateThemeCss(theme)
-    }
-    expect(warn).not.toHaveBeenCalled()
   })
 })
 
@@ -332,36 +356,6 @@ describe('loadPrismCss', () => {
     )
     expect(result.dark).toBe('.token { color: user; }')
     expect(result.light).toBe('.token { color: user; }')
-  })
-
-  it('serves matching Prism CSS for the dracula built-in', () => {
-    const result = loadPrismCss(BUILTIN_THEMES.dracula)
-    expect(result.dark).toContain('#ff79c6')
-    expect(result.dark).toContain('.token')
-    expect(result.light).toBe(result.dark)
-  })
-
-  it('serves matching Prism CSS for the monokai built-in', () => {
-    const result = loadPrismCss(BUILTIN_THEMES.monokai)
-    expect(result.dark).toContain('#f92672')
-    expect(result.dark).toContain('.token')
-    expect(result.light).toBe(result.dark)
-  })
-
-  it('serves per-scheme Prism CSS for the solarized built-in', () => {
-    const result = loadPrismCss(BUILTIN_THEMES.solarized)
-    expect(result.light).toContain('#fdf6e3')
-    expect(result.light).toContain('.token')
-    expect(result.dark).toContain('#002b36')
-    expect(result.dark).toContain('.token')
-    expect(result.dark).not.toBe(result.light)
-  })
-
-  it('serves no Prism CSS for catppuccin (client bundles it)', () => {
-    expect(loadPrismCss(BUILTIN_THEMES.catppuccin)).toEqual({
-      dark: null,
-      light: null,
-    })
   })
 
   it('warns and returns null when the file cannot be read', () => {
