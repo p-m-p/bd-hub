@@ -3,6 +3,81 @@ import type { ThemeConfig } from './theme.js'
 // Same minimal shape as the bundled catppuccin-prismjs themes: base color,
 // code background, and token colors only — layout comes from the dialog.
 
+/** Based on Prism's solarizedlight theme (MIT, ethanschoonover.com/solarized) */
+const SOLARIZED_LIGHT_PRISM_CSS = `
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #657b83;
+}
+
+:not(pre) > code[class*="language-"],
+pre[class*="language-"] {
+  background: #fdf6e3;
+}
+
+.token.comment,
+.token.prolog,
+.token.doctype,
+.token.cdata {
+  color: #93a1a1;
+}
+
+.token.punctuation {
+  color: #586e75;
+}
+
+.token.property,
+.token.tag,
+.token.boolean,
+.token.number,
+.token.constant,
+.token.symbol,
+.token.deleted {
+  color: #268bd2;
+}
+
+.token.selector,
+.token.attr-name,
+.token.string,
+.token.char,
+.token.builtin,
+.token.inserted {
+  color: #2aa198;
+}
+
+.token.operator,
+.token.entity,
+.token.url {
+  color: #657b83;
+}
+
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: #859900;
+}
+
+.token.function,
+.token.class-name {
+  color: #b58900;
+}
+
+.token.regex,
+.token.important,
+.token.variable {
+  color: #cb4b16;
+}
+
+.token.important,
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+`
+
 /** Based on the official Dracula theme for Prism (MIT, draculatheme.com) */
 const DRACULA_PRISM_CSS = `
 code[class*="language-"],
@@ -202,5 +277,33 @@ export const BUILTIN_THEMES: Record<string, ThemeConfig> = {
       priorityP3: '#a6e22e',
     },
     prismCss: { dark: MONOKAI_PRISM_CSS, light: MONOKAI_PRISM_CSS },
+  },
+  'solarized-light': {
+    // Solarized Light (ethanschoonover.com/solarized) is a light-only
+    // palette. Cards get base3, the page base2, matching the structural
+    // pattern tokens.css uses for Catppuccin Latte (cards lightest);
+    // the recessed/border tans are derived — Solarized defines no tones
+    // below base2.
+    mode: 'light',
+    colors: {
+      bgBase: '#eee8d5',
+      bgMantle: '#e3dcc6',
+      bgSurface: '#fdf6e3',
+      border: '#d5cdb6',
+      borderMuted: '#c6bea5',
+      textPrimary: '#586e75',
+      textMuted: '#839496',
+      textOnAccent: '#fdf6e3',
+      accentInProgress: '#268bd2',
+      accentDone: '#859900',
+      priorityP0: '#dc322f',
+      priorityP1: '#cb4b16',
+      priorityP2: '#b58900',
+      priorityP3: '#859900',
+    },
+    prismCss: {
+      dark: SOLARIZED_LIGHT_PRISM_CSS,
+      light: SOLARIZED_LIGHT_PRISM_CSS,
+    },
   },
 }
