@@ -1,5 +1,15 @@
 # bd-hub
 
+## 0.6.0
+
+### Minor Changes
+
+- 78ba49b: Add built-in named themes: `"theme"` in `bd-hub.config.json` now accepts a built-in theme name (`"catppuccin"` or `"dracula"`) as well as a theme object. Also add a JSON Schema for the config file (`schema/config.schema.json`), referenceable via `$schema` for editor validation and autocompletion.
+- b10ddc7: Built-in themes now ship matching Prism syntax highlighting: `dracula` and `monokai` style code blocks with their own palettes instead of falling back to Catppuccin. A user-configured `prismTheme` still takes precedence.
+- 7c4e7da: Add `monokai` to the built-in themes selectable via `"theme"` in `bd-hub.config.json`.
+- 78240c0: Add `solarized` to the built-in themes — Solarized Light in light mode, Solarized Dark in dark mode, following the OS preference like `catppuccin`, with matching per-scheme Prism syntax highlighting.
+- cfaa76e: Built-in themes now live as standalone JSON files in the `themes/` directory, indexed by file name, so new themes can be contributed without touching code. Only the active theme is read at runtime, and the default Catppuccin palette is a theme file like any other — used whenever the config has no `theme` option. `pnpm generate-schema` keeps the config JSON schema's theme-name enum in sync with the directory.
+
 ## 0.5.0
 
 ### Minor Changes
