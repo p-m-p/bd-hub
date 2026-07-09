@@ -16,5 +16,40 @@
     "priorityP2": "#e6db74",
     "priorityP3": "#a6e22e"
   },
-  "prismTheme": "monokai.prism.css"
+  "prism": {
+    "colors": {
+      "text": "#f8f8f2",
+      "background": "#1e1f1c",
+      "comment": "#75715e",
+      "prolog": "#75715e",
+      "doctype": "#75715e",
+      "cdata": "#75715e",
+      "punctuation": "#f8f8f2",
+      "namespace": "#f8f8f2",
+      "property": "#f92672",
+      "tag": "#f92672",
+      "constant": "#f92672",
+      "symbol": "#f92672",
+      "deleted": "#f92672",
+      "boolean": "#ae81ff",
+      "number": "#ae81ff",
+      "selector": "#a6e22e",
+      "attrName": "#a6e22e",
+      "string": "#a6e22e",
+      "char": "#a6e22e",
+      "builtin": "#a6e22e",
+      "inserted": "#a6e22e",
+      "operator": "#f8f8f2",
+      "entity": "#f8f8f2",
+      "url": "#f8f8f2",
+      "atrule": "#e6db74",
+      "attrValue": "#e6db74",
+      "function": "#e6db74",
+      "className": "#e6db74",
+      "keyword": "#66d9ef",
+      "regex": "#fd971f",
+      "important": "#fd971f",
+      "variable": "#f8f8f2"
+    }
+  }
 }

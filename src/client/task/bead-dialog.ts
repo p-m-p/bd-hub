@@ -1,5 +1,3 @@
-import prismLight from 'catppuccin-prismjs/themes/latte.css?inline'
-import prismDark from 'catppuccin-prismjs/themes/mocha.css?inline'
 import { css, html, LitElement, nothing } from 'lit'
 import { customElement, property, query, state } from 'lit/decorators.js'
 import { unsafeHTML } from 'lit/directives/unsafe-html.js'
@@ -11,6 +9,7 @@ import 'prismjs/components/prism-markdown'
 import 'prismjs/components/prism-typescript'
 import 'prismjs/components/prism-yaml'
 import { buttonBase } from '../styles/button-base.js'
+import { prismTokens } from '../styles/prism-tokens.js'
 
 /**
  * Returns true when an in-flight fetch result should be discarded because the
@@ -97,6 +96,7 @@ export class BdBeadDialog extends LitElement {
 
   static override styles = [
     buttonBase,
+    prismTokens,
     css`
     dialog {
       border: none;
@@ -385,12 +385,13 @@ export class BdBeadDialog extends LitElement {
     const status = typeof b?.status === 'string' ? b.status : ''
     // _tick is read here so Lit re-renders this template when the interval fires
     void this._tick
-    const prismCss =
-      this._customPrismCss?.[this._scheme] ??
-      (this._scheme === 'dark' ? prismDark : prismLight)
+    // Built-in themes color the static prismTokens stylesheet via
+    // --bd-theme-prism-* vars; a <style> is only injected for user
+    // prismTheme CSS files, which override it by coming later in the root.
+    const customPrismCss = this._customPrismCss?.[this._scheme]
 
     return html`
-      <style>${prismCss}</style>
+      ${customPrismCss ? html`<style>${customPrismCss}</style>` : nothing}
       <dialog aria-labelledby="dialog-title" @click=${this._onDialogClick}>
         <header class="dialog-header">
           <div>

@@ -57,7 +57,7 @@ Built-in themes include matching syntax highlighting for code blocks.
 Built-in themes are plain JSON files in the [`themes/`](themes/) directory — the file name is the theme name, and only the active theme is loaded at runtime. To add one:
 
 1. Create `themes/<name>.json` with the same shape as a custom theme object (see below). Fixed-scheme palettes set `"mode"` and `"colors"` (like `dracula.json`); light/dark pairs use `"light"` and `"dark"` blocks (like `solarized.json`).
-2. Optionally add Prism syntax CSS as sibling files and reference them with `"prismTheme": "<name>.prism.css"` (or `{ "dark": …, "light": … }`), resolved relative to `themes/`.
+2. Optionally add a `"prism"` block for syntax-highlighting colors — `"colors"` for both schemes and/or `"light"`/`"dark"` per scheme, one key per Prism token (see the schema or `dracula.json`). Set all of them for a dark palette; anything left out keeps its Catppuccin color.
 3. Run `pnpm generate-schema` to add the name to the config JSON schema — a unit test fails if you forget.
 
 ### Custom themes
@@ -87,6 +87,8 @@ Everything is optional — anything you leave out keeps its Catppuccin default. 
 - **`mode`** — `"auto"` (follow OS light/dark, default), `"light"`, or `"dark"` (fixed)
 - **`light`** / **`dark`** — color overrides per scheme
 - **`colors`** — a single set of color overrides applied in both schemes, for a custom theme that doesn't react to light/dark; combine with `mode` to fix the scheme used for native UI like scrollbars and form controls
+- **`prism`** — syntax-highlighting colors for code blocks, with the same `colors`/`light`/`dark` structure; one key per Prism token class (`keyword`, `string`, `comment`, …) plus `text` and `background` — see the JSON schema for the full list
+- **`prismTheme`** — path(s) to your own Prism CSS file(s) for full control over code-block styling; overrides `prism` colors entirely
 
 Color keys (any CSS color value works — hex, `rgb()`, `oklch()`, named):
 

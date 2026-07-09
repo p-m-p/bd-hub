@@ -45,27 +45,37 @@ describe('built-in theme files', () => {
     expect(DEFAULT_THEME).toBe('catppuccin')
   })
 
-  it('loads a theme file with its Prism CSS inlined', () => {
+  it('loads a theme file with its prism color block', () => {
     const theme = loadBuiltinTheme('dracula')
     expect(theme?.mode).toBe('dark')
     expect(theme?.colors?.bgBase).toBe('#282a36')
-    expect(theme?.prismCss?.dark).toContain('#8be9fd')
-    // paths are resolved at load time; nothing left pointing at disk
-    expect(theme?.prismTheme).toBeUndefined()
+    expect(theme?.prism?.colors?.keyword).toBe('#8be9fd')
   })
 
-  it('loads per-scheme Prism CSS for solarized', () => {
+  it('loads per-scheme prism colors for solarized', () => {
     const theme = loadBuiltinTheme('solarized')
-    expect(theme?.prismCss?.light).toContain('#fdf6e3')
-    expect(theme?.prismCss?.dark).toContain('#002b36')
-    expect(theme?.prismCss?.dark).not.toBe(theme?.prismCss?.light)
+    expect(theme?.prism?.light?.background).toBe('#fdf6e3')
+    expect(theme?.prism?.dark?.background).toBe('#002b36')
   })
 
-  it('catppuccin carries no Prism CSS (client bundles it)', () => {
+  it('catppuccin prism colors mirror the client stylesheet fallbacks', () => {
     const theme = loadBuiltinTheme('catppuccin')
     expect(theme?.light?.bgBase).toBe('#e6e9ef')
     expect(theme?.dark?.bgBase).toBe('#1e1e2e')
-    expect(theme?.prismCss).toBeUndefined()
+    expect(theme?.prism?.light?.keyword).toBe('#8839ef')
+    expect(theme?.prism?.dark?.keyword).toBe('#cba6f7')
+  })
+
+  it('strips prismTheme file references from theme files and warns', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const dir = mkdtempSync(join(tmpdir(), 'bd-hub-themes-'))
+    tempDir = dir
+    writeFileSync(
+      join(dir, 'legacy.json'),
+      JSON.stringify({ mode: 'dark', prismTheme: 'legacy.css' }),
+    )
+    expect(loadBuiltinTheme('legacy', dir)).toEqual({ mode: 'dark' })
+    expect(warn).toHaveBeenCalledWith(expect.stringContaining('prismTheme'))
   })
 
   it('warns and returns null for an unknown theme name', () => {
@@ -271,6 +281,40 @@ describe('generateThemeCss', () => {
     expect(css).toContain('--bd-theme-dark-priority-p3: #eeeeee;')
   })
 
+  it('emits prism vars for both schemes from a single prism colors block', () => {
+    const css = generateThemeCss({
+      prism: { colors: { keyword: '#8be9fd', attrName: '#50fa7b' } },
+    })
+    expect(css).toContain('--bd-theme-prism-light-keyword: #8be9fd;')
+    expect(css).toContain('--bd-theme-prism-dark-keyword: #8be9fd;')
+    expect(css).toContain('--bd-theme-prism-dark-attr-name: #50fa7b;')
+  })
+
+  it('emits per-scheme prism vars from prism light and dark blocks', () => {
+    const css = generateThemeCss({
+      prism: {
+        light: { background: '#fdf6e3' },
+        dark: { background: '#002b36', className: '#b58900' },
+      },
+    })
+    expect(css).toContain('--bd-theme-prism-light-background: #fdf6e3;')
+    expect(css).toContain('--bd-theme-prism-dark-background: #002b36;')
+    expect(css).toContain('--bd-theme-prism-dark-class-name: #b58900;')
+    expect(css).not.toContain('--bd-theme-prism-light-class-name')
+  })
+
+  it('ignores unknown prism keys and unsafe prism values, warning for both', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
+    const css = generateThemeCss({
+      prism: {
+        colors: { sparkle: '#ff00ff', keyword: 'red; } body { display: none' },
+      },
+    } as unknown as ThemeConfig)
+    expect(css).not.toContain('sparkle')
+    expect(css).not.toContain('display: none')
+    expect(warn).toHaveBeenCalledTimes(2)
+  })
+
   it('ignores unknown color keys and warns', () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined)
     const css = generateThemeCss({
@@ -337,25 +381,11 @@ describe('loadPrismCss', () => {
     expect(result.light).toBeNull()
   })
 
-  it('returns inline prismCss when the theme carries one', () => {
-    const result = loadPrismCss({
-      prismCss: { dark: '.token { color: pink; }' },
+  it('returns { dark: null, light: null } for a built-in theme (vars, not CSS)', () => {
+    expect(loadPrismCss(loadBuiltinTheme('dracula'))).toEqual({
+      dark: null,
+      light: null,
     })
-    expect(result.dark).toBe('.token { color: pink; }')
-    expect(result.light).toBeNull()
-  })
-
-  it('prefers user prismTheme files over inline prismCss', () => {
-    const dir = dirWithFiles({ 'user.css': '.token { color: user; }' })
-    const result = loadPrismCss(
-      {
-        prismTheme: 'user.css',
-        prismCss: { dark: '.token { color: builtin; }' },
-      },
-      dir,
-    )
-    expect(result.dark).toBe('.token { color: user; }')
-    expect(result.light).toBe('.token { color: user; }')
   })
 
   it('warns and returns null when the file cannot be read', () => {

@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { COLOR_KEYS } from '../../src/server/theme.js'
+import { COLOR_KEYS, PRISM_COLOR_KEYS } from '../../src/server/theme.js'
 import { listBuiltinThemes } from '../../src/server/themes.js'
 
 const schemaPath = join(process.cwd(), 'schema', 'config.schema.json')
@@ -39,6 +39,22 @@ describe('config JSON schema', () => {
         : themeObject.properties[block].properties
       expect(Object.keys(props).sort()).toEqual(colorKeys)
     }
+  })
+
+  it('describes every prism color key the server understands', () => {
+    const schema = loadSchema()
+    const variants = schema.properties.theme.oneOf
+    // biome-ignore lint/suspicious/noExplicitAny: schema is free-form JSON
+    const themeObject = variants.find((v: any) => v.type === 'object')
+    const prism = themeObject.properties.prism
+    expect(Object.keys(prism.properties).sort()).toEqual([
+      'colors',
+      'dark',
+      'light',
+    ])
+    expect(Object.keys(schema.$defs.prismColors.properties).sort()).toEqual(
+      Object.keys(PRISM_COLOR_KEYS).sort(),
+    )
   })
 
   it('describes spacing, mode, font, and prismTheme options', () => {

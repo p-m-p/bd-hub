@@ -2,9 +2,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
 // Mock heavy imports that bead-dialog pulls in before we can import isStaleFetch
-vi.mock('catppuccin-prismjs/themes/latte.css?inline', () => ({ default: '' }))
-vi.mock('catppuccin-prismjs/themes/mocha.css?inline', () => ({ default: '' }))
-
 vi.mock('lit', () => ({
   LitElement: class {},
   html: vi.fn(),

@@ -79,8 +79,27 @@
               "$ref": "#/$defs/themeColors",
               "description": "Color overrides applied only in the dark scheme."
             },
+            "prism": {
+              "type": "object",
+              "description": "Syntax-highlighting colors for code blocks. Anything left out keeps its Catppuccin default.",
+              "properties": {
+                "colors": {
+                  "$ref": "#/$defs/prismColors",
+                  "description": "A single set of Prism colors applied in both light and dark schemes."
+                },
+                "light": {
+                  "$ref": "#/$defs/prismColors",
+                  "description": "Prism colors applied only in the light scheme."
+                },
+                "dark": {
+                  "$ref": "#/$defs/prismColors",
+                  "description": "Prism colors applied only in the dark scheme."
+                }
+              },
+              "additionalProperties": false
+            },
             "prismTheme": {
-              "description": "Path(s) to custom Prism syntax-highlighting CSS, relative to the directory bd-hub is started from.",
+              "description": "Path(s) to custom Prism syntax-highlighting CSS, relative to the directory bd-hub is started from. Overrides the built-in Prism styling entirely, including any prism colors.",
               "oneOf": [
                 {
                   "type": "string",
@@ -168,6 +187,140 @@
         "priorityP3": {
           "$ref": "#/$defs/cssColor",
           "description": "P3 (low) priority chip."
+        }
+      },
+      "additionalProperties": false
+    },
+    "prismColors": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Base code text color."
+        },
+        "background": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Code block background."
+        },
+        "comment": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Comments."
+        },
+        "prolog": {
+          "$ref": "#/$defs/cssColor",
+          "description": "XML prolog."
+        },
+        "doctype": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Doctype declarations."
+        },
+        "cdata": {
+          "$ref": "#/$defs/cssColor",
+          "description": "CDATA sections."
+        },
+        "punctuation": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Brackets, commas, semicolons."
+        },
+        "namespace": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Namespace prefixes."
+        },
+        "property": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Object properties."
+        },
+        "tag": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Markup tags."
+        },
+        "boolean": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Boolean literals."
+        },
+        "number": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Numeric literals."
+        },
+        "constant": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Constants."
+        },
+        "symbol": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Symbols."
+        },
+        "deleted": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Removed diff lines."
+        },
+        "selector": {
+          "$ref": "#/$defs/cssColor",
+          "description": "CSS selectors."
+        },
+        "attrName": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Markup attribute names."
+        },
+        "string": {
+          "$ref": "#/$defs/cssColor",
+          "description": "String literals."
+        },
+        "char": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Character literals."
+        },
+        "builtin": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Built-in functions and types."
+        },
+        "inserted": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Added diff lines."
+        },
+        "operator": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Operators."
+        },
+        "entity": {
+          "$ref": "#/$defs/cssColor",
+          "description": "HTML entities."
+        },
+        "url": {
+          "$ref": "#/$defs/cssColor",
+          "description": "URLs in CSS/markup."
+        },
+        "atrule": {
+          "$ref": "#/$defs/cssColor",
+          "description": "CSS at-rules."
+        },
+        "attrValue": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Markup attribute values."
+        },
+        "keyword": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Language keywords."
+        },
+        "function": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Function names."
+        },
+        "className": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Class names."
+        },
+        "regex": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Regular expressions."
+        },
+        "important": {
+          "$ref": "#/$defs/cssColor",
+          "description": "CSS !important and emphasis."
+        },
+        "variable": {
+          "$ref": "#/$defs/cssColor",
+          "description": "Variables."
         }
       },
       "additionalProperties": false

@@ -4,14 +4,11 @@ import { fileURLToPath } from 'node:url'
 import type { ThemeConfig } from './theme.js'
 
 /**
- * Built-in themes live as standalone files in the top-level themes/
- * directory so new themes can be contributed without touching code:
- *
- *   themes/<name>.json           the theme (filename is the config name)
- *   themes/<name>.prism.css      optional Prism CSS, referenced from the
- *                                JSON via "prismTheme" (same shape as the
- *                                user config option, resolved against the
- *                                themes directory and inlined at load time)
+ * Built-in themes live as standalone JSON files in the top-level themes/
+ * directory so new themes can be contributed without touching code — the
+ * file name is the theme name in the config. Syntax highlighting is themed
+ * through the "prism" color block (see PRISM_COLOR_KEYS in theme.ts), not
+ * CSS files.
  *
  * After adding a theme run `pnpm generate-schema` to add its name to the
  * config JSON schema — a unit test fails if the two drift apart.
@@ -71,27 +68,10 @@ export function loadBuiltinTheme(
   }
 
   const { prismTheme, ...rest } = theme
-  if (!prismTheme) return rest
-
-  const readCss = (relPath: string): string | undefined => {
-    try {
-      return readFileSync(join(dir, relPath), 'utf8')
-    } catch {
-      console.warn(
-        `bd-hub: theme "${name}" references missing Prism CSS "${relPath}"`,
-      )
-      return undefined
-    }
+  if (prismTheme) {
+    console.warn(
+      `bd-hub: theme "${name}" sets "prismTheme" — built-in themes use the "prism" color block instead; ignoring it`,
+    )
   }
-  if (typeof prismTheme === 'string') {
-    const css = readCss(prismTheme)
-    return { ...rest, prismCss: { dark: css, light: css } }
-  }
-  return {
-    ...rest,
-    prismCss: {
-      dark: prismTheme.dark ? readCss(prismTheme.dark) : undefined,
-      light: prismTheme.light ? readCss(prismTheme.light) : undefined,
-    },
-  }
+  return rest
 }

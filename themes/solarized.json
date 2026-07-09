@@ -31,8 +31,55 @@
     "priorityP2": "#b58900",
     "priorityP3": "#859900"
   },
-  "prismTheme": {
-    "dark": "solarized.prism-dark.css",
-    "light": "solarized.prism-light.css"
+  "prism": {
+    "colors": {
+      "property": "#268bd2",
+      "tag": "#268bd2",
+      "boolean": "#268bd2",
+      "number": "#268bd2",
+      "constant": "#268bd2",
+      "symbol": "#268bd2",
+      "deleted": "#268bd2",
+      "selector": "#2aa198",
+      "attrName": "#2aa198",
+      "string": "#2aa198",
+      "char": "#2aa198",
+      "builtin": "#2aa198",
+      "inserted": "#2aa198",
+      "atrule": "#859900",
+      "attrValue": "#859900",
+      "keyword": "#859900",
+      "function": "#b58900",
+      "className": "#b58900",
+      "regex": "#cb4b16",
+      "important": "#cb4b16",
+      "variable": "#cb4b16"
+    },
+    "light": {
+      "text": "#657b83",
+      "background": "#fdf6e3",
+      "comment": "#93a1a1",
+      "prolog": "#93a1a1",
+      "doctype": "#93a1a1",
+      "cdata": "#93a1a1",
+      "punctuation": "#586e75",
+      "namespace": "#657b83",
+      "operator": "#657b83",
+      "entity": "#657b83",
+      "url": "#657b83"
+    },
+    "dark": {
+      "text": "#839496",
+      "background": "#002b36",
+      "comment": "#586e75",
+      "prolog": "#586e75",
+      "doctype": "#586e75",
+      "cdata": "#586e75",
+      "punctuation": "#93a1a1",
+      "namespace": "#839496",
+      "operator": "#839496",
+      "entity": "#839496",
+      "url": "#839496"
+    }
   }
 }
