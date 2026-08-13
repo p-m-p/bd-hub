@@ -55,7 +55,7 @@
   "devDependencies": {
     "@biomejs/biome": "^2.4.15",
     "@catppuccin/palette": "^1.8.0",
-    "@changesets/cli": "^2.31.0",
+    "@changesets/cli": "^3.0.0",
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.9.1",
     "@vitest/coverage-v8": "^4.1.6",
