@@ -58,14 +58,14 @@
     "@changesets/cli": "^3.0.0",
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.9.1",
-    "@vitest/coverage-v8": "^4.1.6",
+    "@vitest/coverage-v8": "^5.0.0",
     "concurrently": "^10.0.0",
     "esbuild": "^0.28.0",
     "jsdom": "^30.0.0",
     "tsx": "^4.22.3",
     "typescript": "^7.0.0",
     "vite": "^8.0.13",
-    "vitest": "^4.1.6"
+    "vitest": "^5.0.0"
   },
   "packageManager": "pnpm@11.25.0"
 }
