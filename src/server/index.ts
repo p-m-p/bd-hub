@@ -1,19 +1,9 @@
 import { exec } from 'node:child_process'
 import { serve } from '@hono/node-server'
-import { execa } from 'execa'
 import { app } from './app.js'
+import { assertEventsJournal, createEventFeed } from './events.js'
 import { getBoardState } from './query.js'
 import { broadcast } from './sse.js'
-import { createWatcher } from './watcher.js'
-
-async function findBeadsDir(): Promise<string> {
-  try {
-    const result = await execa('bd', ['where'])
-    return result.stdout.split('\n')[0].trim()
-  } catch {
-    return process.cwd()
-  }
-}
 
 export function parseArgs(argv = process.argv.slice(2)): {
   openBrowser: boolean
@@ -48,8 +38,9 @@ THEMING
   See https://github.com/p-m-p/bd-hub#theming for the config format.
 
 PREREQUISITES
-  bd (beads) must be installed and available in PATH.
+  bd (beads) >= 1.3.0 must be installed and available in PATH.
   Run from a directory that contains a .beads/ database (i.e. bd init has been run).
+  The beads events journal must be enabled: bd config set events-journal true
 
   Install beads: https://github.com/gastownhall/beads
 `.trim(),
@@ -69,7 +60,12 @@ async function main() {
     printHelp()
     process.exit(0)
   }
-  const beadsDir = await findBeadsDir()
+  try {
+    await assertEventsJournal()
+  } catch (err) {
+    console.error((err as Error).message)
+    process.exit(1)
+  }
 
   const server = serve({ fetch: app.fetch, port }, () => {
     const url = `http://localhost:${port}`
@@ -79,7 +75,7 @@ async function main() {
     }
   })
 
-  const cleanup = createWatcher(beadsDir, async () => {
+  const cleanup = createEventFeed(async () => {
     try {
       const state = await getBoardState()
       broadcast(state)

@@ -4,8 +4,13 @@ Real-time kanban dashboard for [bd (beads)](https://github.com/gastownhall/beads
 
 ## Prerequisites
 
-- **bd** installed and available in `PATH`
+- **bd** (beads) 1.3.0 or later installed and available in `PATH`
 - A project with `.beads/` initialised (`bd init` run at least once)
+- The beads events journal enabled — bd-hub follows it for live updates and won't start without it:
+
+  ```sh
+  bd config set events-journal true
+  ```
 
 ## Usage
 

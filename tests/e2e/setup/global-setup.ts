@@ -49,6 +49,10 @@ export default async function globalSetup() {
     },
   )
 
+  // bd-hub follows the events journal for live updates and refuses to start
+  // without it
+  await bd(['config', 'set', 'events-journal', 'true'], tmpDir)
+
   // 3. Create 2 epics
   const uiEpic = await bdJson<{ id: string }>(
     ['create', '--title', 'UI Components', '--type', 'epic', '--priority', '2'],

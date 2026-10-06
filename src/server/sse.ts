@@ -1,6 +1,6 @@
 // The SSE registry and broadcast function.
 // app.ts wires this into Hono routes.
-// The watcher calls broadcast() when .beads/ changes.
+// The events feed calls broadcast() when the beads journal records a change.
 
 import type { BoardState } from './types.js'
 
