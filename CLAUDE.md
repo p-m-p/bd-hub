@@ -81,7 +81,7 @@ pnpm dev               # Dev server (Vite :5173 + Hono :3003 with proxy)
 
 - **Server**: Hono on port 3003 — serves static files, `/api/board`, `/events` (SSE)
 - **Frontend**: Lit web components with Material Web UI, Catppuccin Mocha theme
-- **Realtime**: chokidar watches `.beads/`, debounced 300ms, broadcasts via SSE
+- **Realtime**: follows `bd events tail --follow` (beads >= 1.3.0, `events-journal` must be enabled), debounced 300ms, broadcasts via SSE
 - **Data**: bd CLI (execa) — no direct DB access; beads manages Dolt transparently
 - **Build**: Vite for client → `dist/public/`, tsup for server → `dist/server/`
 

@@ -1,4 +1,13 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+// index.ts runs main() on import — stub its side effects so no server starts
+// and the events journal check can't exit the test process.
+vi.mock('@hono/node-server', () => ({ serve: vi.fn() }))
+vi.mock('../../src/server/events.js', () => ({
+  assertEventsJournal: vi.fn().mockResolvedValue(undefined),
+  createEventFeed: vi.fn(() => () => {}),
+}))
+
 import { parseArgs } from '../../src/server/index.js'
 
 describe('parseArgs()', () => {
