@@ -135,4 +135,24 @@ describe('SSE registry', () => {
     expect(writer1).not.toHaveBeenCalled()
     expect(writer2).toHaveBeenCalledWith('board-update', JSON.stringify(state))
   })
+
+  it('broadcast skips a state identical to the last one sent', async () => {
+    const { addClient, broadcast } = await importSse()
+    const writer = vi.fn()
+    addClient(writer, new AbortController().signal)
+    const state = {
+      epics: [],
+      tasks: { open: [], ready: [], inProgress: [], done: [] },
+    }
+    broadcast(state)
+    broadcast(structuredClone(state))
+    expect(writer).toHaveBeenCalledTimes(1)
+    broadcast({
+      ...state,
+      epics: [
+        { id: 'e', title: 'E', status: 'open', priority: 1, createdAt: '' },
+      ],
+    })
+    expect(writer).toHaveBeenCalledTimes(2)
+  })
 })

@@ -3,7 +3,8 @@ import { serve } from '@hono/node-server'
 import { app } from './app.js'
 import { assertEventsJournal, createEventFeed } from './events.js'
 import { getBoardState } from './query.js'
-import { broadcast } from './sse.js'
+import { createReconciler } from './reconcile.js'
+import { broadcast, clientCount } from './sse.js'
 
 export function parseArgs(argv = process.argv.slice(2)): {
   openBrowser: boolean
@@ -75,14 +76,21 @@ async function main() {
     }
   })
 
-  const cleanup = createEventFeed(async () => {
+  const refresh = async () => {
     try {
       const state = await getBoardState()
       broadcast(state)
     } catch (err) {
       console.error('Failed to broadcast update:', err)
     }
-  })
+  }
+
+  const stopFeed = createEventFeed(refresh)
+  const stopReconciler = createReconciler(refresh, () => clientCount() > 0)
+  const cleanup = () => {
+    stopFeed()
+    stopReconciler()
+  }
 
   process.on('SIGINT', () => {
     cleanup()
