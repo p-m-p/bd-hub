@@ -95,7 +95,7 @@ jobs:
       - name: Create release PR or publish
         uses: changesets/action@v2.1.2
         with:
-          github-token: ${{ secrets.CHANGESETS_GITHUB_TOKEN }}
+          github-token: ${{ github.token }}
           publish-script: pnpm release
           commit-message: 'chore: version packages'
           pr-title: 'chore: version packages'
