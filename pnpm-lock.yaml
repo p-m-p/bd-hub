@@ -168,7 +168,7 @@ importers:
     dependencies:
       '@hono/node-server':
         specifier: ^2.0.3
-        version: 2.1.6(hono@4.13.16)
+        version: 2.1.6(hono@4.13.17)
       '@lit/context':
         specifier: ^1.1.6
         version: 1.1.6
@@ -186,7 +186,7 @@ importers:
         version: 10.2.1
       hono:
         specifier: ^4.12.21
-        version: 4.13.16
+        version: 4.13.17
       lit:
         specifier: ^3.3.3
         version: 3.3.3
@@ -1032,8 +1032,8 @@ packages:
     resolution: {integrity: sha512-kVCxPF3vQM/N0B1PmoqVUqgHP+EeVjmZSQn+1oCRPxd2P21P2F19lIgbR3HBosbB1PUhOAoctJnfEn2GbN2eZA==}
     engines: {node: '>=18'}
 
-  hono@4.13.16:
-    resolution: {integrity: sha512-AOLOEhvrV+iH92xXCnFr/5+3KjPKcI3xP63XJtX5spAnkznPdHijlIsUTpi7/9EhWqrTCekw5c5zh1K+YsVw7A==}
+  hono@4.13.17:
+    resolution: {integrity: sha512-vZIcbkvjOR5hHRWERbGkr8fGfF0GGM1ooYkuH448iO3b2AdVEr3AXZSw4Z3Kn+1L5z0CVoVeyV29VGYmFh05kQ==}
     engines: {node: '>=16.9.0'}
 
   html-encoding-sniffer@7.0.0:
@@ -1787,9 +1787,9 @@ snapshots:
 
   '@exodus/bytes@1.16.0': {}
 
-  '@hono/node-server@2.1.6(hono@4.13.16)':
+  '@hono/node-server@2.1.6(hono@4.13.17)':
     dependencies:
-      hono: 4.13.16
+      hono: 4.13.17
 
   '@jridgewell/resolve-uri@3.1.2': {}
 
@@ -2145,7 +2145,7 @@ snapshots:
       '@sec-ant/readable-stream': 0.4.1
       is-stream: 4.0.1
 
-  hono@4.13.16: {}
+  hono@4.13.17: {}
 
   html-encoding-sniffer@7.0.0:
     dependencies:
