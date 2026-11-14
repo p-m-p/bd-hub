@@ -1,5 +1,15 @@
 # bd-hub
 
+## 0.8.0
+
+### Minor Changes
+
+- 21e4276: Live updates now follow the beads events journal (`bd events tail --follow`) instead of watching `.beads/` with chokidar, so the board refreshes on exactly the changes bd records. **Breaking:** bd-hub now requires beads 1.3.0 or later with the journal enabled (`bd config set events-journal true`) and exits with that hint if it isn't. The tail resumes from its last sequence number if it exits, and rebuilds the board if its checkpoint has been pruned.
+
+### Patch Changes
+
+- dc4ab63: Changes that reach the workspace without being journaled — `bd dolt pull`, merges, `bd sql` — now show up on the board: while a browser is connected, bd-hub rebuilds the board every 30 seconds and broadcasts only if something changed. Identical board states are no longer re-sent to clients.
+
 ## 0.7.0
 
 ### Minor Changes
